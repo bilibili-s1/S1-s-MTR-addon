@@ -1,0 +1,2232 @@
+﻿Compiled from "RailMath.java"
+public class org.mtr.core.data.RailMath {
+  public final long minX;
+
+  public final long minY;
+
+  public final long minZ;
+
+  public final long maxY;
+
+  public final long maxX;
+
+  public final long maxZ;
+
+  private final org.mtr.core.data.Rail$Shape shape;
+
+  private final double verticalRadius;
+
+  private final double h1;
+
+  private final double k1;
+
+  private final double h2;
+
+  private final double k2;
+
+  private final double r1;
+
+  private final double r2;
+
+  private final double tStart1;
+
+  private final double tEnd1;
+
+  private final double tStart2;
+
+  private final double tEnd2;
+
+  private final long yStart;
+
+  private final long yEnd;
+
+  private final boolean reverseT1;
+
+  private final boolean reverseT2;
+
+  private final boolean isStraight1;
+
+  private final boolean isStraight2;
+
+  private static final double ACCEPT_THRESHOLD = 1.0E-4d;
+
+  private static final int CABLE_CURVATURE_SCALE = 1000;
+
+  private static final int MAX_CABLE_DIP = 8;
+
+  public org.mtr.core.data.RailMath(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double);
+    Code:
+       0: aload_0
+       1: invokespecial #65                 // Method java/lang/Object."<init>":()V
+       4: aload_1
+       5: invokevirtual #71                 // Method org/mtr/core/data/Position.getX:()J
+       8: lstore        8
+      10: aload_1
+      11: invokevirtual #74                 // Method org/mtr/core/data/Position.getZ:()J
+      14: lstore        10
+      16: aload_3
+      17: invokevirtual #71                 // Method org/mtr/core/data/Position.getX:()J
+      20: lstore        12
+      22: aload_3
+      23: invokevirtual #74                 // Method org/mtr/core/data/Position.getZ:()J
+      26: lstore        14
+      28: new           #76                 // class org/mtr/core/tool/Vector
+      31: dup
+      32: aload_3
+      33: invokevirtual #71                 // Method org/mtr/core/data/Position.getX:()J
+      36: aload_1
+      37: invokevirtual #71                 // Method org/mtr/core/data/Position.getX:()J
+      40: lsub
+      41: l2d
+      42: dconst_0
+      43: aload_3
+      44: invokevirtual #74                 // Method org/mtr/core/data/Position.getZ:()J
+      47: aload_1
+      48: invokevirtual #74                 // Method org/mtr/core/data/Position.getZ:()J
+      51: lsub
+      52: l2d
+      53: invokespecial #79                 // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+      56: astore        16
+      58: aload         16
+      60: aload_2
+      61: getfield      #84                 // Field org/mtr/core/tool/Angle.angleRadians:D
+      64: d2f
+      65: f2d
+      66: invokevirtual #88                 // Method org/mtr/core/tool/Vector.rotateY:(D)Lorg/mtr/core/tool/Vector;
+      69: astore        17
+      71: aload         17
+      73: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+      76: dstore        18
+      78: aload         17
+      80: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+      83: dstore        20
+      85: aload_2
+      86: aload         4
+      88: invokevirtual #99                 // Method org/mtr/core/tool/Angle.isParallel:(Lorg/mtr/core/tool/Angle;)Z
+      91: ifeq          756
+      94: dload         18
+      96: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      99: ldc2_w        #50                 // double 1.0E-4d
+     102: dcmpg
+     103: ifge          354
+     106: aload_0
+     107: aload_2
+     108: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     111: putfield      #110                // Field h1:D
+     114: aload_0
+     115: aload_2
+     116: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     119: putfield      #115                // Field k1:D
+     122: aload_0
+     123: getfield      #110                // Field h1:D
+     126: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     129: ldc2_w        #116                // double 0.5d
+     132: dcmpl
+     133: iflt          208
+     136: aload_0
+     137: getfield      #115                // Field k1:D
+     140: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     143: ldc2_w        #116                // double 0.5d
+     146: dcmpl
+     147: iflt          208
+     150: aload_0
+     151: aload_0
+     152: getfield      #110                // Field h1:D
+     155: lload         10
+     157: l2d
+     158: dmul
+     159: aload_0
+     160: getfield      #115                // Field k1:D
+     163: lload         8
+     165: l2d
+     166: dmul
+     167: dsub
+     168: aload_0
+     169: getfield      #110                // Field h1:D
+     172: ddiv
+     173: aload_0
+     174: getfield      #110                // Field h1:D
+     177: ddiv
+     178: putfield      #119                // Field r1:D
+     181: aload_0
+     182: lload         8
+     184: l2d
+     185: aload_0
+     186: getfield      #110                // Field h1:D
+     189: ddiv
+     190: putfield      #121                // Field tStart1:D
+     193: aload_0
+     194: lload         12
+     196: l2d
+     197: aload_0
+     198: getfield      #110                // Field h1:D
+     201: ddiv
+     202: putfield      #123                // Field tEnd1:D
+     205: goto          290
+     208: aload_2
+     209: aload_2
+     210: invokevirtual #127                // Method org/mtr/core/tool/Angle.add:(Lorg/mtr/core/tool/Angle;)Lorg/mtr/core/tool/Angle;
+     213: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     216: dstore        22
+     218: aload_0
+     219: aload_0
+     220: getfield      #110                // Field h1:D
+     223: lload         10
+     225: l2d
+     226: dmul
+     227: aload_0
+     228: getfield      #115                // Field k1:D
+     231: lload         8
+     233: l2d
+     234: dmul
+     235: dsub
+     236: dload         22
+     238: ddiv
+     239: putfield      #119                // Field r1:D
+     242: aload_0
+     243: aload_0
+     244: getfield      #110                // Field h1:D
+     247: lload         8
+     249: l2d
+     250: dmul
+     251: aload_0
+     252: getfield      #115                // Field k1:D
+     255: lload         10
+     257: l2d
+     258: dmul
+     259: dsub
+     260: dload         22
+     262: ddiv
+     263: putfield      #121                // Field tStart1:D
+     266: aload_0
+     267: aload_0
+     268: getfield      #110                // Field h1:D
+     271: lload         12
+     273: l2d
+     274: dmul
+     275: aload_0
+     276: getfield      #115                // Field k1:D
+     279: lload         14
+     281: l2d
+     282: dmul
+     283: dsub
+     284: dload         22
+     286: ddiv
+     287: putfield      #123                // Field tEnd1:D
+     290: aload_0
+     291: aload_0
+     292: aload_0
+     293: dconst_0
+     294: dup2_x1
+     295: putfield      #129                // Field r2:D
+     298: dup2_x1
+     299: putfield      #131                // Field k2:D
+     302: putfield      #133                // Field h2:D
+     305: aload_0
+     306: aload_0
+     307: getfield      #121                // Field tStart1:D
+     310: aload_0
+     311: getfield      #123                // Field tEnd1:D
+     314: dcmpl
+     315: ifle          322
+     318: iconst_1
+     319: goto          323
+     322: iconst_0
+     323: putfield      #135                // Field reverseT1:Z
+     326: aload_0
+     327: iconst_0
+     328: putfield      #137                // Field reverseT2:Z
+     331: aload_0
+     332: aload_0
+     333: iconst_1
+     334: dup_x1
+     335: putfield      #139                // Field isStraight2:Z
+     338: putfield      #141                // Field isStraight1:Z
+     341: aload_0
+     342: aload_0
+     343: dconst_0
+     344: dup2_x1
+     345: putfield      #143                // Field tEnd2:D
+     348: putfield      #145                // Field tStart2:D
+     351: goto          1864
+     354: dload         20
+     356: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     359: ldc2_w        #50                 // double 1.0E-4d
+     362: dcmpl
+     363: ifle          683
+     366: dload         18
+     368: dload         18
+     370: dmul
+     371: dload         20
+     373: dload         20
+     375: dmul
+     376: dadd
+     377: ldc2_w        #146                // double 4.0d
+     380: dload         18
+     382: dmul
+     383: ddiv
+     384: dstore        22
+     386: aload_0
+     387: aload_0
+     388: dload         22
+     390: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     393: dup2_x1
+     394: putfield      #129                // Field r2:D
+     397: putfield      #119                // Field r1:D
+     400: aload_0
+     401: lload         8
+     403: l2d
+     404: dload         22
+     406: aload_2
+     407: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     410: dmul
+     411: dsub
+     412: putfield      #110                // Field h1:D
+     415: aload_0
+     416: lload         10
+     418: l2d
+     419: dload         22
+     421: aload_2
+     422: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     425: dmul
+     426: dadd
+     427: putfield      #115                // Field k1:D
+     430: aload_0
+     431: lload         12
+     433: l2d
+     434: dload         22
+     436: aload         4
+     438: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     441: dmul
+     442: dsub
+     443: putfield      #133                // Field h2:D
+     446: aload_0
+     447: lload         14
+     449: l2d
+     450: dload         22
+     452: aload         4
+     454: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     457: dmul
+     458: dadd
+     459: putfield      #131                // Field k2:D
+     462: aload_0
+     463: dload         18
+     465: dconst_0
+     466: dcmpg
+     467: ifge          474
+     470: iconst_1
+     471: goto          475
+     474: iconst_0
+     475: dload         20
+     477: dconst_0
+     478: dcmpg
+     479: ifge          486
+     482: iconst_1
+     483: goto          487
+     486: iconst_0
+     487: if_icmpeq     494
+     490: iconst_1
+     491: goto          495
+     494: iconst_0
+     495: putfield      #135                // Field reverseT1:Z
+     498: aload_0
+     499: aload_0
+     500: getfield      #135                // Field reverseT1:Z
+     503: ifne          510
+     506: iconst_1
+     507: goto          511
+     510: iconst_0
+     511: putfield      #137                // Field reverseT2:Z
+     514: aload_0
+     515: lload         8
+     517: l2d
+     518: aload_0
+     519: getfield      #110                // Field h1:D
+     522: lload         10
+     524: l2d
+     525: aload_0
+     526: getfield      #115                // Field k1:D
+     529: aload_0
+     530: getfield      #119                // Field r1:D
+     533: invokestatic  #151                // Method getTBounds:(DDDDD)D
+     536: putfield      #121                // Field tStart1:D
+     539: aload_0
+     540: lload         8
+     542: l2d
+     543: aload         16
+     545: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     548: ldc2_w        #152                // double 2.0d
+     551: ddiv
+     552: dadd
+     553: aload_0
+     554: getfield      #110                // Field h1:D
+     557: lload         10
+     559: l2d
+     560: aload         16
+     562: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     565: ldc2_w        #152                // double 2.0d
+     568: ddiv
+     569: dadd
+     570: aload_0
+     571: getfield      #115                // Field k1:D
+     574: aload_0
+     575: getfield      #119                // Field r1:D
+     578: aload_0
+     579: getfield      #121                // Field tStart1:D
+     582: aload_0
+     583: getfield      #135                // Field reverseT1:Z
+     586: invokestatic  #156                // Method getTBounds:(DDDDDDZ)D
+     589: putfield      #123                // Field tEnd1:D
+     592: aload_0
+     593: lload         8
+     595: l2d
+     596: aload         16
+     598: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     601: ldc2_w        #152                // double 2.0d
+     604: ddiv
+     605: dadd
+     606: aload_0
+     607: getfield      #133                // Field h2:D
+     610: lload         10
+     612: l2d
+     613: aload         16
+     615: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     618: ldc2_w        #152                // double 2.0d
+     621: ddiv
+     622: dadd
+     623: aload_0
+     624: getfield      #131                // Field k2:D
+     627: aload_0
+     628: getfield      #129                // Field r2:D
+     631: invokestatic  #151                // Method getTBounds:(DDDDD)D
+     634: putfield      #145                // Field tStart2:D
+     637: aload_0
+     638: lload         12
+     640: l2d
+     641: aload_0
+     642: getfield      #133                // Field h2:D
+     645: lload         14
+     647: l2d
+     648: aload_0
+     649: getfield      #131                // Field k2:D
+     652: aload_0
+     653: getfield      #129                // Field r2:D
+     656: aload_0
+     657: getfield      #145                // Field tStart2:D
+     660: aload_0
+     661: getfield      #137                // Field reverseT2:Z
+     664: invokestatic  #156                // Method getTBounds:(DDDDDDZ)D
+     667: putfield      #143                // Field tEnd2:D
+     670: aload_0
+     671: aload_0
+     672: iconst_0
+     673: dup_x1
+     674: putfield      #139                // Field isStraight2:Z
+     677: putfield      #141                // Field isStraight1:Z
+     680: goto          1864
+     683: aload_0
+     684: aload_0
+     685: aload_0
+     686: aload_0
+     687: aload_0
+     688: aload_0
+     689: dconst_0
+     690: dup2_x1
+     691: putfield      #129                // Field r2:D
+     694: dup2_x1
+     695: putfield      #119                // Field r1:D
+     698: dup2_x1
+     699: putfield      #131                // Field k2:D
+     702: dup2_x1
+     703: putfield      #133                // Field h2:D
+     706: dup2_x1
+     707: putfield      #115                // Field k1:D
+     710: putfield      #110                // Field h1:D
+     713: aload_0
+     714: aload_0
+     715: aload_0
+     716: aload_0
+     717: dconst_0
+     718: dup2_x1
+     719: putfield      #143                // Field tEnd2:D
+     722: dup2_x1
+     723: putfield      #123                // Field tEnd1:D
+     726: dup2_x1
+     727: putfield      #145                // Field tStart2:D
+     730: putfield      #121                // Field tStart1:D
+     733: aload_0
+     734: iconst_0
+     735: putfield      #135                // Field reverseT1:Z
+     738: aload_0
+     739: iconst_0
+     740: putfield      #137                // Field reverseT2:Z
+     743: aload_0
+     744: aload_0
+     745: iconst_1
+     746: dup_x1
+     747: putfield      #139                // Field isStraight2:Z
+     750: putfield      #141                // Field isStraight1:Z
+     753: goto          1864
+     756: aload         17
+     758: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     761: ldc2_w        #157                // double -1.0E-4d
+     764: dcmpg
+     765: ifge          775
+     768: aload_2
+     769: invokevirtual #162                // Method org/mtr/core/tool/Angle.getOpposite:()Lorg/mtr/core/tool/Angle;
+     772: goto          776
+     775: aload_2
+     776: astore        22
+     778: aload         4
+     780: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     783: aload         16
+     785: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     788: dmul
+     789: aload         4
+     791: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     794: aload         16
+     796: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     799: dmul
+     800: dadd
+     801: ldc2_w        #157                // double -1.0E-4d
+     804: dcmpg
+     805: ifge          816
+     808: aload         4
+     810: invokevirtual #162                // Method org/mtr/core/tool/Angle.getOpposite:()Lorg/mtr/core/tool/Angle;
+     813: goto          818
+     816: aload         4
+     818: astore        23
+     820: dload         18
+     822: dload         20
+     824: invokestatic  #166                // Method java/lang/Math.atan2:(DD)D
+     827: dstore        24
+     829: aload         23
+     831: aload         22
+     833: invokevirtual #169                // Method org/mtr/core/tool/Angle.sub:(Lorg/mtr/core/tool/Angle;)Lorg/mtr/core/tool/Angle;
+     836: astore        26
+     838: aload         26
+     840: getfield      #84                 // Field org/mtr/core/tool/Angle.angleRadians:D
+     843: dstore        27
+     845: dload         24
+     847: invokestatic  #172                // Method java/lang/Math.signum:(D)D
+     850: dload         27
+     852: invokestatic  #172                // Method java/lang/Math.signum:(D)D
+     855: dcmpl
+     856: ifne          1794
+     859: dload         24
+     861: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     864: dstore        29
+     866: dload         29
+     868: dload         27
+     870: ldc2_w        #152                // double 2.0d
+     873: ddiv
+     874: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     877: dsub
+     878: ldc2_w        #50                 // double 1.0E-4d
+     881: dcmpg
+     882: ifge          1275
+     885: dload         18
+     887: aload         26
+     889: getfield      #175                // Field org/mtr/core/tool/Angle.halfTan:D
+     892: ddiv
+     893: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     896: dstore        31
+     898: dload         20
+     900: dload         31
+     902: dsub
+     903: dstore        33
+     905: lload         8
+     907: l2d
+     908: dload         33
+     910: aload         22
+     912: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     915: dmul
+     916: dadd
+     917: dstore        35
+     919: lload         10
+     921: l2d
+     922: dload         33
+     924: aload         22
+     926: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     929: dmul
+     930: dadd
+     931: dstore        37
+     933: aload_0
+     934: aload         22
+     936: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+     939: putfield      #110                // Field h1:D
+     942: aload_0
+     943: aload         22
+     945: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+     948: putfield      #115                // Field k1:D
+     951: aload_0
+     952: getfield      #110                // Field h1:D
+     955: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     958: ldc2_w        #116                // double 0.5d
+     961: dcmpl
+     962: iflt          1036
+     965: aload_0
+     966: getfield      #115                // Field k1:D
+     969: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+     972: ldc2_w        #116                // double 0.5d
+     975: dcmpl
+     976: iflt          1036
+     979: aload_0
+     980: aload_0
+     981: getfield      #110                // Field h1:D
+     984: lload         10
+     986: l2d
+     987: dmul
+     988: aload_0
+     989: getfield      #115                // Field k1:D
+     992: lload         8
+     994: l2d
+     995: dmul
+     996: dsub
+     997: aload_0
+     998: getfield      #110                // Field h1:D
+    1001: ddiv
+    1002: aload_0
+    1003: getfield      #110                // Field h1:D
+    1006: ddiv
+    1007: putfield      #119                // Field r1:D
+    1010: aload_0
+    1011: lload         8
+    1013: l2d
+    1014: aload_0
+    1015: getfield      #110                // Field h1:D
+    1018: ddiv
+    1019: putfield      #121                // Field tStart1:D
+    1022: aload_0
+    1023: dload         35
+    1025: aload_0
+    1026: getfield      #110                // Field h1:D
+    1029: ddiv
+    1030: putfield      #123                // Field tEnd1:D
+    1033: goto          1118
+    1036: aload         22
+    1038: aload         22
+    1040: invokevirtual #127                // Method org/mtr/core/tool/Angle.add:(Lorg/mtr/core/tool/Angle;)Lorg/mtr/core/tool/Angle;
+    1043: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1046: dstore        39
+    1048: aload_0
+    1049: aload_0
+    1050: getfield      #110                // Field h1:D
+    1053: lload         10
+    1055: l2d
+    1056: dmul
+    1057: aload_0
+    1058: getfield      #115                // Field k1:D
+    1061: lload         8
+    1063: l2d
+    1064: dmul
+    1065: dsub
+    1066: dload         39
+    1068: ddiv
+    1069: putfield      #119                // Field r1:D
+    1072: aload_0
+    1073: aload_0
+    1074: getfield      #110                // Field h1:D
+    1077: lload         8
+    1079: l2d
+    1080: dmul
+    1081: aload_0
+    1082: getfield      #115                // Field k1:D
+    1085: lload         10
+    1087: l2d
+    1088: dmul
+    1089: dsub
+    1090: dload         39
+    1092: ddiv
+    1093: putfield      #121                // Field tStart1:D
+    1096: aload_0
+    1097: aload_0
+    1098: getfield      #110                // Field h1:D
+    1101: dload         35
+    1103: dmul
+    1104: aload_0
+    1105: getfield      #115                // Field k1:D
+    1108: dload         37
+    1110: dmul
+    1111: dsub
+    1112: dload         39
+    1114: ddiv
+    1115: putfield      #123                // Field tEnd1:D
+    1118: aload_0
+    1119: iconst_1
+    1120: putfield      #141                // Field isStraight1:Z
+    1123: aload_0
+    1124: aload_0
+    1125: getfield      #121                // Field tStart1:D
+    1128: aload_0
+    1129: getfield      #123                // Field tEnd1:D
+    1132: dcmpl
+    1133: ifle          1140
+    1136: iconst_1
+    1137: goto          1141
+    1140: iconst_0
+    1141: putfield      #135                // Field reverseT1:Z
+    1144: dload         18
+    1146: dconst_1
+    1147: aload         26
+    1149: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1152: dsub
+    1153: ddiv
+    1154: dstore        39
+    1156: aload_0
+    1157: dload         39
+    1159: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+    1162: putfield      #129                // Field r2:D
+    1165: aload_0
+    1166: dload         35
+    1168: dload         39
+    1170: aload         22
+    1172: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1175: dmul
+    1176: dsub
+    1177: putfield      #133                // Field h2:D
+    1180: aload_0
+    1181: dload         37
+    1183: dload         39
+    1185: aload         22
+    1187: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1190: dmul
+    1191: dadd
+    1192: putfield      #131                // Field k2:D
+    1195: aload_0
+    1196: dload         18
+    1198: dconst_0
+    1199: dcmpg
+    1200: ifge          1207
+    1203: iconst_1
+    1204: goto          1208
+    1207: iconst_0
+    1208: putfield      #137                // Field reverseT2:Z
+    1211: aload_0
+    1212: dload         35
+    1214: aload_0
+    1215: getfield      #133                // Field h2:D
+    1218: dload         37
+    1220: aload_0
+    1221: getfield      #131                // Field k2:D
+    1224: aload_0
+    1225: getfield      #129                // Field r2:D
+    1228: invokestatic  #151                // Method getTBounds:(DDDDD)D
+    1231: putfield      #145                // Field tStart2:D
+    1234: aload_0
+    1235: lload         12
+    1237: l2d
+    1238: aload_0
+    1239: getfield      #133                // Field h2:D
+    1242: lload         14
+    1244: l2d
+    1245: aload_0
+    1246: getfield      #131                // Field k2:D
+    1249: aload_0
+    1250: getfield      #129                // Field r2:D
+    1253: aload_0
+    1254: getfield      #145                // Field tStart2:D
+    1257: aload_0
+    1258: getfield      #137                // Field reverseT2:Z
+    1261: invokestatic  #156                // Method getTBounds:(DDDDDDZ)D
+    1264: putfield      #143                // Field tEnd2:D
+    1267: aload_0
+    1268: iconst_0
+    1269: putfield      #139                // Field isStraight2:Z
+    1272: goto          1791
+    1275: dload         29
+    1277: dload         27
+    1279: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+    1282: dsub
+    1283: ldc2_w        #50                 // double 1.0E-4d
+    1286: dcmpg
+    1287: ifge          1721
+    1290: dload         18
+    1292: aload         26
+    1294: getfield      #178                // Field org/mtr/core/tool/Angle.tan:D
+    1297: ddiv
+    1298: dstore        31
+    1300: dload         20
+    1302: dload         31
+    1304: dsub
+    1305: dconst_1
+    1306: aload         26
+    1308: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1311: dadd
+    1312: dmul
+    1313: dstore        33
+    1315: dload         20
+    1317: dload         31
+    1319: dsub
+    1320: aload         26
+    1322: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1325: dmul
+    1326: dstore        35
+    1328: lload         8
+    1330: l2d
+    1331: dload         33
+    1333: aload         22
+    1335: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1338: dmul
+    1339: dadd
+    1340: dload         35
+    1342: aload         22
+    1344: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1347: dmul
+    1348: dsub
+    1349: dstore        37
+    1351: lload         10
+    1353: l2d
+    1354: dload         33
+    1356: aload         22
+    1358: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1361: dmul
+    1362: dadd
+    1363: dload         35
+    1365: aload         22
+    1367: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1370: dmul
+    1371: dadd
+    1372: dstore        39
+    1374: dload         20
+    1376: dload         18
+    1378: aload         26
+    1380: getfield      #178                // Field org/mtr/core/tool/Angle.tan:D
+    1383: ddiv
+    1384: dsub
+    1385: aload         26
+    1387: getfield      #175                // Field org/mtr/core/tool/Angle.halfTan:D
+    1390: ddiv
+    1391: dstore        41
+    1393: aload_0
+    1394: dload         41
+    1396: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+    1399: putfield      #119                // Field r1:D
+    1402: aload_0
+    1403: lload         8
+    1405: l2d
+    1406: dload         41
+    1408: aload         22
+    1410: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1413: dmul
+    1414: dsub
+    1415: putfield      #110                // Field h1:D
+    1418: aload_0
+    1419: lload         10
+    1421: l2d
+    1422: dload         41
+    1424: aload         22
+    1426: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1429: dmul
+    1430: dadd
+    1431: putfield      #115                // Field k1:D
+    1434: aload_0
+    1435: iconst_0
+    1436: putfield      #141                // Field isStraight1:Z
+    1439: aload_0
+    1440: dload         18
+    1442: dconst_0
+    1443: dcmpg
+    1444: ifge          1451
+    1447: iconst_1
+    1448: goto          1452
+    1451: iconst_0
+    1452: putfield      #135                // Field reverseT1:Z
+    1455: aload_0
+    1456: lload         8
+    1458: l2d
+    1459: aload_0
+    1460: getfield      #110                // Field h1:D
+    1463: lload         10
+    1465: l2d
+    1466: aload_0
+    1467: getfield      #115                // Field k1:D
+    1470: aload_0
+    1471: getfield      #119                // Field r1:D
+    1474: invokestatic  #151                // Method getTBounds:(DDDDD)D
+    1477: putfield      #121                // Field tStart1:D
+    1480: aload_0
+    1481: dload         37
+    1483: aload_0
+    1484: getfield      #110                // Field h1:D
+    1487: dload         39
+    1489: aload_0
+    1490: getfield      #115                // Field k1:D
+    1493: aload_0
+    1494: getfield      #119                // Field r1:D
+    1497: aload_0
+    1498: getfield      #121                // Field tStart1:D
+    1501: aload_0
+    1502: getfield      #135                // Field reverseT1:Z
+    1505: invokestatic  #156                // Method getTBounds:(DDDDDDZ)D
+    1508: putfield      #123                // Field tEnd1:D
+    1511: aload_0
+    1512: aload         23
+    1514: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1517: putfield      #133                // Field h2:D
+    1520: aload_0
+    1521: aload         23
+    1523: getfield      #113                // Field org/mtr/core/tool/Angle.sin:D
+    1526: putfield      #131                // Field k2:D
+    1529: aload_0
+    1530: getfield      #133                // Field h2:D
+    1533: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+    1536: ldc2_w        #116                // double 0.5d
+    1539: dcmpl
+    1540: iflt          1612
+    1543: aload_0
+    1544: getfield      #131                // Field k2:D
+    1547: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+    1550: ldc2_w        #116                // double 0.5d
+    1553: dcmpl
+    1554: iflt          1612
+    1557: aload_0
+    1558: aload_0
+    1559: getfield      #133                // Field h2:D
+    1562: dload         39
+    1564: dmul
+    1565: aload_0
+    1566: getfield      #131                // Field k2:D
+    1569: dload         37
+    1571: dmul
+    1572: dsub
+    1573: aload_0
+    1574: getfield      #133                // Field h2:D
+    1577: ddiv
+    1578: aload_0
+    1579: getfield      #133                // Field h2:D
+    1582: ddiv
+    1583: putfield      #129                // Field r2:D
+    1586: aload_0
+    1587: dload         37
+    1589: aload_0
+    1590: getfield      #133                // Field h2:D
+    1593: ddiv
+    1594: putfield      #145                // Field tStart2:D
+    1597: aload_0
+    1598: lload         12
+    1600: l2d
+    1601: aload_0
+    1602: getfield      #133                // Field h2:D
+    1605: ddiv
+    1606: putfield      #143                // Field tEnd2:D
+    1609: goto          1692
+    1612: aload         23
+    1614: aload         23
+    1616: invokevirtual #127                // Method org/mtr/core/tool/Angle.add:(Lorg/mtr/core/tool/Angle;)Lorg/mtr/core/tool/Angle;
+    1619: getfield      #108                // Field org/mtr/core/tool/Angle.cos:D
+    1622: dstore        43
+    1624: aload_0
+    1625: aload_0
+    1626: getfield      #133                // Field h2:D
+    1629: dload         39
+    1631: dmul
+    1632: aload_0
+    1633: getfield      #131                // Field k2:D
+    1636: dload         37
+    1638: dmul
+    1639: dsub
+    1640: dload         43
+    1642: ddiv
+    1643: putfield      #129                // Field r2:D
+    1646: aload_0
+    1647: aload_0
+    1648: getfield      #133                // Field h2:D
+    1651: dload         37
+    1653: dmul
+    1654: aload_0
+    1655: getfield      #131                // Field k2:D
+    1658: dload         39
+    1660: dmul
+    1661: dsub
+    1662: dload         43
+    1664: ddiv
+    1665: putfield      #145                // Field tStart2:D
+    1668: aload_0
+    1669: aload_0
+    1670: getfield      #133                // Field h2:D
+    1673: lload         12
+    1675: l2d
+    1676: dmul
+    1677: aload_0
+    1678: getfield      #131                // Field k2:D
+    1681: lload         14
+    1683: l2d
+    1684: dmul
+    1685: dsub
+    1686: dload         43
+    1688: ddiv
+    1689: putfield      #143                // Field tEnd2:D
+    1692: aload_0
+    1693: iconst_1
+    1694: putfield      #139                // Field isStraight2:Z
+    1697: aload_0
+    1698: aload_0
+    1699: getfield      #145                // Field tStart2:D
+    1702: aload_0
+    1703: getfield      #143                // Field tEnd2:D
+    1706: dcmpl
+    1707: ifle          1714
+    1710: iconst_1
+    1711: goto          1715
+    1714: iconst_0
+    1715: putfield      #137                // Field reverseT2:Z
+    1718: goto          1791
+    1721: aload_0
+    1722: aload_0
+    1723: aload_0
+    1724: aload_0
+    1725: aload_0
+    1726: aload_0
+    1727: dconst_0
+    1728: dup2_x1
+    1729: putfield      #129                // Field r2:D
+    1732: dup2_x1
+    1733: putfield      #119                // Field r1:D
+    1736: dup2_x1
+    1737: putfield      #131                // Field k2:D
+    1740: dup2_x1
+    1741: putfield      #133                // Field h2:D
+    1744: dup2_x1
+    1745: putfield      #115                // Field k1:D
+    1748: putfield      #110                // Field h1:D
+    1751: aload_0
+    1752: aload_0
+    1753: aload_0
+    1754: aload_0
+    1755: dconst_0
+    1756: dup2_x1
+    1757: putfield      #143                // Field tEnd2:D
+    1760: dup2_x1
+    1761: putfield      #123                // Field tEnd1:D
+    1764: dup2_x1
+    1765: putfield      #145                // Field tStart2:D
+    1768: putfield      #121                // Field tStart1:D
+    1771: aload_0
+    1772: iconst_0
+    1773: putfield      #135                // Field reverseT1:Z
+    1776: aload_0
+    1777: iconst_0
+    1778: putfield      #137                // Field reverseT2:Z
+    1781: aload_0
+    1782: aload_0
+    1783: iconst_1
+    1784: dup_x1
+    1785: putfield      #139                // Field isStraight2:Z
+    1788: putfield      #141                // Field isStraight1:Z
+    1791: goto          1864
+    1794: aload_0
+    1795: aload_0
+    1796: aload_0
+    1797: aload_0
+    1798: aload_0
+    1799: aload_0
+    1800: dconst_0
+    1801: dup2_x1
+    1802: putfield      #129                // Field r2:D
+    1805: dup2_x1
+    1806: putfield      #119                // Field r1:D
+    1809: dup2_x1
+    1810: putfield      #131                // Field k2:D
+    1813: dup2_x1
+    1814: putfield      #133                // Field h2:D
+    1817: dup2_x1
+    1818: putfield      #115                // Field k1:D
+    1821: putfield      #110                // Field h1:D
+    1824: aload_0
+    1825: aload_0
+    1826: aload_0
+    1827: aload_0
+    1828: dconst_0
+    1829: dup2_x1
+    1830: putfield      #143                // Field tEnd2:D
+    1833: dup2_x1
+    1834: putfield      #123                // Field tEnd1:D
+    1837: dup2_x1
+    1838: putfield      #145                // Field tStart2:D
+    1841: putfield      #121                // Field tStart1:D
+    1844: aload_0
+    1845: iconst_0
+    1846: putfield      #135                // Field reverseT1:Z
+    1849: aload_0
+    1850: iconst_0
+    1851: putfield      #137                // Field reverseT2:Z
+    1854: aload_0
+    1855: aload_0
+    1856: iconst_1
+    1857: dup_x1
+    1858: putfield      #139                // Field isStraight2:Z
+    1861: putfield      #141                // Field isStraight1:Z
+    1864: aload_0
+    1865: aload_1
+    1866: invokevirtual #181                // Method org/mtr/core/data/Position.getY:()J
+    1869: putfield      #183                // Field yStart:J
+    1872: aload_0
+    1873: aload_3
+    1874: invokevirtual #181                // Method org/mtr/core/data/Position.getY:()J
+    1877: putfield      #185                // Field yEnd:J
+    1880: aload_0
+    1881: aload         5
+    1883: putfield      #187                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+    1886: aload_0
+    1887: dload         6
+    1889: aload_0
+    1890: invokevirtual #190                // Method getMaxVerticalRadius:()D
+    1893: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+    1896: putfield      #195                // Field verticalRadius:D
+    1899: bipush        6
+    1901: newarray       double
+    1903: dup
+    1904: iconst_0
+    1905: ldc2_w        #196                // double 1.7976931348623157E308d
+    1908: dastore
+    1909: dup
+    1910: iconst_1
+    1911: ldc2_w        #196                // double 1.7976931348623157E308d
+    1914: dastore
+    1915: dup
+    1916: iconst_2
+    1917: ldc2_w        #196                // double 1.7976931348623157E308d
+    1920: dastore
+    1921: dup
+    1922: iconst_3
+    1923: ldc2_w        #198                // double -1.7976931348623157E308d
+    1926: dastore
+    1927: dup
+    1928: iconst_4
+    1929: ldc2_w        #198                // double -1.7976931348623157E308d
+    1932: dastore
+    1933: dup
+    1934: iconst_5
+    1935: ldc2_w        #198                // double -1.7976931348623157E308d
+    1938: dastore
+    1939: astore        22
+    1941: aload_0
+    1942: aload         22
+    1944: invokedynamic #217,  0            // InvokeDynamic #0:renderRail:([D)Lorg/mtr/core/data/RailMath$RenderRail;
+    1949: ldc2_w        #218                // double 0.1d
+    1952: fconst_0
+    1953: fconst_0
+    1954: invokevirtual #223                // Method render:(Lorg/mtr/core/data/RailMath$RenderRail;DFF)V
+    1957: aload_0
+    1958: aload         22
+    1960: iconst_0
+    1961: daload
+    1962: aload         22
+    1964: iconst_3
+    1965: daload
+    1966: dcmpl
+    1967: ifle          1974
+    1970: lconst_0
+    1971: goto          1982
+    1974: aload         22
+    1976: iconst_0
+    1977: daload
+    1978: invokestatic  #228                // Method java/lang/Math.floor:(D)D
+    1981: d2l
+    1982: putfield      #230                // Field minX:J
+    1985: aload_0
+    1986: aload         22
+    1988: iconst_1
+    1989: daload
+    1990: aload         22
+    1992: iconst_4
+    1993: daload
+    1994: dcmpl
+    1995: ifle          2002
+    1998: lconst_0
+    1999: goto          2010
+    2002: aload         22
+    2004: iconst_1
+    2005: daload
+    2006: invokestatic  #228                // Method java/lang/Math.floor:(D)D
+    2009: d2l
+    2010: putfield      #232                // Field minY:J
+    2013: aload_0
+    2014: aload         22
+    2016: iconst_2
+    2017: daload
+    2018: aload         22
+    2020: iconst_5
+    2021: daload
+    2022: dcmpl
+    2023: ifle          2030
+    2026: lconst_0
+    2027: goto          2038
+    2030: aload         22
+    2032: iconst_2
+    2033: daload
+    2034: invokestatic  #228                // Method java/lang/Math.floor:(D)D
+    2037: d2l
+    2038: putfield      #234                // Field minZ:J
+    2041: aload_0
+    2042: aload         22
+    2044: iconst_3
+    2045: daload
+    2046: aload         22
+    2048: iconst_0
+    2049: daload
+    2050: dcmpg
+    2051: ifge          2058
+    2054: lconst_0
+    2055: goto          2066
+    2058: aload         22
+    2060: iconst_3
+    2061: daload
+    2062: invokestatic  #237                // Method java/lang/Math.ceil:(D)D
+    2065: d2l
+    2066: putfield      #239                // Field maxX:J
+    2069: aload_0
+    2070: aload         22
+    2072: iconst_4
+    2073: daload
+    2074: aload         22
+    2076: iconst_1
+    2077: daload
+    2078: dcmpg
+    2079: ifge          2086
+    2082: lconst_0
+    2083: goto          2094
+    2086: aload         22
+    2088: iconst_4
+    2089: daload
+    2090: invokestatic  #237                // Method java/lang/Math.ceil:(D)D
+    2093: d2l
+    2094: putfield      #241                // Field maxY:J
+    2097: aload_0
+    2098: aload         22
+    2100: iconst_5
+    2101: daload
+    2102: aload         22
+    2104: iconst_2
+    2105: daload
+    2106: dcmpg
+    2107: ifge          2114
+    2110: lconst_0
+    2111: goto          2122
+    2114: aload         22
+    2116: iconst_5
+    2117: daload
+    2118: invokestatic  #237                // Method java/lang/Math.ceil:(D)D
+    2121: d2l
+    2122: putfield      #243                // Field maxZ:J
+    2125: return
+
+  public org.mtr.core.tool.Vector getPosition(double, boolean);
+    Code:
+       0: aload_0
+       1: getfield      #123                // Field tEnd1:D
+       4: aload_0
+       5: getfield      #121                // Field tStart1:D
+       8: dsub
+       9: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      12: dstore        4
+      14: aload_0
+      15: getfield      #143                // Field tEnd2:D
+      18: aload_0
+      19: getfield      #145                // Field tStart2:D
+      22: dsub
+      23: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      26: dstore        6
+      28: dload_1
+      29: dconst_0
+      30: dload         4
+      32: dload         6
+      34: dadd
+      35: invokestatic  #281                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      38: dstore        8
+      40: iload_3
+      41: ifeq          55
+      44: dload         4
+      46: dload         6
+      48: dadd
+      49: dload         8
+      51: dsub
+      52: goto          57
+      55: dload         8
+      57: dstore        10
+      59: aload_0
+      60: dload         10
+      62: invokespecial #284                // Method getPositionY:(D)D
+      65: dstore        12
+      67: dload         10
+      69: dload         4
+      71: dcmpg
+      72: ifgt          124
+      75: aload_0
+      76: getfield      #110                // Field h1:D
+      79: aload_0
+      80: getfield      #115                // Field k1:D
+      83: aload_0
+      84: getfield      #119                // Field r1:D
+      87: aload_0
+      88: getfield      #135                // Field reverseT1:Z
+      91: ifeq          98
+      94: iconst_m1
+      95: goto          99
+      98: iconst_1
+      99: i2d
+     100: dload         10
+     102: dmul
+     103: aload_0
+     104: getfield      #121                // Field tStart1:D
+     107: dadd
+     108: dconst_0
+     109: aload_0
+     110: getfield      #141                // Field isStraight1:Z
+     113: invokestatic  #288                // Method getPositionXZ:(DDDDDZ)Lorg/mtr/core/tool/Vector;
+     116: dconst_0
+     117: dload         12
+     119: dconst_0
+     120: invokevirtual #291                // Method org/mtr/core/tool/Vector.add:(DDD)Lorg/mtr/core/tool/Vector;
+     123: areturn
+     124: aload_0
+     125: getfield      #133                // Field h2:D
+     128: aload_0
+     129: getfield      #131                // Field k2:D
+     132: aload_0
+     133: getfield      #129                // Field r2:D
+     136: aload_0
+     137: getfield      #137                // Field reverseT2:Z
+     140: ifeq          147
+     143: iconst_m1
+     144: goto          148
+     147: iconst_1
+     148: i2d
+     149: dload         10
+     151: dload         4
+     153: dsub
+     154: dmul
+     155: aload_0
+     156: getfield      #145                // Field tStart2:D
+     159: dadd
+     160: dconst_0
+     161: aload_0
+     162: getfield      #139                // Field isStraight2:Z
+     165: invokestatic  #288                // Method getPositionXZ:(DDDDDZ)Lorg/mtr/core/tool/Vector;
+     168: dconst_0
+     169: dload         12
+     171: dconst_0
+     172: invokevirtual #291                // Method org/mtr/core/tool/Vector.add:(DDD)Lorg/mtr/core/tool/Vector;
+     175: areturn
+
+  public double getLength();
+    Code:
+       0: aload_0
+       1: getfield      #143                // Field tEnd2:D
+       4: aload_0
+       5: getfield      #145                // Field tStart2:D
+       8: dsub
+       9: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      12: aload_0
+      13: getfield      #123                // Field tEnd1:D
+      16: aload_0
+      17: getfield      #121                // Field tStart1:D
+      20: dsub
+      21: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      24: dadd
+      25: dreturn
+
+  public org.mtr.core.data.Rail$Shape getShape();
+    Code:
+       0: aload_0
+       1: getfield      #187                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+       4: areturn
+
+  public org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair getHorizontalRadii();
+    Code:
+       0: new           #303                // class org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair
+       3: dup
+       4: aload_0
+       5: getfield      #141                // Field isStraight1:Z
+       8: ifeq          15
+      11: dconst_0
+      12: goto          22
+      15: aload_0
+      16: getfield      #119                // Field r1:D
+      19: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      22: aload_0
+      23: getfield      #139                // Field isStraight2:Z
+      26: ifeq          33
+      29: dconst_0
+      30: goto          40
+      33: aload_0
+      34: getfield      #129                // Field r2:D
+      37: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      40: invokespecial #306                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair."<init>":(DD)V
+      43: areturn
+
+  public double getVerticalRadius();
+    Code:
+       0: aload_0
+       1: getfield      #195                // Field verticalRadius:D
+       4: dreturn
+
+  public double getMaxVerticalRadius();
+    Code:
+       0: aload_0
+       1: invokevirtual #309                // Method getLength:()D
+       4: dstore_1
+       5: aload_0
+       6: getfield      #185                // Field yEnd:J
+       9: aload_0
+      10: getfield      #183                // Field yStart:J
+      13: lsub
+      14: l2d
+      15: dstore_3
+      16: dload_1
+      17: dload_1
+      18: dmul
+      19: dload_3
+      20: dload_3
+      21: dmul
+      22: dadd
+      23: ldc2_w        #310                // double 100.0d
+      26: dmul
+      27: ldc2_w        #146                // double 4.0d
+      30: dload_3
+      31: dmul
+      32: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      35: ddiv
+      36: invokestatic  #228                // Method java/lang/Math.floor:(D)D
+      39: ldc2_w        #310                // double 100.0d
+      42: ddiv
+      43: dreturn
+
+  public void render(org.mtr.core.data.RailMath$RenderRail, double, float, float);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: getfield      #110                // Field h1:D
+       5: aload_0
+       6: getfield      #115                // Field k1:D
+       9: aload_0
+      10: getfield      #119                // Field r1:D
+      13: aload_0
+      14: getfield      #121                // Field tStart1:D
+      17: aload_0
+      18: getfield      #123                // Field tEnd1:D
+      21: dconst_0
+      22: dload_2
+      23: fload         4
+      25: fload         5
+      27: aload_0
+      28: getfield      #135                // Field reverseT1:Z
+      31: aload_0
+      32: getfield      #141                // Field isStraight1:Z
+      35: aload_1
+      36: invokespecial #321                // Method renderSegment:(DDDDDDDFFZZLorg/mtr/core/data/RailMath$RenderRail;)V
+      39: aload_0
+      40: aload_0
+      41: getfield      #133                // Field h2:D
+      44: aload_0
+      45: getfield      #131                // Field k2:D
+      48: aload_0
+      49: getfield      #129                // Field r2:D
+      52: aload_0
+      53: getfield      #145                // Field tStart2:D
+      56: aload_0
+      57: getfield      #143                // Field tEnd2:D
+      60: aload_0
+      61: getfield      #123                // Field tEnd1:D
+      64: aload_0
+      65: getfield      #121                // Field tStart1:D
+      68: dsub
+      69: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      72: dload_2
+      73: fload         4
+      75: fload         5
+      77: aload_0
+      78: getfield      #137                // Field reverseT2:Z
+      81: aload_0
+      82: getfield      #139                // Field isStraight2:Z
+      85: aload_1
+      86: invokespecial #321                // Method renderSegment:(DDDDDDDFFZZLorg/mtr/core/data/RailMath$RenderRail;)V
+      89: return
+
+  boolean isValid();
+    Code:
+       0: aload_0
+       1: getfield      #110                // Field h1:D
+       4: dconst_0
+       5: dcmpl
+       6: ifne          90
+       9: aload_0
+      10: getfield      #115                // Field k1:D
+      13: dconst_0
+      14: dcmpl
+      15: ifne          90
+      18: aload_0
+      19: getfield      #133                // Field h2:D
+      22: dconst_0
+      23: dcmpl
+      24: ifne          90
+      27: aload_0
+      28: getfield      #131                // Field k2:D
+      31: dconst_0
+      32: dcmpl
+      33: ifne          90
+      36: aload_0
+      37: getfield      #119                // Field r1:D
+      40: dconst_0
+      41: dcmpl
+      42: ifne          90
+      45: aload_0
+      46: getfield      #129                // Field r2:D
+      49: dconst_0
+      50: dcmpl
+      51: ifne          90
+      54: aload_0
+      55: getfield      #121                // Field tStart1:D
+      58: dconst_0
+      59: dcmpl
+      60: ifne          90
+      63: aload_0
+      64: getfield      #145                // Field tStart2:D
+      67: dconst_0
+      68: dcmpl
+      69: ifne          90
+      72: aload_0
+      73: getfield      #123                // Field tEnd1:D
+      76: dconst_0
+      77: dcmpl
+      78: ifne          90
+      81: aload_0
+      82: getfield      #143                // Field tEnd2:D
+      85: dconst_0
+      86: dcmpl
+      87: ifeq          94
+      90: iconst_1
+      91: goto          95
+      94: iconst_0
+      95: ireturn
+
+  private void renderSegment(double, double, double, double, double, double, double, float, float, boolean, boolean, org.mtr.core.data.RailMath$RenderRail);
+    Code:
+       0: dload         9
+       2: dload         7
+       4: dsub
+       5: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+       8: dstore        20
+      10: dload         20
+      12: ldc2_w        #116                // double 0.5d
+      15: dcmpg
+      16: iflt          26
+      19: dload         13
+      21: dconst_0
+      22: dcmpg
+      23: ifgt          32
+      26: ldc2_w        #116                // double 0.5d
+      29: goto          44
+      32: dload         20
+      34: dload         20
+      36: invokestatic  #337                // Method java/lang/Math.round:(D)J
+      39: l2d
+      40: ddiv
+      41: dload         13
+      43: dmul
+      44: dstore        22
+      46: aconst_null
+      47: astore        24
+      49: aconst_null
+      50: astore        25
+      52: dconst_0
+      53: dstore        26
+      55: dconst_0
+      56: dstore        28
+      58: dload         28
+      60: dload         20
+      62: dload         22
+      64: dadd
+      65: ldc2_w        #218                // double 0.1d
+      68: dsub
+      69: dcmpg
+      70: ifge          226
+      73: iload         17
+      75: ifeq          82
+      78: iconst_m1
+      79: goto          83
+      82: iconst_1
+      83: i2d
+      84: dload         28
+      86: dmul
+      87: dload         7
+      89: dadd
+      90: dstore        30
+      92: dload_1
+      93: dload_3
+      94: dload         5
+      96: dload         30
+      98: fload         16
+     100: f2d
+     101: iload         18
+     103: invokestatic  #288                // Method getPositionXZ:(DDDDDZ)Lorg/mtr/core/tool/Vector;
+     106: astore        32
+     108: fload         16
+     110: fload         15
+     112: fcmpl
+     113: ifne          121
+     116: aload         32
+     118: goto          135
+     121: dload_1
+     122: dload_3
+     123: dload         5
+     125: dload         30
+     127: fload         15
+     129: f2d
+     130: iload         18
+     132: invokestatic  #288                // Method getPositionXZ:(DDDDDZ)Lorg/mtr/core/tool/Vector;
+     135: astore        33
+     137: aload_0
+     138: dload         28
+     140: dload         11
+     142: dadd
+     143: invokespecial #284                // Method getPositionY:(D)D
+     146: dstore        34
+     148: aload         24
+     150: ifnull        204
+     153: aload         19
+     155: aload         24
+     157: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     160: aload         24
+     162: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     165: aload         25
+     167: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     170: aload         25
+     172: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     175: aload         32
+     177: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     180: aload         32
+     182: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     185: aload         33
+     187: invokevirtual #95                 // Method org/mtr/core/tool/Vector.x:()D
+     190: aload         33
+     192: invokevirtual #92                 // Method org/mtr/core/tool/Vector.z:()D
+     195: dload         26
+     197: dload         34
+     199: invokeinterface #339,  21         // InterfaceMethod org/mtr/core/data/RailMath$RenderRail.renderRail:(DDDDDDDDDD)V
+     204: aload         33
+     206: astore        24
+     208: aload         32
+     210: astore        25
+     212: dload         34
+     214: dstore        26
+     216: dload         28
+     218: dload         22
+     220: dadd
+     221: dstore        28
+     223: goto          58
+     226: return
+
+  private double getPositionY(double);
+    Code:
+       0: aload_0
+       1: getfield      #183                // Field yStart:J
+       4: aload_0
+       5: getfield      #185                // Field yEnd:J
+       8: lcmp
+       9: ifne          18
+      12: aload_0
+      13: getfield      #183                // Field yStart:J
+      16: l2d
+      17: dreturn
+      18: aload_0
+      19: invokevirtual #309                // Method getLength:()D
+      22: dstore_3
+      23: getstatic     #352                // Field org/mtr/core/data/RailMath$1.$SwitchMap$org$mtr$core$data$Rail$Shape:[I
+      26: aload_0
+      27: getfield      #187                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      30: invokevirtual #356                // Method org/mtr/core/data/Rail$Shape.ordinal:()I
+      33: iaload
+      34: lookupswitch  { // 2
+
+                     1: 60
+
+                     2: 277
+               default: 394
+          }
+      60: aload_0
+      61: getfield      #195                // Field verticalRadius:D
+      64: dconst_0
+      65: dcmpg
+      66: ifgt          90
+      69: dload_1
+      70: dload_3
+      71: ddiv
+      72: aload_0
+      73: getfield      #185                // Field yEnd:J
+      76: aload_0
+      77: getfield      #183                // Field yStart:J
+      80: lsub
+      81: l2d
+      82: dmul
+      83: aload_0
+      84: getfield      #183                // Field yStart:J
+      87: l2d
+      88: dadd
+      89: dreturn
+      90: aload_0
+      91: invokespecial #359                // Method getVTheta:()D
+      94: dstore        5
+      96: dload         5
+      98: invokestatic  #361                // Method java/lang/Math.sin:(D)D
+     101: aload_0
+     102: getfield      #195                // Field verticalRadius:D
+     105: dmul
+     106: dstore        7
+     108: dconst_1
+     109: dload         5
+     111: invokestatic  #363                // Method java/lang/Math.cos:(D)D
+     114: dsub
+     115: aload_0
+     116: getfield      #195                // Field verticalRadius:D
+     119: dmul
+     120: dstore        9
+     122: aload_0
+     123: getfield      #183                // Field yStart:J
+     126: aload_0
+     127: getfield      #185                // Field yEnd:J
+     130: lcmp
+     131: ifge          138
+     134: iconst_1
+     135: goto          139
+     138: iconst_m1
+     139: istore        11
+     141: dload_1
+     142: dload         7
+     144: dcmpg
+     145: ifge          180
+     148: iload         11
+     150: i2d
+     151: aload_0
+     152: getfield      #195                // Field verticalRadius:D
+     155: aload_0
+     156: getfield      #195                // Field verticalRadius:D
+     159: aload_0
+     160: getfield      #195                // Field verticalRadius:D
+     163: dmul
+     164: dload_1
+     165: dload_1
+     166: dmul
+     167: dsub
+     168: invokestatic  #366                // Method java/lang/Math.sqrt:(D)D
+     171: dsub
+     172: dmul
+     173: aload_0
+     174: getfield      #183                // Field yStart:J
+     177: l2d
+     178: dadd
+     179: dreturn
+     180: dload_1
+     181: dload_3
+     182: dload         7
+     184: dsub
+     185: dcmpl
+     186: ifle          229
+     189: dload_3
+     190: dload_1
+     191: dsub
+     192: dstore        12
+     194: iload         11
+     196: ineg
+     197: i2d
+     198: aload_0
+     199: getfield      #195                // Field verticalRadius:D
+     202: aload_0
+     203: getfield      #195                // Field verticalRadius:D
+     206: aload_0
+     207: getfield      #195                // Field verticalRadius:D
+     210: dmul
+     211: dload         12
+     213: dload         12
+     215: dmul
+     216: dsub
+     217: invokestatic  #366                // Method java/lang/Math.sqrt:(D)D
+     220: dsub
+     221: dmul
+     222: aload_0
+     223: getfield      #185                // Field yEnd:J
+     226: l2d
+     227: dadd
+     228: dreturn
+     229: iload         11
+     231: i2d
+     232: dload_1
+     233: dload         7
+     235: dsub
+     236: dload_3
+     237: ldc2_w        #152                // double 2.0d
+     240: dload         7
+     242: dmul
+     243: dsub
+     244: ddiv
+     245: aload_0
+     246: getfield      #185                // Field yEnd:J
+     249: aload_0
+     250: getfield      #183                // Field yStart:J
+     253: lsub
+     254: invokestatic  #369                // Method java/lang/Math.abs:(J)J
+     257: l2d
+     258: ldc2_w        #152                // double 2.0d
+     261: dload         9
+     263: dmul
+     264: dsub
+     265: dmul
+     266: dload         9
+     268: dadd
+     269: dmul
+     270: aload_0
+     271: getfield      #183                // Field yStart:J
+     274: l2d
+     275: dadd
+     276: dreturn
+     277: dload_1
+     278: ldc2_w        #116                // double 0.5d
+     281: dcmpg
+     282: ifge          291
+     285: aload_0
+     286: getfield      #183                // Field yStart:J
+     289: l2d
+     290: dreturn
+     291: dload_1
+     292: dload_3
+     293: ldc2_w        #116                // double 0.5d
+     296: dsub
+     297: dcmpl
+     298: ifle          307
+     301: aload_0
+     302: getfield      #185                // Field yEnd:J
+     305: l2d
+     306: dreturn
+     307: dload_1
+     308: ldc2_w        #116                // double 0.5d
+     311: dsub
+     312: dstore        5
+     314: dload_3
+     315: dconst_1
+     316: dsub
+     317: dstore        7
+     319: aload_0
+     320: getfield      #183                // Field yStart:J
+     323: l2d
+     324: aload_0
+     325: getfield      #185                // Field yEnd:J
+     328: aload_0
+     329: getfield      #183                // Field yStart:J
+     332: lsub
+     333: l2d
+     334: dload         5
+     336: dmul
+     337: dload         7
+     339: ddiv
+     340: dadd
+     341: dstore        9
+     343: dload         7
+     345: dload         7
+     347: dmul
+     348: ldc2_w        #146                // double 4.0d
+     351: ddiv
+     352: ldc2_w        #370                // double 1000.0d
+     355: ddiv
+     356: dstore        11
+     358: dload         9
+     360: dload         11
+     362: ldc2_w        #372                // double 8.0d
+     365: dcmpl
+     366: ifle          378
+     369: ldc2_w        #372                // double 8.0d
+     372: dload         11
+     374: ddiv
+     375: goto          379
+     378: dconst_1
+     379: dload         5
+     381: dload         7
+     383: dsub
+     384: dmul
+     385: dload         5
+     387: dmul
+     388: ldc2_w        #370                // double 1000.0d
+     391: ddiv
+     392: dadd
+     393: dreturn
+     394: dload_3
+     395: ldc2_w        #152                // double 2.0d
+     398: ddiv
+     399: dstore        13
+     401: dload_1
+     402: dload         13
+     404: dcmpg
+     405: ifge          437
+     408: aload_0
+     409: getfield      #185                // Field yEnd:J
+     412: aload_0
+     413: getfield      #183                // Field yStart:J
+     416: lsub
+     417: l2d
+     418: ldc2_w        #152                // double 2.0d
+     421: ddiv
+     422: dstore        15
+     424: aload_0
+     425: getfield      #183                // Field yStart:J
+     428: l2d
+     429: dstore        17
+     431: dload_1
+     432: dstore        19
+     434: goto          465
+     437: aload_0
+     438: getfield      #183                // Field yStart:J
+     441: aload_0
+     442: getfield      #185                // Field yEnd:J
+     445: lsub
+     446: l2d
+     447: ldc2_w        #152                // double 2.0d
+     450: ddiv
+     451: dstore        15
+     453: aload_0
+     454: getfield      #185                // Field yEnd:J
+     457: l2d
+     458: dstore        17
+     460: dload_3
+     461: dload_1
+     462: dsub
+     463: dstore        19
+     465: dload         15
+     467: dload         19
+     469: dmul
+     470: dload         19
+     472: dmul
+     473: dload         13
+     475: dload         13
+     477: dmul
+     478: ddiv
+     479: dload         17
+     481: dadd
+     482: dreturn
+
+  private double getVTheta();
+    Code:
+       0: aload_0
+       1: getfield      #185                // Field yEnd:J
+       4: aload_0
+       5: getfield      #183                // Field yStart:J
+       8: lsub
+       9: invokestatic  #369                // Method java/lang/Math.abs:(J)J
+      12: l2d
+      13: dstore_1
+      14: aload_0
+      15: invokevirtual #309                // Method getLength:()D
+      18: dstore_3
+      19: ldc2_w        #152                // double 2.0d
+      22: dload_1
+      23: dload_1
+      24: dmul
+      25: ldc2_w        #146                // double 4.0d
+      28: aload_0
+      29: getfield      #195                // Field verticalRadius:D
+      32: dmul
+      33: dload_1
+      34: dmul
+      35: dsub
+      36: dload_3
+      37: dload_3
+      38: dmul
+      39: dadd
+      40: invokestatic  #366                // Method java/lang/Math.sqrt:(D)D
+      43: dload_3
+      44: dsub
+      45: dload_1
+      46: ldc2_w        #146                // double 4.0d
+      49: aload_0
+      50: getfield      #195                // Field verticalRadius:D
+      53: dmul
+      54: dsub
+      55: invokestatic  #166                // Method java/lang/Math.atan2:(DD)D
+      58: dmul
+      59: dreturn
+
+  private static org.mtr.core.tool.Vector getPositionXZ(double, double, double, double, double, boolean);
+    Code:
+       0: iload         10
+       2: ifeq          72
+       5: new           #76                 // class org/mtr/core/tool/Vector
+       8: dup
+       9: dload_0
+      10: dload         6
+      12: dmul
+      13: dload_2
+      14: dload_0
+      15: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      18: ldc2_w        #116                // double 0.5d
+      21: dcmpl
+      22: iflt          40
+      25: dload_2
+      26: invokestatic  #105                // Method java/lang/Math.abs:(D)D
+      29: ldc2_w        #116                // double 0.5d
+      32: dcmpl
+      33: iflt          40
+      36: dconst_0
+      37: goto          42
+      40: dload         4
+      42: dload         8
+      44: dadd
+      45: dmul
+      46: dadd
+      47: ldc2_w        #116                // double 0.5d
+      50: dadd
+      51: dconst_0
+      52: dload_2
+      53: dload         6
+      55: dmul
+      56: dload_0
+      57: dload         4
+      59: dload         8
+      61: dsub
+      62: dmul
+      63: dadd
+      64: ldc2_w        #116                // double 0.5d
+      67: dadd
+      68: invokespecial #79                 // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+      71: areturn
+      72: new           #76                 // class org/mtr/core/tool/Vector
+      75: dup
+      76: dload_0
+      77: dload         4
+      79: dload         8
+      81: dadd
+      82: dload         6
+      84: dload         4
+      86: ddiv
+      87: invokestatic  #363                // Method java/lang/Math.cos:(D)D
+      90: dmul
+      91: dadd
+      92: ldc2_w        #116                // double 0.5d
+      95: dadd
+      96: dconst_0
+      97: dload_2
+      98: dload         4
+     100: dload         8
+     102: dadd
+     103: dload         6
+     105: dload         4
+     107: ddiv
+     108: invokestatic  #361                // Method java/lang/Math.sin:(D)D
+     111: dmul
+     112: dadd
+     113: ldc2_w        #116                // double 0.5d
+     116: dadd
+     117: invokespecial #79                 // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+     120: areturn
+
+  private static double getTBounds(double, double, double, double, double);
+    Code:
+       0: dload         4
+       2: dload         6
+       4: dsub
+       5: dload_0
+       6: dload_2
+       7: dsub
+       8: invokestatic  #166                // Method java/lang/Math.atan2:(DD)D
+      11: dload         8
+      13: dmul
+      14: dreturn
+
+  private static double getTBounds(double, double, double, double, double, double, boolean);
+    Code:
+       0: dload_0
+       1: dload_2
+       2: dload         4
+       4: dload         6
+       6: dload         8
+       8: invokestatic  #151                // Method getTBounds:(DDDDD)D
+      11: dstore        13
+      13: dload         13
+      15: dload         10
+      17: dcmpg
+      18: ifge          36
+      21: iload         12
+      23: ifne          36
+      26: dload         13
+      28: ldc2_w        #387                // double 6.283185307179586d
+      31: dload         8
+      33: dmul
+      34: dadd
+      35: dreturn
+      36: dload         13
+      38: dload         10
+      40: dcmpl
+      41: ifle          59
+      44: iload         12
+      46: ifeq          59
+      49: dload         13
+      51: ldc2_w        #387                // double 6.283185307179586d
+      54: dload         8
+      56: dmul
+      57: dsub
+      58: dreturn
+      59: dload         13
+      61: dreturn
+
+  private static void lambda$new$0(double[], double, double, double, double, double, double, double, double, double, double);
+    Code:
+       0: aload_0
+       1: iconst_0
+       2: dload_1
+       3: aload_0
+       4: iconst_0
+       5: daload
+       6: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+       9: dastore
+      10: aload_0
+      11: iconst_0
+      12: dload         5
+      14: aload_0
+      15: iconst_0
+      16: daload
+      17: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      20: dastore
+      21: aload_0
+      22: iconst_0
+      23: dload         9
+      25: aload_0
+      26: iconst_0
+      27: daload
+      28: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      31: dastore
+      32: aload_0
+      33: iconst_0
+      34: dload         13
+      36: aload_0
+      37: iconst_0
+      38: daload
+      39: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      42: dastore
+      43: aload_0
+      44: iconst_1
+      45: dload         17
+      47: aload_0
+      48: iconst_1
+      49: daload
+      50: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      53: dastore
+      54: aload_0
+      55: iconst_1
+      56: dload         19
+      58: aload_0
+      59: iconst_1
+      60: daload
+      61: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      64: dastore
+      65: aload_0
+      66: iconst_2
+      67: dload_3
+      68: aload_0
+      69: iconst_2
+      70: daload
+      71: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      74: dastore
+      75: aload_0
+      76: iconst_2
+      77: dload         7
+      79: aload_0
+      80: iconst_2
+      81: daload
+      82: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      85: dastore
+      86: aload_0
+      87: iconst_2
+      88: dload         11
+      90: aload_0
+      91: iconst_2
+      92: daload
+      93: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+      96: dastore
+      97: aload_0
+      98: iconst_2
+      99: dload         15
+     101: aload_0
+     102: iconst_2
+     103: daload
+     104: invokestatic  #193                // Method java/lang/Math.min:(DD)D
+     107: dastore
+     108: aload_0
+     109: iconst_3
+     110: dload_1
+     111: aload_0
+     112: iconst_3
+     113: daload
+     114: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     117: dastore
+     118: aload_0
+     119: iconst_3
+     120: dload         5
+     122: aload_0
+     123: iconst_3
+     124: daload
+     125: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     128: dastore
+     129: aload_0
+     130: iconst_3
+     131: dload         9
+     133: aload_0
+     134: iconst_3
+     135: daload
+     136: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     139: dastore
+     140: aload_0
+     141: iconst_3
+     142: dload         13
+     144: aload_0
+     145: iconst_3
+     146: daload
+     147: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     150: dastore
+     151: aload_0
+     152: iconst_4
+     153: dload         17
+     155: aload_0
+     156: iconst_4
+     157: daload
+     158: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     161: dastore
+     162: aload_0
+     163: iconst_4
+     164: dload         19
+     166: aload_0
+     167: iconst_4
+     168: daload
+     169: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     172: dastore
+     173: aload_0
+     174: iconst_5
+     175: dload_3
+     176: aload_0
+     177: iconst_5
+     178: daload
+     179: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     182: dastore
+     183: aload_0
+     184: iconst_5
+     185: dload         7
+     187: aload_0
+     188: iconst_5
+     189: daload
+     190: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     193: dastore
+     194: aload_0
+     195: iconst_5
+     196: dload         11
+     198: aload_0
+     199: iconst_5
+     200: daload
+     201: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     204: dastore
+     205: aload_0
+     206: iconst_5
+     207: dload         15
+     209: aload_0
+     210: iconst_5
+     211: daload
+     212: invokestatic  #401                // Method java/lang/Math.max:(DD)D
+     215: dastore
+     216: return
+}

@@ -1,0 +1,91 @@
+﻿Compiled from "VehiclePosition.java"
+public class org.mtr.core.data.VehiclePosition {
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.core.data.VehiclePosition$BlockedSegment> blockedSegments;
+
+  public org.mtr.core.data.VehiclePosition();
+    Code:
+       0: aload_0
+       1: invokespecial #17                 // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: new           #19                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+       8: dup
+       9: invokespecial #20                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+      12: putfield      #22                 // Field blockedSegments:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      15: return
+
+  public void addSegment(double, double, long);
+    Code:
+       0: aload_0
+       1: getfield      #22                 // Field blockedSegments:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+       4: new           #9                  // class org/mtr/core/data/VehiclePosition$BlockedSegment
+       7: dup
+       8: dload_1
+       9: dload_3
+      10: lload         5
+      12: aconst_null
+      13: invokespecial #32                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment."<init>":(DDJLorg/mtr/core/data/VehiclePosition$1;)V
+      16: invokevirtual #36                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+      19: pop
+      20: return
+
+  public double getClosestOverlap(double, double, boolean, long);
+    Code:
+       0: ldc2_w        #42                 // double 1.7976931348623157E308d
+       3: dstore        8
+       5: iconst_0
+       6: istore        10
+       8: aload_0
+       9: getfield      #22                 // Field blockedSegments:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      12: invokevirtual #47                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.iterator:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectListIterator;
+      15: astore        11
+      17: aload         11
+      19: invokeinterface #53,  1           // InterfaceMethod java/util/Iterator.hasNext:()Z
+      24: ifeq          118
+      27: aload         11
+      29: invokeinterface #57,  1           // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+      34: checkcast     #9                  // class org/mtr/core/data/VehiclePosition$BlockedSegment
+      37: astore        12
+      39: lload         6
+      41: aload         12
+      43: invokestatic  #61                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment.access$100:(Lorg/mtr/core/data/VehiclePosition$BlockedSegment;)J
+      46: lcmp
+      47: ifeq          115
+      50: dload_1
+      51: dload_3
+      52: aload         12
+      54: invokestatic  #65                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment.access$200:(Lorg/mtr/core/data/VehiclePosition$BlockedSegment;)D
+      57: aload         12
+      59: invokestatic  #68                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment.access$300:(Lorg/mtr/core/data/VehiclePosition$BlockedSegment;)D
+      62: invokestatic  #74                 // InterfaceMethod org/mtr/core/tool/Utilities.isIntersecting:(DDDD)Z
+      65: ifeq          115
+      68: iload         5
+      70: ifeq          94
+      73: dload         8
+      75: dconst_0
+      76: dload_3
+      77: aload         12
+      79: invokestatic  #68                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment.access$300:(Lorg/mtr/core/data/VehiclePosition$BlockedSegment;)D
+      82: dsub
+      83: invokestatic  #80                 // Method java/lang/Math.max:(DD)D
+      86: invokestatic  #83                 // Method java/lang/Math.min:(DD)D
+      89: dstore        8
+      91: goto          112
+      94: dload         8
+      96: dconst_0
+      97: aload         12
+      99: invokestatic  #65                 // Method org/mtr/core/data/VehiclePosition$BlockedSegment.access$200:(Lorg/mtr/core/data/VehiclePosition$BlockedSegment;)D
+     102: dload_1
+     103: dsub
+     104: invokestatic  #80                 // Method java/lang/Math.max:(DD)D
+     107: invokestatic  #83                 // Method java/lang/Math.min:(DD)D
+     110: dstore        8
+     112: iconst_1
+     113: istore        10
+     115: goto          17
+     118: iload         10
+     120: ifeq          128
+     123: dload         8
+     125: goto          131
+     128: ldc2_w        #84                 // double -1.0d
+     131: dreturn
+}

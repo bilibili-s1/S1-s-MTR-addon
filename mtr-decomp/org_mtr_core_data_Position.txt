@@ -1,0 +1,303 @@
+﻿Compiled from "Position.java"
+public class org.mtr.core.data.Position extends org.mtr.core.generated.data.PositionSchema implements java.lang.Comparable<org.mtr.core.data.Position> {
+  public org.mtr.core.data.Position(long, long, long);
+    Code:
+       0: aload_0
+       1: lload_1
+       2: lload_3
+       3: lload         5
+       5: invokespecial #15                 // Method org/mtr/core/generated/data/PositionSchema."<init>":(JJJ)V
+       8: return
+
+  public org.mtr.core.data.Position(org.mtr.core.serializer.ReaderBase);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokespecial #22                 // Method org/mtr/core/generated/data/PositionSchema."<init>":(Lorg/mtr/core/serializer/ReaderBase;)V
+       5: aload_0
+       6: aload_1
+       7: invokevirtual #25                 // Method updateData:(Lorg/mtr/core/serializer/ReaderBase;)V
+      10: return
+
+  public org.mtr.core.data.Position(org.mtr.core.tool.Vector);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #33                 // Method org/mtr/core/tool/Vector.x:()D
+       5: invokestatic  #39                 // Method java/lang/Math.floor:(D)D
+       8: d2l
+       9: aload_1
+      10: invokevirtual #41                 // Method org/mtr/core/tool/Vector.y:()D
+      13: invokestatic  #39                 // Method java/lang/Math.floor:(D)D
+      16: d2l
+      17: aload_1
+      18: invokevirtual #43                 // Method org/mtr/core/tool/Vector.z:()D
+      21: invokestatic  #39                 // Method java/lang/Math.floor:(D)D
+      24: d2l
+      25: invokespecial #44                 // Method "<init>":(JJJ)V
+      28: return
+
+  public long getX();
+    Code:
+       0: aload_0
+       1: getfield      #49                 // Field x:J
+       4: lreturn
+
+  public long getY();
+    Code:
+       0: aload_0
+       1: getfield      #52                 // Field y:J
+       4: lreturn
+
+  public long getZ();
+    Code:
+       0: aload_0
+       1: getfield      #55                 // Field z:J
+       4: lreturn
+
+  public org.mtr.core.data.Position offset(long, long, long);
+    Code:
+       0: lload_1
+       1: lconst_0
+       2: lcmp
+       3: ifne          23
+       6: lload_3
+       7: lconst_0
+       8: lcmp
+       9: ifne          23
+      12: lload         5
+      14: lconst_0
+      15: lcmp
+      16: ifne          23
+      19: aload_0
+      20: goto          49
+      23: new           #2                  // class org/mtr/core/data/Position
+      26: dup
+      27: aload_0
+      28: getfield      #49                 // Field x:J
+      31: lload_1
+      32: ladd
+      33: aload_0
+      34: getfield      #52                 // Field y:J
+      37: lload_3
+      38: ladd
+      39: aload_0
+      40: getfield      #55                 // Field z:J
+      43: lload         5
+      45: ladd
+      46: invokespecial #44                 // Method "<init>":(JJJ)V
+      49: areturn
+
+  public org.mtr.core.data.Position offset(org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: getfield      #49                 // Field x:J
+       5: aload_1
+       6: getfield      #52                 // Field y:J
+       9: aload_1
+      10: getfield      #55                 // Field z:J
+      13: invokevirtual #64                 // Method offset:(JJJ)Lorg/mtr/core/data/Position;
+      16: areturn
+
+  public long manhattanDistance(org.mtr.core.data.Position);
+    Code:
+       0: aload_1
+       1: getfield      #49                 // Field x:J
+       4: aload_0
+       5: getfield      #49                 // Field x:J
+       8: lsub
+       9: invokestatic  #70                 // Method java/lang/Math.abs:(J)J
+      12: aload_1
+      13: getfield      #52                 // Field y:J
+      16: aload_0
+      17: getfield      #52                 // Field y:J
+      20: lsub
+      21: invokestatic  #70                 // Method java/lang/Math.abs:(J)J
+      24: ladd
+      25: aload_1
+      26: getfield      #55                 // Field z:J
+      29: aload_0
+      30: getfield      #55                 // Field z:J
+      33: lsub
+      34: invokestatic  #70                 // Method java/lang/Math.abs:(J)J
+      37: ladd
+      38: lreturn
+
+  public static org.mtr.core.data.Position getMin(org.mtr.core.data.Position, org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aload_1
+       5: areturn
+       6: aload_1
+       7: ifnonnull     12
+      10: aload_0
+      11: areturn
+      12: new           #2                  // class org/mtr/core/data/Position
+      15: dup
+      16: aload_0
+      17: getfield      #49                 // Field x:J
+      20: aload_1
+      21: getfield      #49                 // Field x:J
+      24: invokestatic  #79                 // Method java/lang/Math.min:(JJ)J
+      27: aload_0
+      28: getfield      #52                 // Field y:J
+      31: aload_1
+      32: getfield      #52                 // Field y:J
+      35: invokestatic  #79                 // Method java/lang/Math.min:(JJ)J
+      38: aload_0
+      39: getfield      #55                 // Field z:J
+      42: aload_1
+      43: getfield      #55                 // Field z:J
+      46: invokestatic  #79                 // Method java/lang/Math.min:(JJ)J
+      49: invokespecial #44                 // Method "<init>":(JJJ)V
+      52: areturn
+
+  public static org.mtr.core.data.Position getMax(org.mtr.core.data.Position, org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: ifnonnull     6
+       4: aload_1
+       5: areturn
+       6: aload_1
+       7: ifnonnull     12
+      10: aload_0
+      11: areturn
+      12: new           #2                  // class org/mtr/core/data/Position
+      15: dup
+      16: aload_0
+      17: getfield      #49                 // Field x:J
+      20: aload_1
+      21: getfield      #49                 // Field x:J
+      24: invokestatic  #83                 // Method java/lang/Math.max:(JJ)J
+      27: aload_0
+      28: getfield      #52                 // Field y:J
+      31: aload_1
+      32: getfield      #52                 // Field y:J
+      35: invokestatic  #83                 // Method java/lang/Math.max:(JJ)J
+      38: aload_0
+      39: getfield      #55                 // Field z:J
+      42: aload_1
+      43: getfield      #55                 // Field z:J
+      46: invokestatic  #83                 // Method java/lang/Math.max:(JJ)J
+      49: invokespecial #44                 // Method "<init>":(JJJ)V
+      52: areturn
+
+  public boolean equals(java.lang.Object);
+    Code:
+       0: aload_1
+       1: instanceof    #2                  // class org/mtr/core/data/Position
+       4: ifeq          58
+       7: aload_0
+       8: getfield      #49                 // Field x:J
+      11: aload_1
+      12: checkcast     #2                  // class org/mtr/core/data/Position
+      15: getfield      #49                 // Field x:J
+      18: lcmp
+      19: ifne          56
+      22: aload_0
+      23: getfield      #52                 // Field y:J
+      26: aload_1
+      27: checkcast     #2                  // class org/mtr/core/data/Position
+      30: getfield      #52                 // Field y:J
+      33: lcmp
+      34: ifne          56
+      37: aload_0
+      38: getfield      #55                 // Field z:J
+      41: aload_1
+      42: checkcast     #2                  // class org/mtr/core/data/Position
+      45: getfield      #55                 // Field z:J
+      48: lcmp
+      49: ifne          56
+      52: iconst_1
+      53: goto          57
+      56: iconst_0
+      57: ireturn
+      58: aload_0
+      59: aload_1
+      60: invokespecial #90                 // Method java/lang/Object.equals:(Ljava/lang/Object;)Z
+      63: ireturn
+
+  public int hashCode();
+    Code:
+       0: aload_0
+       1: getfield      #49                 // Field x:J
+       4: ldc2_w        #94                 // long 4095l
+       7: land
+       8: bipush        20
+      10: lshl
+      11: aload_0
+      12: getfield      #52                 // Field y:J
+      15: ldc2_w        #96                 // long 255l
+      18: land
+      19: bipush        12
+      21: lshl
+      22: ladd
+      23: aload_0
+      24: getfield      #55                 // Field z:J
+      27: ldc2_w        #94                 // long 4095l
+      30: land
+      31: ladd
+      32: l2i
+      33: ireturn
+
+  public int compareTo(org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #100                // Method equals:(Ljava/lang/Object;)Z
+       5: ifeq          10
+       8: iconst_0
+       9: ireturn
+      10: aload_0
+      11: getfield      #49                 // Field x:J
+      14: aload_1
+      15: getfield      #49                 // Field x:J
+      18: lcmp
+      19: ifle          26
+      22: iconst_1
+      23: goto          91
+      26: aload_0
+      27: getfield      #49                 // Field x:J
+      30: aload_1
+      31: getfield      #49                 // Field x:J
+      34: lcmp
+      35: ifge          42
+      38: iconst_m1
+      39: goto          91
+      42: aload_0
+      43: getfield      #52                 // Field y:J
+      46: aload_1
+      47: getfield      #52                 // Field y:J
+      50: lcmp
+      51: ifle          58
+      54: iconst_1
+      55: goto          91
+      58: aload_0
+      59: getfield      #52                 // Field y:J
+      62: aload_1
+      63: getfield      #52                 // Field y:J
+      66: lcmp
+      67: ifge          74
+      70: iconst_m1
+      71: goto          91
+      74: aload_0
+      75: getfield      #55                 // Field z:J
+      78: aload_1
+      79: getfield      #55                 // Field z:J
+      82: lcmp
+      83: ifle          90
+      86: iconst_1
+      87: goto          91
+      90: iconst_m1
+      91: ireturn
+
+  public int compareTo(java.lang.Object);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: checkcast     #2                  // class org/mtr/core/data/Position
+       5: invokevirtual #103                // Method compareTo:(Lorg/mtr/core/data/Position;)I
+       8: ireturn
+}

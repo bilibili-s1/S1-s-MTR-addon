@@ -1,0 +1,56 @@
+﻿Compiled from "ItemBrush.java"
+public class org.mtr.mod.item.ItemBrush extends org.mtr.mapping.mapper.ItemExtension {
+  public org.mtr.mod.item.ItemBrush(org.mtr.mapping.holder.ItemSettings);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: iconst_1
+       3: invokevirtual #19                 // Method org/mtr/mapping/holder/ItemSettings.maxCount:(I)Lorg/mtr/mapping/holder/ItemSettings;
+       6: invokespecial #21                 // Method org/mtr/mapping/mapper/ItemExtension."<init>":(Lorg/mtr/mapping/holder/ItemSettings;)V
+       9: return
+
+  public org.mtr.mapping.holder.ActionResult useOnBlock2(org.mtr.mapping.holder.ItemUsageContext);
+    Code:
+       0: aload_1
+       1: invokevirtual #34                 // Method org/mtr/mapping/holder/ItemUsageContext.getWorld:()Lorg/mtr/mapping/holder/World;
+       4: astore_2
+       5: aload_1
+       6: invokevirtual #38                 // Method org/mtr/mapping/holder/ItemUsageContext.getPlayer:()Lorg/mtr/mapping/holder/PlayerEntity;
+       9: astore_3
+      10: aload_2
+      11: invokevirtual #44                 // Method org/mtr/mapping/holder/World.isClient:()Z
+      14: ifeq          87
+      17: aload_3
+      18: ifnull        87
+      21: aload_2
+      22: aload_1
+      23: invokevirtual #48                 // Method org/mtr/mapping/holder/ItemUsageContext.getBlockPos:()Lorg/mtr/mapping/holder/BlockPos;
+      26: invokevirtual #52                 // Method org/mtr/mapping/holder/World.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+      29: invokevirtual #58                 // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      32: getfield      #64                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      35: instanceof    #66                 // class org/mtr/mod/block/BlockNode
+      38: ifeq          87
+      41: invokestatic  #72                 // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      44: iconst_0
+      45: invokevirtual #76                 // Method org/mtr/mod/client/MinecraftClientData.getFacingRailAndBlockPos:(Z)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+      48: astore        4
+      50: aload         4
+      52: ifnull        87
+      55: getstatic     #80                 // Field org/mtr/mod/packet/PacketUpdateLastRailStyles.CLIENT_CACHE:Lorg/mtr/mod/packet/PacketUpdateLastRailStyles$Cache;
+      58: aload_3
+      59: invokevirtual #86                 // Method org/mtr/mapping/holder/PlayerEntity.getUuid:()Ljava/util/UUID;
+      62: aload         4
+      64: invokevirtual #92                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.left:()Ljava/lang/Object;
+      67: checkcast     #94                 // class org/mtr/core/data/Rail
+      70: iconst_1
+      71: invokevirtual #98                 // Method org/mtr/mod/packet/PacketUpdateLastRailStyles$Cache.canApplyStylesToRail:(Ljava/util/UUID;Lorg/mtr/core/data/Rail;Z)Z
+      74: ifeq          83
+      77: getstatic     #104                // Field org/mtr/mapping/holder/ActionResult.SUCCESS:Lorg/mtr/mapping/holder/ActionResult;
+      80: goto          86
+      83: getstatic     #107                // Field org/mtr/mapping/holder/ActionResult.FAIL:Lorg/mtr/mapping/holder/ActionResult;
+      86: areturn
+      87: aload_0
+      88: aload_1
+      89: invokespecial #109                // Method org/mtr/mapping/mapper/ItemExtension.useOnBlock2:(Lorg/mtr/mapping/holder/ItemUsageContext;)Lorg/mtr/mapping/holder/ActionResult;
+      92: areturn
+}

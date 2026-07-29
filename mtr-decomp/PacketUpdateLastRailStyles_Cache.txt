@@ -1,0 +1,147 @@
+﻿Compiled from "PacketUpdateLastRailStyles.java"
+public class org.mtr.mod.packet.PacketUpdateLastRailStyles$Cache {
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<java.util.UUID, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.TransportMode, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>>> cache;
+
+  public org.mtr.mod.packet.PacketUpdateLastRailStyles$Cache();
+    Code:
+       0: aload_0
+       1: invokespecial #20                 // Method java/lang/Object."<init>":()V
+       4: aload_0
+       5: new           #22                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+       8: dup
+       9: invokespecial #23                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap."<init>":()V
+      12: putfield      #25                 // Field cache:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+      15: return
+
+  public boolean canApplyStylesToRail(java.util.UUID, org.mtr.core.data.Rail, boolean);
+    Code:
+       0: aload_0
+       1: getfield      #25                 // Field cache:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       4: aload_1
+       5: invokestatic  #36                 // Method getDefaultStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       8: invokevirtual #40                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.getOrDefault:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      11: checkcast     #22                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+      14: aload_2
+      15: invokevirtual #46                 // Method org/mtr/core/data/Rail.getTransportMode:()Lorg/mtr/core/data/TransportMode;
+      18: invokevirtual #50                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
+      21: checkcast     #52                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      24: astore        4
+      26: aload_2
+      27: invokevirtual #56                 // Method org/mtr/core/data/Rail.getStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      30: astore        5
+      32: aload         4
+      34: aload         5
+      36: invokestatic  #62                 // InterfaceMethod org/mtr/core/tool/Utilities.sameItems:(Ljava/util/Collection;Ljava/util/Collection;)Z
+      39: ifeq          44
+      42: iconst_0
+      43: ireturn
+      44: iload_3
+      45: ifeq          80
+      48: getstatic     #70                 // Field org/mtr/mod/InitClient.REGISTRY_CLIENT:Lorg/mtr/mapping/registry/RegistryClient;
+      51: new           #72                 // class org/mtr/mod/packet/PacketUpdateData
+      54: dup
+      55: new           #74                 // class org/mtr/core/operation/UpdateDataRequest
+      58: dup
+      59: invokestatic  #80                 // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      62: invokespecial #83                 // Method org/mtr/core/operation/UpdateDataRequest."<init>":(Lorg/mtr/core/data/Data;)V
+      65: aload_0
+      66: aload_1
+      67: aload_2
+      68: invokevirtual #87                 // Method getRailWithLastStyles:(Ljava/util/UUID;Lorg/mtr/core/data/Rail;)Lorg/mtr/core/data/Rail;
+      71: invokevirtual #91                 // Method org/mtr/core/operation/UpdateDataRequest.addRail:(Lorg/mtr/core/data/Rail;)Lorg/mtr/core/operation/UpdateDataRequest;
+      74: invokespecial #94                 // Method org/mtr/mod/packet/PacketUpdateData."<init>":(Lorg/mtr/core/operation/UpdateDataRequest;)V
+      77: invokevirtual #100                // Method org/mtr/mapping/registry/RegistryClient.sendPacketToServer:(Lorg/mtr/mapping/registry/PacketHandler;)V
+      80: iconst_1
+      81: ireturn
+
+  public org.mtr.core.data.Rail getRailWithLastStyles(java.util.UUID, org.mtr.core.data.Rail);
+    Code:
+       0: aload_2
+       1: aload_0
+       2: getfield      #25                 // Field cache:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       5: aload_1
+       6: invokestatic  #36                 // Method getDefaultStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       9: invokevirtual #40                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.getOrDefault:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      12: checkcast     #22                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+      15: aload_2
+      16: invokevirtual #46                 // Method org/mtr/core/data/Rail.getTransportMode:()Lorg/mtr/core/data/TransportMode;
+      19: invokevirtual #50                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
+      22: checkcast     #52                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      25: invokestatic  #113                // Method org/mtr/core/data/Rail.copy:(Lorg/mtr/core/data/Rail;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;)Lorg/mtr/core/data/Rail;
+      28: areturn
+
+  private void setLastStyles(java.util.UUID, org.mtr.core.data.TransportMode, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectList<java.lang.String>);
+    Code:
+       0: aload_0
+       1: getfield      #25                 // Field cache:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       4: aload_1
+       5: invokedynamic #135,  0            // InvokeDynamic #0:get:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectFunction;
+      10: invokevirtual #139                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.computeIfAbsent:(Ljava/lang/Object;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectFunction;)Ljava/lang/Object;
+      13: checkcast     #22                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+      16: aload_2
+      17: invokevirtual #50                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.get:(Ljava/lang/Object;)Ljava/lang/Object;
+      20: checkcast     #52                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      23: astore        4
+      25: aload         4
+      27: invokevirtual #142                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.clear:()V
+      30: aload         4
+      32: aload_3
+      33: invokeinterface #148,  1          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList.stream:()Ljava/util/stream/Stream;
+      38: invokeinterface #153,  1          // InterfaceMethod java/util/stream/Stream.distinct:()Ljava/util/stream/Stream;
+      43: invokeinterface #156,  1          // InterfaceMethod java/util/stream/Stream.sorted:()Ljava/util/stream/Stream;
+      48: invokedynamic #165,  0            // InvokeDynamic #1:get:()Ljava/util/function/Supplier;
+      53: invokestatic  #171                // Method java/util/stream/Collectors.toCollection:(Ljava/util/function/Supplier;)Ljava/util/stream/Collector;
+      56: invokeinterface #175,  2          // InterfaceMethod java/util/stream/Stream.collect:(Ljava/util/stream/Collector;)Ljava/lang/Object;
+      61: checkcast     #177                // class java/util/Collection
+      64: invokevirtual #181                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.addAll:(Ljava/util/Collection;)Z
+      67: pop
+      68: return
+
+  private static org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.TransportMode, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>> getDefaultStyles();
+    Code:
+       0: new           #22                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+       3: dup
+       4: invokespecial #23                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap."<init>":()V
+       7: astore_0
+       8: invokestatic  #192                // Method org/mtr/core/data/TransportMode.values:()[Lorg/mtr/core/data/TransportMode;
+      11: astore_1
+      12: aload_1
+      13: arraylength
+      14: istore_2
+      15: iconst_0
+      16: istore_3
+      17: iload_3
+      18: iload_2
+      19: if_icmpge     70
+      22: aload_1
+      23: iload_3
+      24: aaload
+      25: astore        4
+      27: aload_0
+      28: aload         4
+      30: aload         4
+      32: getstatic     #197                // Field org/mtr/core/data/TransportMode.BOAT:Lorg/mtr/core/data/TransportMode;
+      35: if_acmpne     48
+      38: new           #52                 // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      41: dup
+      42: invokespecial #159                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+      45: goto          60
+      48: iconst_1
+      49: anewarray     #199                // class java/lang/String
+      52: dup
+      53: iconst_0
+      54: ldc           #201                // String default
+      56: aastore
+      57: invokestatic  #205                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.of:([Ljava/lang/Object;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      60: invokevirtual #208                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      63: pop
+      64: iinc          3, 1
+      67: goto          17
+      70: aload_0
+      71: areturn
+
+  private static org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap lambda$setLastStyles$0(java.lang.Object);
+    Code:
+       0: invokestatic  #36                 // Method getDefaultStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;
+       3: areturn
+}

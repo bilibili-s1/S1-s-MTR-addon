@@ -1,0 +1,155 @@
+﻿Compiled from "RailActionsScreen.java"
+public class org.mtr.mod.screen.RailActionsScreen extends org.mtr.mod.screen.MTRScreenBase implements org.mtr.mod.data.IGui {
+  private final org.mtr.mod.screen.DashboardList railActionsList;
+
+  public org.mtr.mod.screen.RailActionsScreen(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokespecial #29                 // Method org/mtr/mod/screen/MTRScreenBase."<init>":(Lorg/mtr/mapping/mapper/ScreenExtension;)V
+       5: aload_0
+       6: new           #11                 // class org/mtr/mod/screen/DashboardList
+       9: dup
+      10: aconst_null
+      11: aconst_null
+      12: aconst_null
+      13: aconst_null
+      14: aconst_null
+      15: aload_0
+      16: invokedynamic #46,  0             // InvokeDynamic #0:accept:(Lorg/mtr/mod/screen/RailActionsScreen;)Lorg/mtr/mod/screen/DashboardList$Callback;
+      21: aconst_null
+      22: invokedynamic #58,  0             // InvokeDynamic #1:get:()Ljava/util/function/Supplier;
+      27: invokedynamic #69,  0             // InvokeDynamic #2:accept:()Ljava/util/function/Consumer;
+      32: invokespecial #72                 // Method org/mtr/mod/screen/DashboardList."<init>":(Lorg/mtr/mod/screen/DashboardList$Callback;Lorg/mtr/mod/screen/DashboardList$Callback;Lorg/mtr/mod/screen/DashboardList$Callback;Ljava/lang/Runnable;Lorg/mtr/mod/screen/DashboardList$Callback;Lorg/mtr/mod/screen/DashboardList$Callback;Ljava/util/function/Supplier;Ljava/util/function/Supplier;Ljava/util/function/Consumer;)V
+      35: putfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      38: return
+
+  protected void init2();
+    Code:
+       0: aload_0
+       1: invokespecial #81                 // Method org/mtr/mod/screen/MTRScreenBase.init2:()V
+       4: aload_0
+       5: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+       8: bipush        20
+      10: putfield      #85                 // Field org/mtr/mod/screen/DashboardList.x:I
+      13: aload_0
+      14: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      17: bipush        40
+      19: putfield      #88                 // Field org/mtr/mod/screen/DashboardList.y:I
+      22: aload_0
+      23: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      26: aload_0
+      27: getfield      #91                 // Field width:I
+      30: bipush        40
+      32: isub
+      33: putfield      #92                 // Field org/mtr/mod/screen/DashboardList.width:I
+      36: aload_0
+      37: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      40: aload_0
+      41: getfield      #95                 // Field height:I
+      44: bipush        40
+      46: isub
+      47: putfield      #96                 // Field org/mtr/mod/screen/DashboardList.height:I
+      50: aload_0
+      51: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      54: aload_0
+      55: invokedynamic #107,  0            // InvokeDynamic #3:accept:(Lorg/mtr/mod/screen/RailActionsScreen;)Ljava/util/function/Consumer;
+      60: invokevirtual #111                // Method org/mtr/mod/screen/DashboardList.init:(Ljava/util/function/Consumer;)V
+      63: return
+
+  public void render(org.mtr.mapping.mapper.GraphicsHolder, int, int, float);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #121                // Method renderBackground:(Lorg/mtr/mapping/mapper/GraphicsHolder;)V
+       5: aload_0
+       6: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+       9: aload_1
+      10: invokevirtual #123                // Method org/mtr/mod/screen/DashboardList.render:(Lorg/mtr/mapping/mapper/GraphicsHolder;)V
+      13: aload_1
+      14: getstatic     #127                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_RAIL_ACTIONS:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      17: iconst_0
+      18: anewarray     #129                // class java/lang/Object
+      21: invokevirtual #133                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getMutableText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/MutableText;
+      24: aload_0
+      25: getfield      #91                 // Field width:I
+      28: iconst_2
+      29: idiv
+      30: bipush        26
+      32: iconst_m1
+      33: invokevirtual #139                // Method org/mtr/mapping/mapper/GraphicsHolder.drawCenteredText:(Lorg/mtr/mapping/holder/MutableText;III)V
+      36: aload_0
+      37: aload_1
+      38: iload_2
+      39: iload_3
+      40: fload         4
+      42: invokespecial #141                // Method org/mtr/mod/screen/MTRScreenBase.render:(Lorg/mtr/mapping/mapper/GraphicsHolder;IIF)V
+      45: return
+
+  public void mouseMoved2(double, double);
+    Code:
+       0: aload_0
+       1: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+       4: dload_1
+       5: dload_3
+       6: invokevirtual #148                // Method org/mtr/mod/screen/DashboardList.mouseMoved:(DD)V
+       9: return
+
+  public boolean mouseScrolled2(double, double, double);
+    Code:
+       0: aload_0
+       1: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+       4: dload_1
+       5: dload_3
+       6: dload         5
+       8: invokevirtual #156                // Method org/mtr/mod/screen/DashboardList.mouseScrolled:(DDD)V
+      11: aload_0
+      12: dload_1
+      13: dload_3
+      14: dload         5
+      16: invokespecial #158                // Method org/mtr/mod/screen/MTRScreenBase.mouseScrolled2:(DDD)Z
+      19: ireturn
+
+  public void tick2();
+    Code:
+       0: aload_0
+       1: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+       4: invokevirtual #162                // Method org/mtr/mod/screen/DashboardList.tick:()V
+       7: aload_0
+       8: getfield      #74                 // Field railActionsList:Lorg/mtr/mod/screen/DashboardList;
+      11: invokestatic  #168                // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      14: getfield      #172                // Field org/mtr/mod/client/MinecraftClientData.railActions:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      17: iconst_0
+      18: iconst_0
+      19: iconst_0
+      20: iconst_0
+      21: iconst_0
+      22: iconst_1
+      23: invokevirtual #176                // Method org/mtr/mod/screen/DashboardList.setData:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZZZZZ)V
+      26: return
+
+  public boolean isPauseScreen2();
+    Code:
+       0: iconst_0
+       1: ireturn
+
+  private void onDelete(org.mtr.mod.screen.DashboardListItem, int);
+    Code:
+       0: getstatic     #186                // Field org/mtr/mod/InitClient.REGISTRY_CLIENT:Lorg/mtr/mapping/registry/RegistryClient;
+       3: new           #188                // class org/mtr/mod/packet/PacketDeleteRailAction
+       6: dup
+       7: aload_1
+       8: getfield      #194                // Field org/mtr/mod/screen/DashboardListItem.id:J
+      11: invokespecial #197                // Method org/mtr/mod/packet/PacketDeleteRailAction."<init>":(J)V
+      14: invokevirtual #203                // Method org/mtr/mapping/registry/RegistryClient.sendPacketToServer:(Lorg/mtr/mapping/registry/PacketHandler;)V
+      17: return
+
+  private static void lambda$new$1(java.lang.String);
+    Code:
+       0: return
+
+  private static java.lang.String lambda$new$0();
+    Code:
+       0: ldc           #208                // String
+       2: areturn
+}

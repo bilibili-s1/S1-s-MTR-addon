@@ -1,0 +1,33 @@
+﻿Compiled from "RailType.java"
+public final class org.mtr.mod.data.RailType extends java.lang.Enum<org.mtr.mod.data.RailType> implements org.mtr.mod.data.IGui {
+  public static final org.mtr.mod.data.RailType WOODEN;
+  public static final org.mtr.mod.data.RailType STONE;
+  public static final org.mtr.mod.data.RailType EMERALD;
+  public static final org.mtr.mod.data.RailType IRON;
+  public static final org.mtr.mod.data.RailType BRICKS;
+  public static final org.mtr.mod.data.RailType OBSIDIAN;
+  public static final org.mtr.mod.data.RailType PRISMARINE;
+  public static final org.mtr.mod.data.RailType BLAZE;
+  public static final org.mtr.mod.data.RailType QUARTZ;
+  public static final org.mtr.mod.data.RailType DIAMOND;
+  public static final org.mtr.mod.data.RailType PLATFORM;
+  public static final org.mtr.mod.data.RailType SIDING;
+  public static final org.mtr.mod.data.RailType TURN_BACK;
+  public static final org.mtr.mod.data.RailType CABLE_CAR;
+  public static final org.mtr.mod.data.RailType CABLE_CAR_STATION;
+  public static final org.mtr.mod.data.RailType RUNWAY;
+  public static final org.mtr.mod.data.RailType AIRPLANE_DUMMY;
+  public final int speedLimit;
+  public final int color;
+  public final boolean isSavedRail;
+  public final boolean canAccelerate;
+  public final boolean hasSignal;
+  public final org.mtr.core.data.Rail$Shape railShape;
+  private static final org.mtr.mod.data.RailType[] $VALUES;
+  public static org.mtr.mod.data.RailType[] values();
+  public static org.mtr.mod.data.RailType valueOf(java.lang.String);
+  private org.mtr.mod.data.RailType(int, org.mtr.mapping.holder.MapColor, boolean, boolean, boolean, org.mtr.core.data.Rail$Shape);
+  public static int getRailColor(org.mtr.core.data.Rail);
+  private static org.mtr.mod.data.RailType[] $values();
+  static {};
+}

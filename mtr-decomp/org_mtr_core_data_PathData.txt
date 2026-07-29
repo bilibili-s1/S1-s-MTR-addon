@@ -1,0 +1,572 @@
+﻿Compiled from "PathData.java"
+public class org.mtr.core.data.PathData extends org.mtr.core.generated.data.PathDataSchema implements org.mtr.core.tool.ConditionalList {
+  private org.mtr.core.data.Rail rail;
+
+  public final boolean reversePositions;
+
+  public org.mtr.core.data.PathData(org.mtr.core.data.Rail, long, long, int, org.mtr.core.data.Position, org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: lload_2
+       3: lload         4
+       5: iload         6
+       7: i2l
+       8: dconst_0
+       9: dconst_0
+      10: aload         7
+      12: aload_1
+      13: aload         7
+      15: invokevirtual #31                 // Method org/mtr/core/data/Rail.getStartAngle:(Lorg/mtr/core/data/Position;)Lorg/mtr/core/tool/Angle;
+      18: aload         8
+      20: aload_1
+      21: aload         8
+      23: invokevirtual #31                 // Method org/mtr/core/data/Rail.getStartAngle:(Lorg/mtr/core/data/Position;)Lorg/mtr/core/tool/Angle;
+      26: invokespecial #34                 // Method "<init>":(Lorg/mtr/core/data/Rail;JJJDDLorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;)V
+      29: return
+
+  public org.mtr.core.data.PathData(org.mtr.core.data.PathData, double, double);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+       5: aload_1
+       6: getfield      #47                 // Field savedRailBaseId:J
+       9: aload_1
+      10: getfield      #49                 // Field dwellTime:J
+      13: aload_1
+      14: getfield      #51                 // Field stopIndex:J
+      17: dload_2
+      18: dload         4
+      20: aload_1
+      21: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      24: aload_1
+      25: getfield      #57                 // Field startAngle:Lorg/mtr/core/tool/Angle;
+      28: aload_1
+      29: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      32: aload_1
+      33: getfield      #62                 // Field endAngle:Lorg/mtr/core/tool/Angle;
+      36: invokespecial #34                 // Method "<init>":(Lorg/mtr/core/data/Rail;JJJDDLorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;)V
+      39: aload_0
+      40: aload_1
+      41: getfield      #66                 // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      44: putfield      #66                 // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      47: aload_0
+      48: aload_1
+      49: getfield      #70                 // Field verticalRadius:D
+      52: putfield      #70                 // Field verticalRadius:D
+      55: aload_0
+      56: aload_1
+      57: getfield      #73                 // Field speedLimit:J
+      60: putfield      #73                 // Field speedLimit:J
+      63: return
+
+  public org.mtr.core.data.PathData(org.mtr.core.data.Rail, long, long, long, double, double, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle);
+    Code:
+       0: aload_0
+       1: lload_2
+       2: lload         4
+       4: lload         6
+       6: dload         8
+       8: dload         10
+      10: aload         12
+      12: aload         13
+      14: aload         14
+      16: aload         15
+      18: invokespecial #76                 // Method org/mtr/core/generated/data/PathDataSchema."<init>":(JJJDDLorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;)V
+      21: aload_0
+      22: aload_1
+      23: putfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      26: aload_0
+      27: aload         12
+      29: aload         14
+      31: invokevirtual #82                 // Method org/mtr/core/data/Position.compareTo:(Lorg/mtr/core/data/Position;)I
+      34: ifle          41
+      37: iconst_1
+      38: goto          42
+      41: iconst_0
+      42: putfield      #86                 // Field reversePositions:Z
+      45: aload_1
+      46: ifnull        71
+      49: aload_0
+      50: aload_1
+      51: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      54: invokevirtual #96                 // Method org/mtr/core/data/RailMath.getShape:()Lorg/mtr/core/data/Rail$Shape;
+      57: putfield      #66                 // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      60: aload_0
+      61: aload_1
+      62: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      65: invokevirtual #100                // Method org/mtr/core/data/RailMath.getVerticalRadius:()D
+      68: putfield      #70                 // Field verticalRadius:D
+      71: return
+
+  public org.mtr.core.data.PathData(org.mtr.core.serializer.ReaderBase);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokespecial #104                // Method org/mtr/core/generated/data/PathDataSchema."<init>":(Lorg/mtr/core/serializer/ReaderBase;)V
+       5: aload_0
+       6: aload_1
+       7: invokevirtual #107                // Method updateData:(Lorg/mtr/core/serializer/ReaderBase;)V
+      10: aload_0
+      11: aload_0
+      12: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      15: aload_0
+      16: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      19: invokevirtual #82                 // Method org/mtr/core/data/Position.compareTo:(Lorg/mtr/core/data/Position;)I
+      22: ifle          29
+      25: iconst_1
+      26: goto          30
+      29: iconst_0
+      30: putfield      #86                 // Field reversePositions:Z
+      33: return
+
+  public boolean matchesCondition(double);
+    Code:
+       0: dload_1
+       1: aload_0
+       2: getfield      #115                // Field startDistance:D
+       5: dcmpl
+       6: iflt          13
+       9: iconst_1
+      10: goto          14
+      13: iconst_0
+      14: ireturn
+
+  public final org.mtr.core.data.Rail getRail();
+    Code:
+       0: aload_0
+       1: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+       4: ifnonnull     14
+       7: aload_0
+       8: invokespecial #120                // Method defaultRail:()Lorg/mtr/core/data/Rail;
+      11: goto          18
+      14: aload_0
+      15: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      18: areturn
+
+  public final long getSavedRailBaseId();
+    Code:
+       0: aload_0
+       1: getfield      #47                 // Field savedRailBaseId:J
+       4: lreturn
+
+  public final double getStartDistance();
+    Code:
+       0: aload_0
+       1: getfield      #115                // Field startDistance:D
+       4: dreturn
+
+  public final double getEndDistance();
+    Code:
+       0: aload_0
+       1: getfield      #126                // Field endDistance:D
+       4: dreturn
+
+  public final long getDwellTime();
+    Code:
+       0: aload_0
+       1: getfield      #49                 // Field dwellTime:J
+       4: lreturn
+
+  public final int getStopIndex();
+    Code:
+       0: aload_0
+       1: getfield      #51                 // Field stopIndex:J
+       4: l2i
+       5: ireturn
+
+  public boolean isSameRail(org.mtr.core.data.PathData);
+    Code:
+       0: aload_0
+       1: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+       4: aload_1
+       5: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+       8: invokevirtual #136                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      11: ifeq          32
+      14: aload_0
+      15: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      18: aload_1
+      19: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      22: invokevirtual #136                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      25: ifeq          32
+      28: iconst_1
+      29: goto          33
+      32: iconst_0
+      33: ireturn
+
+  public boolean isOppositeRail(org.mtr.core.data.PathData);
+    Code:
+       0: aload_0
+       1: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+       4: aload_1
+       5: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+       8: invokevirtual #136                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      11: ifeq          32
+      14: aload_0
+      15: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      18: aload_1
+      19: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      22: invokevirtual #136                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      25: ifeq          32
+      28: iconst_1
+      29: goto          33
+      32: iconst_0
+      33: ireturn
+
+  public org.mtr.core.data.Position getOrderedPosition1();
+    Code:
+       0: aload_0
+       1: getfield      #86                 // Field reversePositions:Z
+       4: ifeq          14
+       7: aload_0
+       8: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      11: goto          18
+      14: aload_0
+      15: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      18: areturn
+
+  public org.mtr.core.data.Position getOrderedPosition2();
+    Code:
+       0: aload_0
+       1: getfield      #86                 // Field reversePositions:Z
+       4: ifeq          14
+       7: aload_0
+       8: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      11: goto          18
+      14: aload_0
+      15: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      18: areturn
+
+  public org.mtr.core.tool.Angle getFacingStart();
+    Code:
+       0: aload_0
+       1: invokevirtual #144                // Method getRail:()Lorg/mtr/core/data/Rail;
+       4: aload_0
+       5: getfield      #86                 // Field reversePositions:Z
+       8: invokevirtual #147                // Method org/mtr/core/data/Rail.getStartAngle:(Z)Lorg/mtr/core/tool/Angle;
+      11: areturn
+
+  public double getSpeedLimitMetersPerMillisecond();
+    Code:
+       0: aload_0
+       1: invokevirtual #151                // Method getSpeedLimitKilometersPerHour:()J
+       4: l2d
+       5: invokestatic  #157                // InterfaceMethod org/mtr/core/tool/Utilities.kilometersPerHourToMetersPerMillisecond:(D)D
+       8: dreturn
+
+  public long getSpeedLimitKilometersPerHour();
+    Code:
+       0: lconst_1
+       1: aload_0
+       2: getfield      #73                 // Field speedLimit:J
+       5: invokestatic  #163                // Method java/lang/Math.max:(JJ)J
+       8: lreturn
+
+  public double getRailLength();
+    Code:
+       0: aload_0
+       1: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+       4: ifnonnull     19
+       7: aload_0
+       8: getfield      #126                // Field endDistance:D
+      11: aload_0
+      12: getfield      #115                // Field startDistance:D
+      15: dsub
+      16: goto          29
+      19: aload_0
+      20: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      23: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      26: invokevirtual #167                // Method org/mtr/core/data/RailMath.getLength:()D
+      29: dreturn
+
+  public boolean isDescending();
+    Code:
+       0: aload_0
+       1: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+       4: invokevirtual #172                // Method org/mtr/core/data/Position.getY:()J
+       7: aload_0
+       8: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      11: invokevirtual #172                // Method org/mtr/core/data/Position.getY:()J
+      14: lcmp
+      15: ifge          22
+      18: iconst_1
+      19: goto          23
+      22: iconst_0
+      23: ireturn
+
+  public org.mtr.core.tool.Vector getPosition(double);
+    Code:
+       0: aload_0
+       1: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+       4: ifnull        36
+       7: aload_0
+       8: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      11: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      14: invokevirtual #178                // Method org/mtr/core/data/RailMath.isValid:()Z
+      17: ifeq          36
+      20: aload_0
+      21: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      24: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      27: dload_1
+      28: aload_0
+      29: getfield      #86                 // Field reversePositions:Z
+      32: invokevirtual #181                // Method org/mtr/core/data/RailMath.getPosition:(DZ)Lorg/mtr/core/tool/Vector;
+      35: areturn
+      36: dload_1
+      37: aload_0
+      38: invokevirtual #183                // Method getRailLength:()D
+      41: ddiv
+      42: dconst_0
+      43: dconst_1
+      44: invokestatic  #187                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      47: dstore_3
+      48: new           #189                // class org/mtr/core/tool/Vector
+      51: dup
+      52: aload_0
+      53: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      56: invokevirtual #192                // Method org/mtr/core/data/Position.getX:()J
+      59: l2d
+      60: dload_3
+      61: aload_0
+      62: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      65: invokevirtual #192                // Method org/mtr/core/data/Position.getX:()J
+      68: aload_0
+      69: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      72: invokevirtual #192                // Method org/mtr/core/data/Position.getX:()J
+      75: lsub
+      76: l2d
+      77: dmul
+      78: dadd
+      79: ldc2_w        #193                // double 0.5d
+      82: dadd
+      83: aload_0
+      84: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      87: invokevirtual #172                // Method org/mtr/core/data/Position.getY:()J
+      90: l2d
+      91: dload_3
+      92: aload_0
+      93: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      96: invokevirtual #172                // Method org/mtr/core/data/Position.getY:()J
+      99: aload_0
+     100: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+     103: invokevirtual #172                // Method org/mtr/core/data/Position.getY:()J
+     106: lsub
+     107: l2d
+     108: dmul
+     109: dadd
+     110: aload_0
+     111: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+     114: invokevirtual #197                // Method org/mtr/core/data/Position.getZ:()J
+     117: l2d
+     118: dload_3
+     119: aload_0
+     120: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+     123: invokevirtual #197                // Method org/mtr/core/data/Position.getZ:()J
+     126: aload_0
+     127: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+     130: invokevirtual #197                // Method org/mtr/core/data/Position.getZ:()J
+     133: lsub
+     134: l2d
+     135: dmul
+     136: dadd
+     137: ldc2_w        #193                // double 0.5d
+     140: dadd
+     141: invokespecial #200                // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+     144: areturn
+
+  public java.lang.String getHexId(boolean);
+    Code:
+       0: iload_1
+       1: ifeq          18
+       4: aload_0
+       5: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+       8: aload_0
+       9: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      12: invokestatic  #210                // Method org/mtr/core/data/TwoPositionsBase.getHexIdRaw:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      15: goto          29
+      18: aload_0
+      19: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      22: aload_0
+      23: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      26: invokestatic  #210                // Method org/mtr/core/data/TwoPositionsBase.getHexIdRaw:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      29: areturn
+
+  public boolean isSignalBlocked(long, org.mtr.core.data.Rail$BlockReservation);
+    Code:
+       0: aload_0
+       1: invokevirtual #144                // Method getRail:()Lorg/mtr/core/data/Rail;
+       4: lload_1
+       5: aload_3
+       6: invokevirtual #219                // Method org/mtr/core/data/Rail.isBlocked:(JLorg/mtr/core/data/Rail$BlockReservation;)Z
+       9: ireturn
+
+  public org.mtr.libraries.it.unimi.dsi.fastutil.ints.IntAVLTreeSet getSignalColors();
+    Code:
+       0: aload_0
+       1: invokevirtual #144                // Method getRail:()Lorg/mtr/core/data/Rail;
+       4: invokevirtual #224                // Method org/mtr/core/data/Rail.getSignalColors:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet;
+       7: areturn
+
+  private void writePathCache(org.mtr.core.data.Data);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: getfield      #233                // Field org/mtr/core/data/Data.positionsToRail:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;
+       5: aload_0
+       6: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+       9: aload_0
+      10: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      13: invokestatic  #237                // Method org/mtr/core/data/Data.tryGet:(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      16: checkcast     #11                 // class org/mtr/core/data/Rail
+      19: putfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      22: aload_0
+      23: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      26: ifnonnull     40
+      29: aload_0
+      30: aload_0
+      31: invokespecial #120                // Method defaultRail:()Lorg/mtr/core/data/Rail;
+      34: putfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      37: goto          68
+      40: aload_0
+      41: aload_0
+      42: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      45: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      48: invokevirtual #96                 // Method org/mtr/core/data/RailMath.getShape:()Lorg/mtr/core/data/Rail$Shape;
+      51: putfield      #66                 // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      54: aload_0
+      55: aload_0
+      56: getfield      #45                 // Field rail:Lorg/mtr/core/data/Rail;
+      59: getfield      #90                 // Field org/mtr/core/data/Rail.railMath:Lorg/mtr/core/data/RailMath;
+      62: invokevirtual #100                // Method org/mtr/core/data/RailMath.getVerticalRadius:()D
+      65: putfield      #70                 // Field verticalRadius:D
+      68: return
+
+  private org.mtr.core.data.Rail defaultRail();
+    Code:
+       0: aload_0
+       1: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+       4: aload_0
+       5: getfield      #57                 // Field startAngle:Lorg/mtr/core/tool/Angle;
+       8: getfield      #242                // Field org/mtr/core/tool/Angle.angleDegrees:F
+      11: aload_0
+      12: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      15: aload_0
+      16: getfield      #62                 // Field endAngle:Lorg/mtr/core/tool/Angle;
+      19: getfield      #242                // Field org/mtr/core/tool/Angle.angleDegrees:F
+      22: invokestatic  #246                // Method org/mtr/core/data/Rail.getAngles:(Lorg/mtr/core/data/Position;FLorg/mtr/core/data/Position;F)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+      25: astore_1
+      26: aload_0
+      27: getfield      #53                 // Field startPosition:Lorg/mtr/core/data/Position;
+      30: aload_1
+      31: invokevirtual #252                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.left:()Ljava/lang/Object;
+      34: checkcast     #84                 // class org/mtr/core/tool/Angle
+      37: aload_0
+      38: getfield      #59                 // Field endPosition:Lorg/mtr/core/data/Position;
+      41: aload_1
+      42: invokevirtual #255                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.right:()Ljava/lang/Object;
+      45: checkcast     #84                 // class org/mtr/core/tool/Angle
+      48: aload_0
+      49: getfield      #66                 // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      52: aload_0
+      53: getfield      #70                 // Field verticalRadius:D
+      56: new           #257                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      59: dup
+      60: invokespecial #260                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+      63: aload_0
+      64: getfield      #73                 // Field speedLimit:J
+      67: lconst_0
+      68: lcmp
+      69: ifne          78
+      72: ldc2_w        #261                // long 300l
+      75: goto          82
+      78: aload_0
+      79: getfield      #73                 // Field speedLimit:J
+      82: lconst_0
+      83: iconst_0
+      84: iconst_0
+      85: iconst_1
+      86: iconst_0
+      87: iconst_0
+      88: getstatic     #268                // Field org/mtr/core/data/TransportMode.TRAIN:Lorg/mtr/core/data/TransportMode;
+      91: invokestatic  #272                // Method org/mtr/core/data/Rail.newRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZLorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+      94: areturn
+
+  public static void writePathCache(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectList<org.mtr.core.data.PathData>, org.mtr.core.data.Data, org.mtr.core.data.TransportMode);
+    Code:
+       0: iconst_0
+       1: istore_3
+       2: iload_3
+       3: aload_0
+       4: invokeinterface #284,  1          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList.size:()I
+       9: if_icmpge     50
+      12: aload_0
+      13: iload_3
+      14: invokeinterface #288,  2          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList.get:(I)Ljava/lang/Object;
+      19: checkcast     #2                  // class org/mtr/core/data/PathData
+      22: astore        4
+      24: aload         4
+      26: aload_1
+      27: invokespecial #290                // Method writePathCache:(Lorg/mtr/core/data/Data;)V
+      30: aload         4
+      32: aload_0
+      33: iload_3
+      34: aload_2
+      35: getfield      #293                // Field org/mtr/core/data/TransportMode.defaultSpeedKilometersPerHour:J
+      38: invokestatic  #297                // Method getRailSpeed:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList;IJ)J
+      41: putfield      #73                 // Field speedLimit:J
+      44: iinc          3, 1
+      47: goto          2
+      50: return
+
+  private static long getRailSpeed(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectList<org.mtr.core.data.PathData>, int, long);
+    Code:
+       0: iconst_0
+       1: istore        4
+       3: iload         4
+       5: iload_1
+       6: aload_0
+       7: invokeinterface #284,  1          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList.size:()I
+      12: iload_1
+      13: isub
+      14: iconst_1
+      15: isub
+      16: invokestatic  #305                // Method java/lang/Math.max:(II)I
+      19: if_icmpgt     100
+      22: iconst_m1
+      23: istore        5
+      25: iload         5
+      27: iconst_1
+      28: if_icmpgt     94
+      31: aload_0
+      32: iload_1
+      33: iload         5
+      35: iload         4
+      37: imul
+      38: iadd
+      39: invokestatic  #309                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+      42: checkcast     #2                  // class org/mtr/core/data/PathData
+      45: astore        6
+      47: aload         6
+      49: ifnonnull     55
+      52: goto          94
+      55: aload         6
+      57: invokevirtual #144                // Method getRail:()Lorg/mtr/core/data/Rail;
+      60: invokevirtual #312                // Method org/mtr/core/data/Rail.canAccelerate:()Z
+      63: ifeq          80
+      66: aload         6
+      68: invokevirtual #144                // Method getRail:()Lorg/mtr/core/data/Rail;
+      71: aload         6
+      73: getfield      #86                 // Field reversePositions:Z
+      76: invokevirtual #315                // Method org/mtr/core/data/Rail.getSpeedLimitKilometersPerHour:(Z)J
+      79: lreturn
+      80: iload         4
+      82: ifne          88
+      85: goto          94
+      88: iinc          5, 2
+      91: goto          25
+      94: iinc          4, 1
+      97: goto          3
+     100: lload_2
+     101: lreturn
+}

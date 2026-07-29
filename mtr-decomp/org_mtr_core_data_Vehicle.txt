@@ -1,0 +1,2505 @@
+﻿Compiled from "Vehicle.java"
+public class org.mtr.core.data.Vehicle extends org.mtr.core.generated.data.VehicleSchema implements org.mtr.core.tool.Utilities {
+  private long stoppingCooldown;
+
+  private long deviation;
+
+  private double deviationSpeedAdjustment;
+
+  private long manualCooldown;
+
+  private long doorCooldown;
+
+  private boolean atoOverride;
+
+  public final org.mtr.core.data.VehicleExtraData vehicleExtraData;
+
+  private final org.mtr.core.data.Siding siding;
+
+  private final boolean isClientside;
+
+  public static final int MAX_POWER_LEVEL = 7;
+
+  public static final int POWER_LEVEL_RATIO = 5;
+
+  public static final int DOOR_MOVE_TIME = 3200;
+
+  private static final int DOOR_DELAY = 1000;
+
+  public org.mtr.core.data.Vehicle(org.mtr.core.data.VehicleExtraData, org.mtr.core.data.Siding, org.mtr.core.data.TransportMode, org.mtr.core.data.Data);
+    Code:
+       0: aload_0
+       1: aload_3
+       2: aload         4
+       4: invokespecial #48                 // Method org/mtr/core/generated/data/VehicleSchema."<init>":(Lorg/mtr/core/data/TransportMode;Lorg/mtr/core/data/Data;)V
+       7: aload_0
+       8: aload_2
+       9: putfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      12: aload_0
+      13: aload_1
+      14: putfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      17: aload_0
+      18: aload         4
+      20: instanceof    #54                 // class org/mtr/core/simulation/Simulator
+      23: ifne          30
+      26: iconst_1
+      27: goto          31
+      30: iconst_0
+      31: putfield      #64                 // Field isClientside:Z
+      34: return
+
+  public org.mtr.core.data.Vehicle(org.mtr.core.data.VehicleExtraData, org.mtr.core.data.Siding, org.mtr.core.serializer.ReaderBase, org.mtr.core.data.Data);
+    Code:
+       0: aload_0
+       1: aload_3
+       2: aload         4
+       4: invokespecial #73                 // Method org/mtr/core/generated/data/VehicleSchema."<init>":(Lorg/mtr/core/serializer/ReaderBase;Lorg/mtr/core/data/Data;)V
+       7: aload_0
+       8: aload_2
+       9: putfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      12: aload_0
+      13: aload_1
+      14: putfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      17: aload_0
+      18: aload         4
+      20: instanceof    #54                 // class org/mtr/core/simulation/Simulator
+      23: ifne          30
+      26: iconst_1
+      27: goto          31
+      30: iconst_0
+      31: putfield      #64                 // Field isClientside:Z
+      34: aload_0
+      35: aload_3
+      36: invokevirtual #79                 // Method updateData:(Lorg/mtr/core/serializer/ReaderBase;)V
+      39: return
+
+  public org.mtr.core.data.Vehicle(org.mtr.core.serializer.ReaderBase);
+    Code:
+       0: aload_0
+       1: new           #56                 // class org/mtr/core/data/VehicleExtraData
+       4: dup
+       5: aload_1
+       6: invokespecial #83                 // Method org/mtr/core/data/VehicleExtraData."<init>":(Lorg/mtr/core/serializer/ReaderBase;)V
+       9: aconst_null
+      10: aload_1
+      11: new           #85                 // class org/mtr/core/data/ClientData
+      14: dup
+      15: invokespecial #88                 // Method org/mtr/core/data/ClientData."<init>":()V
+      18: invokespecial #90                 // Method "<init>":(Lorg/mtr/core/data/VehicleExtraData;Lorg/mtr/core/data/Siding;Lorg/mtr/core/serializer/ReaderBase;Lorg/mtr/core/data/Data;)V
+      21: return
+
+  public boolean isValid();
+    Code:
+       0: iconst_1
+       1: ireturn
+
+  public boolean isMoving();
+    Code:
+       0: aload_0
+       1: getfield      #96                 // Field speed:D
+       4: dconst_0
+       5: dcmpl
+       6: ifeq          13
+       9: iconst_1
+      10: goto          14
+      13: iconst_0
+      14: ireturn
+
+  public boolean getIsOnRoute();
+    Code:
+       0: aload_0
+       1: getfield      #100                // Field railProgress:D
+       4: aload_0
+       5: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       8: invokevirtual #104                // Method org/mtr/core/data/VehicleExtraData.getDefaultPosition:()D
+      11: dcmpl
+      12: ifle          19
+      15: iconst_1
+      16: goto          20
+      19: iconst_0
+      20: ireturn
+
+  public boolean getReversed();
+    Code:
+       0: aload_0
+       1: getfield      #108                // Field reversed:Z
+       4: ireturn
+
+  public boolean closeToDepot();
+    Code:
+       0: aload_0
+       1: invokevirtual #111                // Method getIsOnRoute:()Z
+       4: ifeq          30
+       7: aload_0
+       8: getfield      #100                // Field railProgress:D
+      11: aload_0
+      12: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      15: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+      18: aload_0
+      19: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      22: invokevirtual #117                // Method org/mtr/core/data/VehicleExtraData.getRailLength:()D
+      25: dadd
+      26: dcmpg
+      27: ifge          34
+      30: iconst_1
+      31: goto          35
+      34: iconst_0
+      35: ireturn
+
+  public void initVehiclePositions(org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       5: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       8: aload_0
+       9: getfield      #100                // Field railProgress:D
+      12: invokestatic  #129                // InterfaceMethod org/mtr/core/tool/Utilities.getIndexFromConditionalList:(Ljava/util/List;D)I
+      15: aload_1
+      16: invokespecial #133                // Method writeVehiclePositions:(ILorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;)V
+      19: return
+
+  public void simulate(long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>>, org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap);
+    Code:
+       0: aload_0
+       1: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       4: invokevirtual #144                // Method org/mtr/core/data/VehicleExtraData.containsDriverAndDoorOverride:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/booleans/BooleanBooleanImmutablePair;
+       7: astore        6
+       9: aload_0
+      10: aload_0
+      11: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      14: invokevirtual #147                // Method org/mtr/core/data/VehicleExtraData.getIsManualAllowed:()Z
+      17: ifeq          38
+      20: aload         6
+      22: invokevirtual #152                // Method org/mtr/libraries/it/unimi/dsi/fastutil/booleans/BooleanBooleanImmutablePair.leftBoolean:()Z
+      25: ifeq          38
+      28: aload_0
+      29: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      32: invokevirtual #156                // Method org/mtr/core/data/VehicleExtraData.getManualToAutomaticTime:()J
+      35: goto          48
+      38: lconst_0
+      39: aload_0
+      40: getfield      #162                // Field manualCooldown:J
+      43: lload_1
+      44: lsub
+      45: invokestatic  #168                // Method java/lang/Math.max:(JJ)J
+      48: putfield      #162                // Field manualCooldown:J
+      51: aload_0
+      52: aload_0
+      53: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      56: invokevirtual #172                // Method org/mtr/core/data/VehicleExtraData.getDoorMultiplier:()I
+      59: ifgt          70
+      62: aload         6
+      64: invokevirtual #175                // Method org/mtr/libraries/it/unimi/dsi/fastutil/booleans/BooleanBooleanImmutablePair.rightBoolean:()Z
+      67: ifeq          76
+      70: ldc2_w        #176                // long 4200l
+      73: goto          86
+      76: lconst_0
+      77: aload_0
+      78: getfield      #179                // Field doorCooldown:J
+      81: lload_1
+      82: lsub
+      83: invokestatic  #168                // Method java/lang/Math.max:(JJ)J
+      86: putfield      #179                // Field doorCooldown:J
+      89: aload_0
+      90: invokevirtual #111                // Method getIsOnRoute:()Z
+      93: ifeq          228
+      96: aload_0
+      97: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     100: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     103: ifne          176
+     106: aload_0
+     107: getfield      #100                // Field railProgress:D
+     110: aload_0
+     111: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     114: invokevirtual #185                // Method org/mtr/core/data/VehicleExtraData.getTotalDistance:()D
+     117: aload_0
+     118: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     121: invokevirtual #117                // Method org/mtr/core/data/VehicleExtraData.getRailLength:()D
+     124: aload_0
+     125: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     128: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     131: dsub
+     132: ldc2_w        #186                // double 2.0d
+     135: ddiv
+     136: dsub
+     137: dcmpl
+     138: iflt          176
+     141: iconst_0
+     142: istore        5
+     144: aload_0
+     145: getfield      #64                 // Field isClientside:Z
+     148: ifne          169
+     151: aload_0
+     152: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     155: aload_0
+     156: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     159: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     162: iconst_m1
+     163: invokestatic  #194                // Method java/lang/Math.min:(II)I
+     166: invokevirtual #198                // Method org/mtr/core/data/VehicleExtraData.setPowerLevel:(I)V
+     169: aload_0
+     170: invokespecial #201                // Method simulateInDepot:()V
+     173: goto          235
+     176: aload_0
+     177: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     180: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     183: aload_0
+     184: getfield      #100                // Field railProgress:D
+     187: invokestatic  #129                // InterfaceMethod org/mtr/core/tool/Utilities.getIndexFromConditionalList:(Ljava/util/List;D)I
+     190: istore        5
+     192: aload_0
+     193: getfield      #96                 // Field speed:D
+     196: dconst_0
+     197: dcmpg
+     198: ifgt          217
+     201: aload_0
+     202: dconst_0
+     203: putfield      #96                 // Field speed:D
+     206: aload_0
+     207: lload_1
+     208: aload_3
+     209: iload         5
+     211: invokespecial #205                // Method simulateStopped:(JLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;I)V
+     214: goto          235
+     217: aload_0
+     218: lload_1
+     219: aload_3
+     220: iload         5
+     222: invokespecial #208                // Method simulateMoving:(JLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;I)V
+     225: goto          235
+     228: iconst_0
+     229: istore        5
+     231: aload_0
+     232: invokespecial #201                // Method simulateInDepot:()V
+     235: aload_0
+     236: lconst_0
+     237: aload_0
+     238: getfield      #210                // Field stoppingCooldown:J
+     241: lload_1
+     242: lsub
+     243: invokestatic  #168                // Method java/lang/Math.max:(JJ)J
+     246: putfield      #210                // Field stoppingCooldown:J
+     249: aload_3
+     250: ifnull        275
+     253: aload_3
+     254: invokevirtual #213                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.size:()I
+     257: iconst_1
+     258: if_icmple     275
+     261: aload_0
+     262: iload         5
+     264: aload_3
+     265: iconst_1
+     266: invokevirtual #217                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.get:(I)Ljava/lang/Object;
+     269: checkcast     #219                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap
+     272: invokespecial #133                // Method writeVehiclePositions:(ILorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectAVLTreeMap;)V
+     275: aload         4
+     277: ifnull        309
+     280: aload_0
+     281: aload_0
+     282: getfield      #100                // Field railProgress:D
+     285: invokespecial #223                // Method getTimeAlongRoute:(D)J
+     288: lstore        7
+     290: lload         7
+     292: lconst_0
+     293: lcmp
+     294: ifle          309
+     297: aload         4
+     299: aload_0
+     300: getfield      #226                // Field departureIndex:J
+     303: lload         7
+     305: invokevirtual #229                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.put:(JJ)J
+     308: pop2
+     309: aload_0
+     310: getfield      #64                 // Field isClientside:Z
+     313: ifne          350
+     316: aload_0
+     317: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+     320: instanceof    #54                 // class org/mtr/core/simulation/Simulator
+     323: ifeq          339
+     326: aload_0
+     327: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     330: aload_0
+     331: invokedynamic #250,  0            // InvokeDynamic #0:test:(Lorg/mtr/core/data/Vehicle;)Ljava/util/function/Predicate;
+     336: invokevirtual #254                // Method org/mtr/core/data/VehicleExtraData.removeRidingEntitiesIf:(Ljava/util/function/Predicate;)V
+     339: aload_0
+     340: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     343: aload_0
+     344: invokespecial #257                // Method isCurrentlyManual:()Z
+     347: invokevirtual #261                // Method org/mtr/core/data/VehicleExtraData.setIsCurrentlyManual:(Z)V
+     350: return
+
+  public void startUp(long, long);
+    Code:
+       0: aload_0
+       1: getfield      #64                 // Field isClientside:Z
+       4: ifeq          18
+       7: getstatic     #277                // Field org/mtr/core/Main.LOGGER:Lorg/apache/logging/log4j/Logger;
+      10: ldc_w         #279                // String Vehicle#startUp should only be called on the server side!
+      13: invokeinterface #285,  2          // InterfaceMethod org/apache/logging/log4j/Logger.warn:(Ljava/lang/String;)V
+      18: aload_0
+      19: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      22: invokevirtual #288                // Method org/mtr/core/data/VehicleExtraData.closeDoors:()V
+      25: aload_0
+      26: getfield      #179                // Field doorCooldown:J
+      29: lconst_0
+      30: lcmp
+      31: ifne          252
+      34: aload_0
+      35: lload_1
+      36: putfield      #226                // Field departureIndex:J
+      39: aload_0
+      40: lload_3
+      41: putfield      #291                // Field sidingDepartureTime:J
+      44: aload_0
+      45: dup
+      46: getfield      #100                // Field railProgress:D
+      49: ldc2_w        #292                // double 4.0E-6d
+      52: dadd
+      53: putfield      #100                // Field railProgress:D
+      56: aload_0
+      57: lconst_0
+      58: putfield      #296                // Field elapsedDwellTime:J
+      61: aload_0
+      62: ldc2_w        #292                // double 4.0E-6d
+      65: putfield      #96                 // Field speed:D
+      68: aload_0
+      69: iconst_0
+      70: putfield      #298                // Field atoOverride:Z
+      73: aload_0
+      74: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      77: aload_0
+      78: getfield      #96                 // Field speed:D
+      81: invokevirtual #302                // Method org/mtr/core/data/VehicleExtraData.setSpeedTarget:(D)V
+      84: aload_0
+      85: invokespecial #305                // Method setNextStoppingIndex:()V
+      88: aload_0
+      89: invokespecial #308                // Method updateDeviation:()V
+      92: aload_0
+      93: getfield      #310                // Field deviation:J
+      96: lconst_0
+      97: lcmp
+      98: ifle          247
+     101: aload_0
+     102: getfield      #313                // Field nextStoppingIndexAto:J
+     105: aload_0
+     106: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     109: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     112: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+     115: iconst_1
+     116: isub
+     117: i2l
+     118: lcmp
+     119: ifge          247
+     122: aload_0
+     123: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     126: ifnull        247
+     129: aload_0
+     130: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     133: invokevirtual #319                // Method org/mtr/core/data/Siding.getDelayedVehicleSpeedIncreasePercentage:()I
+     136: ifle          247
+     139: aload_0
+     140: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     143: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     146: aload_0
+     147: getfield      #313                // Field nextStoppingIndexAto:J
+     150: l2i
+     151: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     154: checkcast     #322                // class org/mtr/core/data/PathData
+     157: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     160: dstore        5
+     162: dload         5
+     164: aload_0
+     165: getfield      #100                // Field railProgress:D
+     168: dsub
+     169: dstore        7
+     171: aload_0
+     172: dload         5
+     174: invokespecial #223                // Method getTimeAlongRoute:(D)J
+     177: aload_0
+     178: aload_0
+     179: getfield      #100                // Field railProgress:D
+     182: invokespecial #223                // Method getTimeAlongRoute:(D)J
+     185: lsub
+     186: l2d
+     187: dstore        9
+     189: dconst_1
+     190: dload         9
+     192: aload_0
+     193: getfield      #310                // Field deviation:J
+     196: l2d
+     197: dsub
+     198: invokestatic  #328                // Method java/lang/Math.max:(DD)D
+     201: dstore        11
+     203: dload         7
+     205: dload         9
+     207: ddiv
+     208: dstore        13
+     210: dload         7
+     212: dload         11
+     214: ddiv
+     215: dstore        15
+     217: aload_0
+     218: dload         15
+     220: dload         13
+     222: ddiv
+     223: aload_0
+     224: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     227: invokevirtual #319                // Method org/mtr/core/data/Siding.getDelayedVehicleSpeedIncreasePercentage:()I
+     230: i2f
+     231: ldc_w         #329                // float 100.0f
+     234: fdiv
+     235: fconst_1
+     236: fadd
+     237: f2d
+     238: invokestatic  #331                // Method java/lang/Math.min:(DD)D
+     241: putfield      #333                // Field deviationSpeedAdjustment:D
+     244: goto          252
+     247: aload_0
+     248: dconst_1
+     249: putfield      #333                // Field deviationSpeedAdjustment:D
+     252: return
+
+  public long getDepartureIndex();
+    Code:
+       0: aload_0
+       1: getfield      #226                // Field departureIndex:J
+       4: lreturn
+
+  public org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair<org.mtr.core.data.VehicleCar, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair<org.mtr.core.tool.Vector, org.mtr.core.tool.Vector>>>> getVehicleCarsAndPositions();
+    Code:
+       0: new           #158                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+       3: dup
+       4: invokespecial #344                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+       7: astore_1
+       8: aload_0
+       9: getfield      #100                // Field railProgress:D
+      12: aload_0
+      13: getfield      #108                // Field reversed:Z
+      16: ifeq          29
+      19: aload_0
+      20: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      23: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+      26: goto          30
+      29: dconst_0
+      30: dsub
+      31: dstore_2
+      32: iconst_0
+      33: istore        4
+      35: iload         4
+      37: aload_0
+      38: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      41: getfield      #347                // Field org/mtr/core/data/VehicleExtraData.immutableVehicleCars:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      44: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      47: if_icmpge     254
+      50: aload_0
+      51: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      54: getfield      #347                // Field org/mtr/core/data/VehicleExtraData.immutableVehicleCars:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      57: iload         4
+      59: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      62: checkcast     #349                // class org/mtr/core/data/VehicleCar
+      65: astore        5
+      67: dload_2
+      68: aload_0
+      69: getfield      #108                // Field reversed:Z
+      72: ifeq          79
+      75: iconst_1
+      76: goto          80
+      79: iconst_m1
+      80: i2d
+      81: aload         5
+      83: iload         4
+      85: ifne          92
+      88: iconst_1
+      89: goto          93
+      92: iconst_0
+      93: invokevirtual #353                // Method org/mtr/core/data/VehicleCar.getCouplingPadding1:(Z)D
+      96: dmul
+      97: dadd
+      98: dstore_2
+      99: aload         5
+     101: invokevirtual #356                // Method org/mtr/core/data/VehicleCar.getLength:()D
+     104: ldc2_w        #186                // double 2.0d
+     107: ddiv
+     108: dstore        6
+     110: new           #158                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+     113: dup
+     114: invokespecial #344                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+     117: astore        8
+     119: new           #358                // class org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList
+     122: dup
+     123: invokespecial #359                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList."<init>":()V
+     126: astore        9
+     128: aload         8
+     130: aload_0
+     131: dload_2
+     132: aload_0
+     133: getfield      #108                // Field reversed:Z
+     136: ifeq          143
+     139: iconst_1
+     140: goto          144
+     143: iconst_m1
+     144: i2d
+     145: dload         6
+     147: aload         5
+     149: invokevirtual #362                // Method org/mtr/core/data/VehicleCar.getBogie1Position:()D
+     152: dadd
+     153: dmul
+     154: dadd
+     155: aload         9
+     157: invokespecial #366                // Method getBogiePositions:(DLorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+     160: invokevirtual #369                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+     163: pop
+     164: aload         5
+     166: getfield      #372                // Field org/mtr/core/data/VehicleCar.hasOneBogie:Z
+     169: ifne          208
+     172: aload         8
+     174: aload_0
+     175: dload_2
+     176: aload_0
+     177: getfield      #108                // Field reversed:Z
+     180: ifeq          187
+     183: iconst_1
+     184: goto          188
+     187: iconst_m1
+     188: i2d
+     189: dload         6
+     191: aload         5
+     193: invokevirtual #375                // Method org/mtr/core/data/VehicleCar.getBogie2Position:()D
+     196: dadd
+     197: dmul
+     198: dadd
+     199: aload         9
+     201: invokespecial #366                // Method getBogiePositions:(DLorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+     204: invokevirtual #369                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+     207: pop
+     208: aload_1
+     209: new           #377                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair
+     212: dup
+     213: aload         5
+     215: aload         8
+     217: invokespecial #380                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair."<init>":(Ljava/lang/Object;Ljava/lang/Object;)V
+     220: invokevirtual #369                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+     223: pop
+     224: dload_2
+     225: aload_0
+     226: getfield      #108                // Field reversed:Z
+     229: ifeq          236
+     232: iconst_1
+     233: goto          237
+     236: iconst_m1
+     237: i2d
+     238: aload         5
+     240: iconst_1
+     241: iconst_0
+     242: invokevirtual #384                // Method org/mtr/core/data/VehicleCar.getTotalLength:(ZZ)D
+     245: dmul
+     246: dadd
+     247: dstore_2
+     248: iinc          4, 1
+     251: goto          35
+     254: aload_1
+     255: areturn
+
+  public org.mtr.core.tool.Vector getHeadPosition();
+    Code:
+       0: aload_0
+       1: aload_0
+       2: getfield      #100                // Field railProgress:D
+       5: new           #358                // class org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList
+       8: dup
+       9: invokespecial #359                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList."<init>":()V
+      12: invokespecial #401                // Method getPosition:(DLorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList;)Lorg/mtr/core/tool/Vector;
+      15: areturn
+
+  void updateRidingEntities(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.core.data.VehicleRidingEntity>);
+    Code:
+       0: aload_0
+       1: getfield      #64                 // Field isClientside:Z
+       4: ifne          66
+       7: aload_0
+       8: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+      11: instanceof    #54                 // class org/mtr/core/simulation/Simulator
+      14: ifeq          66
+      17: new           #407                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+      20: dup
+      21: invokespecial #408                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      24: astore_2
+      25: new           #407                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+      28: dup
+      29: invokespecial #408                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      32: astore_3
+      33: aload_1
+      34: aload_0
+      35: aload_2
+      36: aload_3
+      37: invokedynamic #421,  0            // InvokeDynamic #1:accept:(Lorg/mtr/core/data/Vehicle;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)Ljava/util/function/Consumer;
+      42: invokevirtual #425                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.forEach:(Ljava/util/function/Consumer;)V
+      45: aload_0
+      46: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      49: aload_2
+      50: invokedynamic #433,  0            // InvokeDynamic #2:test:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)Ljava/util/function/Predicate;
+      55: invokevirtual #254                // Method org/mtr/core/data/VehicleExtraData.removeRidingEntitiesIf:(Ljava/util/function/Predicate;)V
+      58: aload_0
+      59: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      62: aload_3
+      63: invokevirtual #437                // Method org/mtr/core/data/VehicleExtraData.addRidingEntities:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)V
+      66: return
+
+  long getSidingDepartureTime();
+    Code:
+       0: aload_0
+       1: getfield      #291                // Field sidingDepartureTime:J
+       4: lreturn
+
+  private void simulateInDepot();
+    Code:
+       0: aload_0
+       1: aload_0
+       2: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       5: invokevirtual #104                // Method org/mtr/core/data/VehicleExtraData.getDefaultPosition:()D
+       8: putfield      #100                // Field railProgress:D
+      11: aload_0
+      12: iconst_0
+      13: putfield      #108                // Field reversed:Z
+      16: aload_0
+      17: dconst_0
+      18: putfield      #96                 // Field speed:D
+      21: aload_0
+      22: lconst_0
+      23: putfield      #313                // Field nextStoppingIndexAto:J
+      26: aload_0
+      27: lconst_0
+      28: putfield      #447                // Field nextStoppingIndexManual:J
+      31: aload_0
+      32: ldc2_w        #448                // long -1l
+      35: putfield      #226                // Field departureIndex:J
+      38: aload_0
+      39: ldc2_w        #448                // long -1l
+      42: putfield      #291                // Field sidingDepartureTime:J
+      45: aload_0
+      46: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      49: invokevirtual #288                // Method org/mtr/core/data/VehicleExtraData.closeDoors:()V
+      52: aload_0
+      53: getfield      #64                 // Field isClientside:Z
+      56: ifne          90
+      59: aload_0
+      60: invokespecial #257                // Method isCurrentlyManual:()Z
+      63: ifeq          90
+      66: aload_0
+      67: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      70: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+      73: ifle          90
+      76: aload_0
+      77: ldc2_w        #448                // long -1l
+      80: aload_0
+      81: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+      84: invokevirtual #452                // Method org/mtr/core/data/Data.getCurrentMillis:()J
+      87: invokevirtual #454                // Method startUp:(JJ)V
+      90: return
+
+  private void simulateStopped(long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>>, int);
+    Code:
+       0: aload_0
+       1: getfield      #64                 // Field isClientside:Z
+       4: ifeq          8
+       7: return
+       8: aload_0
+       9: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      12: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      15: iload         4
+      17: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+      20: checkcast     #322                // class org/mtr/core/data/PathData
+      23: astore        5
+      25: aload         5
+      27: ifnonnull     31
+      30: return
+      31: aload_0
+      32: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      35: aload_0
+      36: getfield      #100                // Field railProgress:D
+      39: invokevirtual #462                // Method org/mtr/core/data/VehicleExtraData.setStoppingPoint:(D)V
+      42: aload_0
+      43: lconst_0
+      44: putfield      #210                // Field stoppingCooldown:J
+      47: aload_0
+      48: invokespecial #257                // Method isCurrentlyManual:()Z
+      51: ifeq          317
+      54: aload_0
+      55: getfield      #100                // Field railProgress:D
+      58: aload         5
+      60: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      63: dcmpl
+      64: ifne          273
+      67: aload_0
+      68: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      71: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      74: iload         4
+      76: iconst_1
+      77: isub
+      78: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+      81: checkcast     #322                // class org/mtr/core/data/PathData
+      84: astore        6
+      86: aload_0
+      87: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      90: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      93: aload_0
+      94: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      97: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     100: ifle          125
+     103: iload         4
+     105: aload_0
+     106: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     109: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     112: if_icmplt     125
+     115: aload_0
+     116: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     119: invokevirtual #468                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex1:()I
+     122: goto          127
+     125: iload         4
+     127: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+     130: checkcast     #322                // class org/mtr/core/data/PathData
+     133: astore        7
+     135: aload         6
+     137: ifnull        159
+     140: aload         7
+     142: ifnull        159
+     145: aload         6
+     147: aload         7
+     149: invokevirtual #472                // Method org/mtr/core/data/PathData.isOppositeRail:(Lorg/mtr/core/data/PathData;)Z
+     152: ifeq          159
+     155: iconst_1
+     156: goto          160
+     159: iconst_0
+     160: istore        8
+     162: aload         7
+     164: ifnonnull     171
+     167: dconst_0
+     168: goto          193
+     171: aload         7
+     173: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     176: iload         8
+     178: ifeq          191
+     181: aload_0
+     182: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     185: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     188: goto          192
+     191: dconst_0
+     192: dadd
+     193: dstore        9
+     195: aload_0
+     196: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     199: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     202: ifle          270
+     205: aload_0
+     206: iload         4
+     208: dload         9
+     210: dconst_0
+     211: aload_3
+     212: iconst_1
+     213: iconst_0
+     214: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     217: dconst_0
+     218: dcmpg
+     219: ifge          270
+     222: aload_0
+     223: getfield      #179                // Field doorCooldown:J
+     226: lconst_0
+     227: lcmp
+     228: ifne          258
+     231: aload_0
+     232: dload         9
+     234: putfield      #100                // Field railProgress:D
+     237: iload         8
+     239: ifeq          258
+     242: aload_0
+     243: aload_0
+     244: getfield      #108                // Field reversed:Z
+     247: ifne          254
+     250: iconst_1
+     251: goto          255
+     254: iconst_0
+     255: putfield      #108                // Field reversed:Z
+     258: aload_0
+     259: aload_0
+     260: getfield      #226                // Field departureIndex:J
+     263: aload_0
+     264: getfield      #291                // Field sidingDepartureTime:J
+     267: invokevirtual #454                // Method startUp:(JJ)V
+     270: goto          785
+     273: aload_0
+     274: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     277: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     280: ifle          785
+     283: aload_0
+     284: iload         4
+     286: aload_0
+     287: getfield      #100                // Field railProgress:D
+     290: dconst_0
+     291: aload_3
+     292: iconst_1
+     293: iconst_0
+     294: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     297: dconst_0
+     298: dcmpg
+     299: ifge          785
+     302: aload_0
+     303: aload_0
+     304: getfield      #226                // Field departureIndex:J
+     307: aload_0
+     308: getfield      #291                // Field sidingDepartureTime:J
+     311: invokevirtual #454                // Method startUp:(JJ)V
+     314: goto          785
+     317: aload_0
+     318: getfield      #100                // Field railProgress:D
+     321: aload         5
+     323: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     326: dcmpl
+     327: ifne          754
+     330: aload_0
+     331: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     334: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     337: iload         4
+     339: iconst_1
+     340: isub
+     341: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+     344: checkcast     #322                // class org/mtr/core/data/PathData
+     347: astore        6
+     349: aload_0
+     350: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     353: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     356: aload_0
+     357: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     360: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     363: ifle          388
+     366: iload         4
+     368: aload_0
+     369: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     372: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     375: if_icmplt     388
+     378: aload_0
+     379: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     382: invokevirtual #468                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex1:()I
+     385: goto          390
+     388: iload         4
+     390: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+     393: checkcast     #322                // class org/mtr/core/data/PathData
+     396: astore        7
+     398: aload         6
+     400: ifnull        422
+     403: aload         7
+     405: ifnull        422
+     408: aload         6
+     410: aload         7
+     412: invokevirtual #472                // Method org/mtr/core/data/PathData.isOppositeRail:(Lorg/mtr/core/data/PathData;)Z
+     415: ifeq          422
+     418: iconst_1
+     419: goto          423
+     422: iconst_0
+     423: istore        8
+     425: aload         7
+     427: ifnonnull     434
+     430: dconst_0
+     431: goto          456
+     434: aload         7
+     436: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     439: iload         8
+     441: ifeq          454
+     444: aload_0
+     445: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     448: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     451: goto          455
+     454: dconst_0
+     455: dadd
+     456: dstore        9
+     458: aload         6
+     460: ifnonnull     467
+     463: lconst_0
+     464: goto          472
+     467: aload         6
+     469: invokevirtual #479                // Method org/mtr/core/data/PathData.getDwellTime:()J
+     472: lstore        11
+     474: lload         11
+     476: ldc2_w        #480                // long 2l
+     479: ldiv
+     480: lload         11
+     482: ldc2_w        #482                // long 3200l
+     485: lsub
+     486: ldc2_w        #484                // long 1000l
+     489: lsub
+     490: invokestatic  #168                // Method java/lang/Math.max:(JJ)J
+     493: lstore        13
+     495: lload         11
+     497: lconst_0
+     498: lcmp
+     499: ifle          533
+     502: aload_0
+     503: getfield      #296                // Field elapsedDwellTime:J
+     506: ldc2_w        #484                // long 1000l
+     509: lcmp
+     510: iflt          533
+     513: aload_0
+     514: getfield      #296                // Field elapsedDwellTime:J
+     517: lload         13
+     519: lcmp
+     520: ifge          533
+     523: aload_0
+     524: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     527: invokevirtual #488                // Method org/mtr/core/data/VehicleExtraData.openDoors:()V
+     530: goto          608
+     533: aload_0
+     534: getfield      #296                // Field elapsedDwellTime:J
+     537: lload         13
+     539: lcmp
+     540: iflt          608
+     543: aload_0
+     544: iload         4
+     546: dload         9
+     548: dconst_0
+     549: aload_3
+     550: iconst_1
+     551: iconst_0
+     552: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     555: dconst_0
+     556: dcmpg
+     557: ifge          608
+     560: aload_0
+     561: getfield      #179                // Field doorCooldown:J
+     564: lconst_0
+     565: lcmp
+     566: ifne          596
+     569: aload_0
+     570: dload         9
+     572: putfield      #100                // Field railProgress:D
+     575: iload         8
+     577: ifeq          596
+     580: aload_0
+     581: aload_0
+     582: getfield      #108                // Field reversed:Z
+     585: ifne          592
+     588: iconst_1
+     589: goto          593
+     592: iconst_0
+     593: putfield      #108                // Field reversed:Z
+     596: aload_0
+     597: aload_0
+     598: getfield      #226                // Field departureIndex:J
+     601: aload_0
+     602: getfield      #291                // Field sidingDepartureTime:J
+     605: invokevirtual #454                // Method startUp:(JJ)V
+     608: aload_0
+     609: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     612: ifnull        730
+     615: aload_0
+     616: getfield      #296                // Field elapsedDwellTime:J
+     619: ldc2_w        #176                // long 4200l
+     622: lcmp
+     623: iflt          730
+     626: aload_0
+     627: getfield      #296                // Field elapsedDwellTime:J
+     630: lload         13
+     632: lcmp
+     633: ifge          730
+     636: aload_0
+     637: getfield      #310                // Field deviation:J
+     640: lconst_0
+     641: lcmp
+     642: ifeq          730
+     645: aload_0
+     646: getfield      #310                // Field deviation:J
+     649: lconst_0
+     650: lcmp
+     651: ifle          691
+     654: aload_0
+     655: getfield      #310                // Field deviation:J
+     658: lload         13
+     660: aload_0
+     661: getfield      #296                // Field elapsedDwellTime:J
+     664: lsub
+     665: aload_0
+     666: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     669: invokevirtual #491                // Method org/mtr/core/data/Siding.getDelayedVehicleReduceDwellTimePercentage:()I
+     672: i2l
+     673: lmul
+     674: ldc2_w        #492                // long 100l
+     677: ldiv
+     678: invokestatic  #495                // Method java/lang/Math.min:(JJ)J
+     681: lstore        15
+     683: aload_0
+     684: lconst_0
+     685: putfield      #310                // Field deviation:J
+     688: goto          733
+     691: aload_0
+     692: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     695: invokevirtual #498                // Method org/mtr/core/data/Siding.getEarlyVehicleIncreaseDwellTime:()Z
+     698: ifeq          713
+     701: aload_0
+     702: getfield      #310                // Field deviation:J
+     705: lload_1
+     706: lneg
+     707: invokestatic  #168                // Method java/lang/Math.max:(JJ)J
+     710: goto          714
+     713: lconst_0
+     714: lstore        15
+     716: aload_0
+     717: dup
+     718: getfield      #310                // Field deviation:J
+     721: lload         15
+     723: lsub
+     724: putfield      #310                // Field deviation:J
+     727: goto          733
+     730: lconst_0
+     731: lstore        15
+     733: aload_0
+     734: aload_0
+     735: getfield      #296                // Field elapsedDwellTime:J
+     738: lload_1
+     739: ladd
+     740: lload         15
+     742: ladd
+     743: lload         11
+     745: invokestatic  #495                // Method java/lang/Math.min:(JJ)J
+     748: putfield      #296                // Field elapsedDwellTime:J
+     751: goto          785
+     754: aload_0
+     755: iload         4
+     757: aload_0
+     758: getfield      #100                // Field railProgress:D
+     761: dconst_0
+     762: aload_3
+     763: iconst_1
+     764: iconst_0
+     765: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     768: dconst_0
+     769: dcmpg
+     770: ifge          785
+     773: aload_0
+     774: aload_0
+     775: getfield      #226                // Field departureIndex:J
+     778: aload_0
+     779: getfield      #291                // Field sidingDepartureTime:J
+     782: invokevirtual #454                // Method startUp:(JJ)V
+     785: return
+
+  private void simulateMoving(long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>>, int);
+    Code:
+       0: aload_0
+       1: getfield      #64                 // Field isClientside:Z
+       4: ifeq          37
+       7: aload_0
+       8: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      11: invokevirtual #510                // Method org/mtr/core/data/VehicleExtraData.getStoppingPoint:()D
+      14: dstore        5
+      16: aload_0
+      17: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      20: invokevirtual #513                // Method org/mtr/core/data/VehicleExtraData.getSpeedTarget:()D
+      23: dstore        7
+      25: aload_0
+      26: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      29: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+      32: istore        9
+      34: goto          515
+      37: ldc2_w        #514                // double 0.5d
+      40: aload_0
+      41: getfield      #96                 // Field speed:D
+      44: dmul
+      45: aload_0
+      46: getfield      #96                 // Field speed:D
+      49: dmul
+      50: aload_0
+      51: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      54: invokevirtual #518                // Method org/mtr/core/data/VehicleExtraData.getDeceleration:()D
+      57: ddiv
+      58: aload_0
+      59: invokespecial #257                // Method isCurrentlyManual:()Z
+      62: ifeq          69
+      65: iconst_5
+      66: goto          70
+      69: iconst_1
+      70: i2d
+      71: dmul
+      72: dstore        10
+      74: ldc2_w        #514                // double 0.5d
+      77: aload_0
+      78: getfield      #96                 // Field speed:D
+      81: dmul
+      82: aload_0
+      83: getfield      #96                 // Field speed:D
+      86: dmul
+      87: ldc2_w        #519                // double 4.0E-5d
+      90: ddiv
+      91: dstore        12
+      93: aload_0
+      94: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      97: getfield      #525                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+     100: ifeq          151
+     103: ldc2_w        #526                // double 1.7976931348623157E308d
+     106: dstore        5
+     108: aload_0
+     109: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     112: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     115: iload         4
+     117: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     120: checkcast     #322                // class org/mtr/core/data/PathData
+     123: invokevirtual #479                // Method org/mtr/core/data/PathData.getDwellTime:()J
+     126: lconst_0
+     127: lcmp
+     128: ifle          141
+     131: aload_0
+     132: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     135: invokevirtual #488                // Method org/mtr/core/data/VehicleExtraData.openDoors:()V
+     138: goto          235
+     141: aload_0
+     142: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     145: invokevirtual #288                // Method org/mtr/core/data/VehicleExtraData.closeDoors:()V
+     148: goto          235
+     151: aload_0
+     152: invokespecial #530                // Method getPathStoppingPoint:()D
+     155: dstore        14
+     157: aload_0
+     158: getfield      #210                // Field stoppingCooldown:J
+     161: lconst_0
+     162: lcmp
+     163: ifle          183
+     166: aload_0
+     167: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     170: invokevirtual #510                // Method org/mtr/core/data/VehicleExtraData.getStoppingPoint:()D
+     173: dload         14
+     175: invokestatic  #331                // Method java/lang/Math.min:(DD)D
+     178: dstore        5
+     180: goto          235
+     183: aload_0
+     184: iload         4
+     186: aload_0
+     187: getfield      #100                // Field railProgress:D
+     190: dload         10
+     192: aload_3
+     193: iconst_1
+     194: iconst_0
+     195: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     198: dstore        16
+     200: dload         16
+     202: dconst_0
+     203: dcmpg
+     204: ifge          214
+     207: dload         14
+     209: dstore        5
+     211: goto          235
+     214: dload         16
+     216: aload_0
+     217: getfield      #100                // Field railProgress:D
+     220: dadd
+     221: dload         14
+     223: invokestatic  #331                // Method java/lang/Math.min:(DD)D
+     226: dstore        5
+     228: aload_0
+     229: ldc2_w        #484                // long 1000l
+     232: putfield      #210                // Field stoppingCooldown:J
+     235: dload         5
+     237: aload_0
+     238: getfield      #100                // Field railProgress:D
+     241: dsub
+     242: aload_0
+     243: invokespecial #257                // Method isCurrentlyManual:()Z
+     246: ifeq          254
+     249: dload         12
+     251: goto          256
+     254: dload         10
+     256: dcmpg
+     257: ifge          308
+     260: ldc2_w        #531                // double -1.0d
+     263: dstore        7
+     265: aload_0
+     266: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     269: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     272: aload_0
+     273: invokespecial #257                // Method isCurrentlyManual:()Z
+     276: ifeq          293
+     279: dload         12
+     281: ldc2_w        #186                // double 2.0d
+     284: dcmpl
+     285: ifle          293
+     288: bipush        -8
+     290: goto          295
+     293: bipush        -5
+     295: invokestatic  #194                // Method java/lang/Math.min:(II)I
+     298: istore        9
+     300: aload_0
+     301: iconst_1
+     302: putfield      #298                // Field atoOverride:Z
+     305: goto          488
+     308: aload_0
+     309: invokespecial #257                // Method isCurrentlyManual:()Z
+     312: ifeq          388
+     315: aload_0
+     316: getfield      #96                 // Field speed:D
+     319: aload_0
+     320: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     323: invokevirtual #535                // Method org/mtr/core/data/VehicleExtraData.getMaxManualSpeed:()D
+     326: dcmpl
+     327: ifle          346
+     330: aload_0
+     331: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     334: invokevirtual #535                // Method org/mtr/core/data/VehicleExtraData.getMaxManualSpeed:()D
+     337: dstore        7
+     339: bipush        -5
+     341: istore        9
+     343: goto          488
+     346: aload_0
+     347: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     350: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     353: istore        9
+     355: iload         9
+     357: ifle          370
+     360: aload_0
+     361: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     364: invokevirtual #535                // Method org/mtr/core/data/VehicleExtraData.getMaxManualSpeed:()D
+     367: goto          383
+     370: iload         9
+     372: ifge          379
+     375: dconst_0
+     376: goto          383
+     379: aload_0
+     380: getfield      #96                 // Field speed:D
+     383: dstore        7
+     385: goto          488
+     388: aload_0
+     389: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     392: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     395: iload         4
+     397: aload_0
+     398: getfield      #100                // Field railProgress:D
+     401: aload_0
+     402: getfield      #96                 // Field speed:D
+     405: aload_0
+     406: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     409: invokevirtual #518                // Method org/mtr/core/data/VehicleExtraData.getDeceleration:()D
+     412: invokestatic  #539                // Method org/mtr/core/data/Siding.getUpcomingSlowerSpeed:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList;IDDD)D
+     415: dstore        14
+     417: dload         14
+     419: dconst_0
+     420: dcmpl
+     421: iflt          450
+     424: dload         14
+     426: aload_0
+     427: getfield      #96                 // Field speed:D
+     430: dcmpg
+     431: ifge          450
+     434: dload         14
+     436: aload_0
+     437: getfield      #333                // Field deviationSpeedAdjustment:D
+     440: dmul
+     441: dstore        7
+     443: bipush        -5
+     445: istore        9
+     447: goto          488
+     450: aload_0
+     451: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     454: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     457: iload         4
+     459: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     462: checkcast     #322                // class org/mtr/core/data/PathData
+     465: invokevirtual #542                // Method org/mtr/core/data/PathData.getSpeedLimitMetersPerMillisecond:()D
+     468: aload_0
+     469: getfield      #333                // Field deviationSpeedAdjustment:D
+     472: dmul
+     473: dstore        7
+     475: dload         7
+     477: aload_0
+     478: getfield      #96                 // Field speed:D
+     481: invokestatic  #548                // Method java/lang/Double.compare:(DD)I
+     484: iconst_5
+     485: imul
+     486: istore        9
+     488: aload_0
+     489: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     492: dload         5
+     494: invokevirtual #462                // Method org/mtr/core/data/VehicleExtraData.setStoppingPoint:(D)V
+     497: aload_0
+     498: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     501: dload         7
+     503: invokevirtual #302                // Method org/mtr/core/data/VehicleExtraData.setSpeedTarget:(D)V
+     506: aload_0
+     507: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     510: iload         9
+     512: invokevirtual #198                // Method org/mtr/core/data/VehicleExtraData.setPowerLevel:(I)V
+     515: dload         7
+     517: dconst_0
+     518: dcmpg
+     519: ifge          581
+     522: dload         5
+     524: aload_0
+     525: getfield      #100                // Field railProgress:D
+     528: dsub
+     529: dstore        10
+     531: aload_0
+     532: dload         10
+     534: dconst_0
+     535: dcmpg
+     536: ifgt          545
+     539: ldc2_w        #292                // double 4.0E-6d
+     542: goto          575
+     545: aload_0
+     546: getfield      #96                 // Field speed:D
+     549: ldc2_w        #514                // double 0.5d
+     552: aload_0
+     553: getfield      #96                 // Field speed:D
+     556: dmul
+     557: aload_0
+     558: getfield      #96                 // Field speed:D
+     561: dmul
+     562: dload         10
+     564: ddiv
+     565: lload_1
+     566: l2d
+     567: dmul
+     568: dsub
+     569: ldc2_w        #292                // double 4.0E-6d
+     572: invokestatic  #328                // Method java/lang/Math.max:(DD)D
+     575: putfield      #96                 // Field speed:D
+     578: goto          680
+     581: iload         9
+     583: ifle          621
+     586: aload_0
+     587: aload_0
+     588: getfield      #96                 // Field speed:D
+     591: aload_0
+     592: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     595: invokevirtual #551                // Method org/mtr/core/data/VehicleExtraData.getAcceleration:()D
+     598: iload         9
+     600: i2d
+     601: dmul
+     602: ldc2_w        #552                // double 5.0d
+     605: ddiv
+     606: lload_1
+     607: l2d
+     608: dmul
+     609: dadd
+     610: dload         7
+     612: invokestatic  #331                // Method java/lang/Math.min:(DD)D
+     615: putfield      #96                 // Field speed:D
+     618: goto          680
+     621: iload         9
+     623: ifge          674
+     626: aload_0
+     627: aload_0
+     628: getfield      #96                 // Field speed:D
+     631: iload         9
+     633: bipush        -7
+     635: if_icmpge     644
+     638: ldc2_w        #554                // double -4.0E-5d
+     641: goto          659
+     644: aload_0
+     645: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     648: invokevirtual #518                // Method org/mtr/core/data/VehicleExtraData.getDeceleration:()D
+     651: iload         9
+     653: i2d
+     654: dmul
+     655: ldc2_w        #552                // double 5.0d
+     658: ddiv
+     659: lload_1
+     660: l2d
+     661: dmul
+     662: dadd
+     663: dload         7
+     665: invokestatic  #328                // Method java/lang/Math.max:(DD)D
+     668: putfield      #96                 // Field speed:D
+     671: goto          680
+     674: aload_0
+     675: dload         7
+     677: putfield      #96                 // Field speed:D
+     680: aload_0
+     681: dup
+     682: getfield      #100                // Field railProgress:D
+     685: aload_0
+     686: getfield      #96                 // Field speed:D
+     689: lload_1
+     690: l2d
+     691: dmul
+     692: dadd
+     693: putfield      #100                // Field railProgress:D
+     696: aload_0
+     697: getfield      #100                // Field railProgress:D
+     700: dload         5
+     702: dcmpl
+     703: iflt          762
+     706: aload_0
+     707: dload         5
+     709: putfield      #100                // Field railProgress:D
+     712: aload_0
+     713: dconst_0
+     714: putfield      #96                 // Field speed:D
+     717: aload_0
+     718: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     721: dconst_0
+     722: invokevirtual #302                // Method org/mtr/core/data/VehicleExtraData.setSpeedTarget:(D)V
+     725: aload_0
+     726: invokespecial #308                // Method updateDeviation:()V
+     729: aload_0
+     730: getfield      #64                 // Field isClientside:Z
+     733: ifne          827
+     736: aload_0
+     737: iconst_0
+     738: putfield      #298                // Field atoOverride:Z
+     741: aload_0
+     742: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     745: aload_0
+     746: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     749: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+     752: iconst_m1
+     753: invokestatic  #194                // Method java/lang/Math.min:(II)I
+     756: invokevirtual #198                // Method org/mtr/core/data/VehicleExtraData.setPowerLevel:(I)V
+     759: goto          827
+     762: aload_0
+     763: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     766: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+     769: ifle          827
+     772: aload_0
+     773: getfield      #100                // Field railProgress:D
+     776: aload_0
+     777: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     780: invokevirtual #185                // Method org/mtr/core/data/VehicleExtraData.getTotalDistance:()D
+     783: dcmpl
+     784: iflt          827
+     787: aload_0
+     788: aload_0
+     789: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     792: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     795: aload_0
+     796: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     799: invokevirtual #468                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex1:()I
+     802: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     805: checkcast     #322                // class org/mtr/core/data/PathData
+     808: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     811: aload_0
+     812: getfield      #100                // Field railProgress:D
+     815: dadd
+     816: aload_0
+     817: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     820: invokevirtual #185                // Method org/mtr/core/data/VehicleExtraData.getTotalDistance:()D
+     823: dsub
+     824: putfield      #100                // Field railProgress:D
+     827: return
+
+  private double getPathStoppingPoint();
+    Code:
+       0: aload_0
+       1: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       4: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       7: aload_0
+       8: getfield      #313                // Field nextStoppingIndexAto:J
+      11: l2i
+      12: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+      15: checkcast     #322                // class org/mtr/core/data/PathData
+      18: astore_3
+      19: aload_3
+      20: ifnull        39
+      23: aload_0
+      24: getfield      #100                // Field railProgress:D
+      27: aload_3
+      28: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+      31: dcmpl
+      32: ifle          39
+      35: iconst_1
+      36: goto          40
+      39: iconst_0
+      40: istore        4
+      42: aload_0
+      43: invokespecial #257                // Method isCurrentlyManual:()Z
+      46: ifne          54
+      49: iload         4
+      51: ifeq          61
+      54: aload_0
+      55: getfield      #447                // Field nextStoppingIndexManual:J
+      58: goto          65
+      61: aload_0
+      62: getfield      #313                // Field nextStoppingIndexAto:J
+      65: l2i
+      66: istore        5
+      68: iload         5
+      70: aload_0
+      71: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      74: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      77: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      80: iconst_1
+      81: isub
+      82: if_icmplt     130
+      85: aload_0
+      86: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      89: invokevirtual #185                // Method org/mtr/core/data/VehicleExtraData.getTotalDistance:()D
+      92: aload_0
+      93: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      96: invokevirtual #182                // Method org/mtr/core/data/VehicleExtraData.getRepeatIndex2:()I
+      99: ifle          106
+     102: dconst_0
+     103: goto          125
+     106: aload_0
+     107: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     110: invokevirtual #117                // Method org/mtr/core/data/VehicleExtraData.getRailLength:()D
+     113: aload_0
+     114: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     117: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     120: dsub
+     121: ldc2_w        #186                // double 2.0d
+     124: ddiv
+     125: dsub
+     126: dstore_1
+     127: goto          149
+     130: aload_0
+     131: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     134: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     137: iload         5
+     139: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     142: checkcast     #322                // class org/mtr/core/data/PathData
+     145: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     148: dstore_1
+     149: iload         4
+     151: ifeq          158
+     154: aload_0
+     155: invokespecial #305                // Method setNextStoppingIndex:()V
+     158: dload_1
+     159: dreturn
+
+  private boolean isCurrentlyManual();
+    Code:
+       0: aload_0
+       1: getfield      #64                 // Field isClientside:Z
+       4: ifeq          18
+       7: getstatic     #277                // Field org/mtr/core/Main.LOGGER:Lorg/apache/logging/log4j/Logger;
+      10: ldc_w         #569                // String Vehicle#isCurrentlyManual should only be called on the server side!
+      13: invokeinterface #285,  2          // InterfaceMethod org/apache/logging/log4j/Logger.warn:(Ljava/lang/String;)V
+      18: aload_0
+      19: getfield      #298                // Field atoOverride:Z
+      22: ifne          38
+      25: aload_0
+      26: getfield      #162                // Field manualCooldown:J
+      29: lconst_0
+      30: lcmp
+      31: ifle          38
+      34: iconst_1
+      35: goto          39
+      38: iconst_0
+      39: ireturn
+
+  private void setNextStoppingIndex();
+    Code:
+       0: aload_0
+       1: aload_0
+       2: aload_0
+       3: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       6: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       9: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      12: iconst_1
+      13: isub
+      14: i2l
+      15: dup2_x1
+      16: putfield      #447                // Field nextStoppingIndexManual:J
+      19: putfield      #313                // Field nextStoppingIndexAto:J
+      22: aload_0
+      23: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      26: aload_0
+      27: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      30: invokevirtual #185                // Method org/mtr/core/data/VehicleExtraData.getTotalDistance:()D
+      33: invokevirtual #462                // Method org/mtr/core/data/VehicleExtraData.setStoppingPoint:(D)V
+      36: aload_0
+      37: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      40: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      43: aload_0
+      44: getfield      #100                // Field railProgress:D
+      47: invokestatic  #129                // InterfaceMethod org/mtr/core/tool/Utilities.getIndexFromConditionalList:(Ljava/util/List;D)I
+      50: istore_1
+      51: iload_1
+      52: aload_0
+      53: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      56: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      59: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      62: if_icmpge     202
+      65: aload_0
+      66: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      69: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      72: iload_1
+      73: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      76: checkcast     #322                // class org/mtr/core/data/PathData
+      79: astore_2
+      80: aload_2
+      81: invokevirtual #479                // Method org/mtr/core/data/PathData.getDwellTime:()J
+      84: lconst_0
+      85: lcmp
+      86: ifle          196
+      89: aload_0
+      90: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      93: invokevirtual #147                // Method org/mtr/core/data/VehicleExtraData.getIsManualAllowed:()Z
+      96: ifeq          171
+      99: aload_0
+     100: aload_0
+     101: getfield      #313                // Field nextStoppingIndexAto:J
+     104: iload_1
+     105: i2l
+     106: invokestatic  #495                // Method java/lang/Math.min:(JJ)J
+     109: putfield      #313                // Field nextStoppingIndexAto:J
+     112: iload_1
+     113: aload_0
+     114: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     117: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     120: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+     123: iconst_1
+     124: isub
+     125: if_icmpge     196
+     128: aload_0
+     129: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     132: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+     135: iload_1
+     136: iconst_1
+     137: iadd
+     138: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+     141: checkcast     #322                // class org/mtr/core/data/PathData
+     144: aload_2
+     145: invokevirtual #472                // Method org/mtr/core/data/PathData.isOppositeRail:(Lorg/mtr/core/data/PathData;)Z
+     148: ifeq          196
+     151: aload_0
+     152: iload_1
+     153: i2l
+     154: putfield      #447                // Field nextStoppingIndexManual:J
+     157: aload_0
+     158: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     161: aload_2
+     162: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     165: invokevirtual #462                // Method org/mtr/core/data/VehicleExtraData.setStoppingPoint:(D)V
+     168: goto          202
+     171: aload_0
+     172: aload_0
+     173: iload_1
+     174: i2l
+     175: dup2_x1
+     176: putfield      #447                // Field nextStoppingIndexManual:J
+     179: putfield      #313                // Field nextStoppingIndexAto:J
+     182: aload_0
+     183: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     186: aload_2
+     187: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     190: invokevirtual #462                // Method org/mtr/core/data/VehicleExtraData.setStoppingPoint:(D)V
+     193: goto          202
+     196: iinc          1, 1
+     199: goto          51
+     202: return
+
+  private void writeVehiclePositions(int, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>);
+    Code:
+       0: iconst_2
+       1: anewarray     #572                // class org/mtr/core/data/Position
+       4: dup
+       5: iconst_0
+       6: aconst_null
+       7: aastore
+       8: dup
+       9: iconst_1
+      10: aconst_null
+      11: aastore
+      12: astore_3
+      13: iload_1
+      14: istore        4
+      16: iload         4
+      18: iflt          215
+      21: aload_0
+      22: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      25: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      28: iload         4
+      30: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      33: checkcast     #322                // class org/mtr/core/data/PathData
+      36: astore        5
+      38: aload         5
+      40: invokevirtual #578                // Method org/mtr/core/data/PathData.getOrderedPosition1:()Lorg/mtr/core/data/Position;
+      43: astore        6
+      45: aload         5
+      47: invokevirtual #581                // Method org/mtr/core/data/PathData.getOrderedPosition2:()Lorg/mtr/core/data/Position;
+      50: astore        7
+      52: aload_3
+      53: iconst_0
+      54: aload_3
+      55: iconst_0
+      56: aaload
+      57: aload         6
+      59: aload         7
+      61: invokestatic  #585                // Method org/mtr/core/data/Position.getMin:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Lorg/mtr/core/data/Position;
+      64: invokestatic  #585                // Method org/mtr/core/data/Position.getMin:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Lorg/mtr/core/data/Position;
+      67: aastore
+      68: aload_3
+      69: iconst_1
+      70: aload_3
+      71: iconst_1
+      72: aaload
+      73: aload         6
+      75: aload         7
+      77: invokestatic  #588                // Method org/mtr/core/data/Position.getMax:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Lorg/mtr/core/data/Position;
+      80: invokestatic  #588                // Method org/mtr/core/data/Position.getMax:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Lorg/mtr/core/data/Position;
+      83: aastore
+      84: aload_0
+      85: getfield      #100                // Field railProgress:D
+      88: aload_0
+      89: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      92: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+      95: dsub
+      96: aload         5
+      98: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     101: dcmpl
+     102: ifle          108
+     105: goto          215
+     108: aload_0
+     109: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+     112: getfield      #525                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+     115: ifne          209
+     118: aload         5
+     120: aload_0
+     121: getfield      #100                // Field railProgress:D
+     124: aload_0
+     125: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     128: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     131: dsub
+     132: aload_0
+     133: getfield      #100                // Field railProgress:D
+     136: ldc2_w        #589                // double 0.01d
+     139: dsub
+     140: invokestatic  #594                // Method getBlockedBounds:(Lorg/mtr/core/data/PathData;DD)Lorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair;
+     143: astore        8
+     145: aload         8
+     147: invokevirtual #599                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.rightDouble:()D
+     150: aload         8
+     152: invokevirtual #602                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.leftDouble:()D
+     155: dsub
+     156: ldc2_w        #589                // double 0.01d
+     159: dcmpl
+     160: ifle          209
+     163: aload_0
+     164: invokevirtual #111                // Method getIsOnRoute:()Z
+     167: ifeq          209
+     170: iload         4
+     172: ifle          209
+     175: aload_2
+     176: aload         6
+     178: aload         7
+     180: aload_0
+     181: aload         8
+     183: invokedynamic #615,  0            // InvokeDynamic #3:apply:(Lorg/mtr/core/data/Vehicle;Lorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair;)Ljava/util/function/Function;
+     188: invokedynamic #624,  0            // InvokeDynamic #4:get:()Ljava/util/function/Supplier;
+     193: invokestatic  #627                // Method org/mtr/core/data/Data.put:(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/Supplier;)V
+     196: aload         5
+     198: aload_0
+     199: getfield      #630                // Field id:J
+     202: getstatic     #634                // Field org/mtr/core/data/Rail$BlockReservation.CURRENTLY_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+     205: invokevirtual #638                // Method org/mtr/core/data/PathData.isSignalBlocked:(JLorg/mtr/core/data/Rail$BlockReservation;)Z
+     208: pop
+     209: iinc          4, -1
+     212: goto          16
+     215: aload_0
+     216: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     219: ifnull        317
+     222: aload_0
+     223: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     226: getfield      #642                // Field org/mtr/core/data/Siding.area:Lorg/mtr/core/data/AreaBase;
+     229: ifnull        299
+     232: aload_0
+     233: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+     236: instanceof    #54                 // class org/mtr/core/simulation/Simulator
+     239: ifeq          299
+     242: aload_0
+     243: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     246: invokevirtual #645                // Method org/mtr/core/data/VehicleExtraData.checkForUpdate:()Z
+     249: istore        5
+     251: aload_0
+     252: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+     255: getfield      #525                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+     258: ifeq          265
+     261: iconst_0
+     262: goto          273
+     265: iconst_0
+     266: iload         4
+     268: iconst_1
+     269: iadd
+     270: invokestatic  #647                // Method java/lang/Math.max:(II)I
+     273: istore        6
+     275: aload_0
+     276: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+     279: checkcast     #54                 // class org/mtr/core/simulation/Simulator
+     282: getfield      #651                // Field org/mtr/core/simulation/Simulator.clients:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+     285: aload_0
+     286: aload_3
+     287: iload         5
+     289: iload         6
+     291: invokedynamic #661,  0            // InvokeDynamic #5:accept:(Lorg/mtr/core/data/Vehicle;[Lorg/mtr/core/data/Position;ZI)Ljava/util/function/Consumer;
+     296: invokevirtual #664                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.forEach:(Ljava/util/function/Consumer;)V
+     299: aload_0
+     300: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     303: aload_0
+     304: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+     307: getfield      #642                // Field org/mtr/core/data/Siding.area:Lorg/mtr/core/data/AreaBase;
+     310: checkcast     #666                // class org/mtr/core/data/Depot
+     313: iload_1
+     314: invokevirtual #670                // Method org/mtr/core/data/VehicleExtraData.setRoutePlatformInfo:(Lorg/mtr/core/data/Depot;I)V
+     317: return
+
+  private double railBlockedDistance(int, double, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>>, boolean, boolean);
+    Code:
+       0: iload_1
+       1: istore        9
+       3: aload         6
+       5: ifnull        236
+       8: iload         9
+      10: aload_0
+      11: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      14: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      17: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      20: if_icmpge     236
+      23: aload_0
+      24: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      27: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      30: iload         9
+      32: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      35: checkcast     #322                // class org/mtr/core/data/PathData
+      38: astore        10
+      40: dload_2
+      41: dload         4
+      43: dadd
+      44: aload_0
+      45: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      48: getfield      #686                // Field org/mtr/core/data/TransportMode.stoppingSpace:I
+      51: i2d
+      52: dadd
+      53: dstore        11
+      55: aload         10
+      57: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      60: dload         11
+      62: dcmpl
+      63: iflt          70
+      66: ldc2_w        #531                // double -1.0d
+      69: dreturn
+      70: dconst_0
+      71: aload         10
+      73: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      76: dload_2
+      77: dsub
+      78: invokestatic  #328                // Method java/lang/Math.max:(DD)D
+      81: dstore        13
+      83: aload_0
+      84: iload         9
+      86: aload         6
+      88: iload         7
+      90: iload         8
+      92: invokespecial #690                // Method checkAndBlockSignal:(ILorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)Z
+      95: ifeq          101
+      98: dload         13
+     100: dreturn
+     101: aload         10
+     103: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     106: aload         10
+     108: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+     111: dload_2
+     112: dload         11
+     114: invokestatic  #694                // InterfaceMethod org/mtr/core/tool/Utilities.isIntersecting:(DDDD)Z
+     117: ifeq          230
+     120: aload         10
+     122: dload_2
+     123: dload         11
+     125: invokestatic  #594                // Method getBlockedBounds:(Lorg/mtr/core/data/PathData;DD)Lorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair;
+     128: astore        15
+     130: iconst_0
+     131: istore        16
+     133: iload         16
+     135: iconst_2
+     136: if_icmpge     230
+     139: aload         6
+     141: iload         16
+     143: invokevirtual #217                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.get:(I)Ljava/lang/Object;
+     146: checkcast     #696                // class java/util/Map
+     149: aload         10
+     151: invokevirtual #578                // Method org/mtr/core/data/PathData.getOrderedPosition1:()Lorg/mtr/core/data/Position;
+     154: aload         10
+     156: invokevirtual #581                // Method org/mtr/core/data/PathData.getOrderedPosition2:()Lorg/mtr/core/data/Position;
+     159: invokestatic  #700                // Method org/mtr/core/data/Data.tryGet:(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+     162: checkcast     #702                // class org/mtr/core/data/VehiclePosition
+     165: astore        17
+     167: aload         17
+     169: ifnull        224
+     172: aload         17
+     174: aload         15
+     176: invokevirtual #602                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.leftDouble:()D
+     179: aload         15
+     181: invokevirtual #599                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.rightDouble:()D
+     184: aload         10
+     186: getfield      #705                // Field org/mtr/core/data/PathData.reversePositions:Z
+     189: aload_0
+     190: getfield      #630                // Field id:J
+     193: invokevirtual #709                // Method org/mtr/core/data/VehiclePosition.getClosestOverlap:(DDZJ)D
+     196: dstore        18
+     198: dload         18
+     200: dconst_0
+     201: dcmpl
+     202: iflt          224
+     205: dconst_0
+     206: dload         13
+     208: dload         18
+     210: dadd
+     211: aload_0
+     212: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+     215: getfield      #686                // Field org/mtr/core/data/TransportMode.stoppingSpace:I
+     218: i2d
+     219: dsub
+     220: invokestatic  #328                // Method java/lang/Math.max:(DD)D
+     223: dreturn
+     224: iinc          16, 1
+     227: goto          133
+     230: iinc          9, 1
+     233: goto          3
+     236: ldc2_w        #531                // double -1.0d
+     239: dreturn
+
+  private boolean checkAndBlockSignal(int, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectAVLTreeMap<org.mtr.core.data.Position, org.mtr.core.data.VehiclePosition>>>, boolean, boolean);
+    Code:
+       0: aload_0
+       1: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       4: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       7: iload_1
+       8: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      11: checkcast     #322                // class org/mtr/core/data/PathData
+      14: astore        5
+      16: iload         4
+      18: ifeq          34
+      21: aload         5
+      23: aload_0
+      24: getfield      #630                // Field id:J
+      27: getstatic     #718                // Field org/mtr/core/data/Rail$BlockReservation.DO_NOT_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+      30: invokevirtual #638                // Method org/mtr/core/data/PathData.isSignalBlocked:(JLorg/mtr/core/data/Rail$BlockReservation;)Z
+      33: ireturn
+      34: aload         5
+      36: invokevirtual #722                // Method org/mtr/core/data/PathData.getSignalColors:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet;
+      39: astore        6
+      41: iload_1
+      42: iconst_1
+      43: iadd
+      44: istore        7
+      46: aload         6
+      48: invokevirtual #727                // Method org/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet.isEmpty:()Z
+      51: ifne          194
+      54: iload         7
+      56: aload_0
+      57: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      60: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      63: invokevirtual #316                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      66: if_icmpge     194
+      69: aload_0
+      70: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      73: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      76: iload         7
+      78: invokevirtual #320                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      81: checkcast     #322                // class org/mtr/core/data/PathData
+      84: astore        8
+      86: aload         8
+      88: invokevirtual #722                // Method org/mtr/core/data/PathData.getSignalColors:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet;
+      91: invokevirtual #731                // Method org/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet.intStream:()Ljava/util/stream/IntStream;
+      94: aload         6
+      96: dup
+      97: invokevirtual #737                // Method java/lang/Object.getClass:()Ljava/lang/Class;
+     100: pop
+     101: invokedynamic #746,  0            // InvokeDynamic #6:test:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet;)Ljava/util/function/IntPredicate;
+     106: invokeinterface #752,  2          // InterfaceMethod java/util/stream/IntStream.noneMatch:(Ljava/util/function/IntPredicate;)Z
+     111: ifeq          188
+     114: aload_0
+     115: iload         7
+     117: aload         8
+     119: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+     122: aload_0
+     123: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     126: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     129: aload_2
+     130: iconst_0
+     131: iconst_1
+     132: invokespecial #476                // Method railBlockedDistance:(IDDLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZZ)D
+     135: dstore        9
+     137: dload         9
+     139: dconst_0
+     140: dcmpl
+     141: iflt          157
+     144: dload         9
+     146: aload_0
+     147: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     150: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+     153: dcmpg
+     154: iflt          182
+     157: aload         5
+     159: aload_0
+     160: getfield      #630                // Field id:J
+     163: iload_3
+     164: ifeq          173
+     167: getstatic     #755                // Field org/mtr/core/data/Rail$BlockReservation.PRE_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+     170: goto          176
+     173: getstatic     #718                // Field org/mtr/core/data/Rail$BlockReservation.DO_NOT_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+     176: invokevirtual #638                // Method org/mtr/core/data/PathData.isSignalBlocked:(JLorg/mtr/core/data/Rail$BlockReservation;)Z
+     179: ifeq          186
+     182: iconst_1
+     183: goto          187
+     186: iconst_0
+     187: ireturn
+     188: iinc          7, 1
+     191: goto          46
+     194: iconst_0
+     195: ireturn
+
+  private long getTimeAlongRoute(double);
+    Code:
+       0: aload_0
+       1: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+       4: ifnonnull     11
+       7: lconst_0
+       8: goto          45
+      11: aload_0
+      12: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      15: dload_1
+      16: aload_0
+      17: getfield      #96                 // Field speed:D
+      20: dconst_0
+      21: dcmpl
+      22: ifne          29
+      25: iconst_1
+      26: goto          30
+      29: iconst_0
+      30: i2d
+      31: dsub
+      32: invokevirtual #761                // Method org/mtr/core/data/Siding.getTimeAlongRoute:(D)D
+      35: aload_0
+      36: getfield      #296                // Field elapsedDwellTime:J
+      39: l2d
+      40: dadd
+      41: invokestatic  #764                // Method java/lang/Math.floor:(D)D
+      44: d2l
+      45: lreturn
+
+  private void updateDeviation();
+    Code:
+       0: aload_0
+       1: aload_0
+       2: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+       5: getfield      #525                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+       8: ifne          18
+      11: aload_0
+      12: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      15: ifnonnull     22
+      18: lconst_0
+      19: goto          55
+      22: aload_0
+      23: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+      26: invokevirtual #452                // Method org/mtr/core/data/Data.getCurrentMillis:()J
+      29: aload_0
+      30: getfield      #291                // Field sidingDepartureTime:J
+      33: lsub
+      34: aload_0
+      35: aload_0
+      36: getfield      #100                // Field railProgress:D
+      39: invokespecial #223                // Method getTimeAlongRoute:(D)J
+      42: aload_0
+      43: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      46: ldc2_w        #765                // long 86400000l
+      49: invokevirtual #770                // Method org/mtr/core/data/Siding.getRepeatInterval:(J)J
+      52: invokestatic  #774                // InterfaceMethod org/mtr/core/tool/Utilities.circularDifference:(JJJ)J
+      55: putfield      #310                // Field deviation:J
+      58: return
+
+  private org.mtr.core.tool.Vector getPosition(double, org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleArrayList);
+    Code:
+       0: aload_0
+       1: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       4: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       7: aload_0
+       8: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      11: getfield      #125                // Field org/mtr/core/data/VehicleExtraData.immutablePath:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      14: dload_1
+      15: invokestatic  #129                // InterfaceMethod org/mtr/core/tool/Utilities.getIndexFromConditionalList:(Ljava/util/List;D)I
+      18: invokestatic  #459                // InterfaceMethod org/mtr/core/tool/Utilities.getElement:(Ljava/util/List;I)Ljava/lang/Object;
+      21: checkcast     #322                // class org/mtr/core/data/PathData
+      24: astore        4
+      26: aload         4
+      28: ifnonnull     33
+      31: aconst_null
+      32: areturn
+      33: aload         4
+      35: dload_1
+      36: aload         4
+      38: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      41: dsub
+      42: invokevirtual #778                // Method org/mtr/core/data/PathData.getPosition:(D)Lorg/mtr/core/tool/Vector;
+      45: astore        5
+      47: aload_0
+      48: getfield      #522                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      51: getstatic     #781                // Field org/mtr/core/data/TransportMode.AIRPLANE:Lorg/mtr/core/data/TransportMode;
+      54: if_acmpne     120
+      57: aload         4
+      59: invokevirtual #784                // Method org/mtr/core/data/PathData.getSpeedLimitKilometersPerHour:()J
+      62: ldc2_w        #785                // long 300l
+      65: lcmp
+      66: ifne          120
+      69: aload         4
+      71: invokevirtual #789                // Method org/mtr/core/data/PathData.isDescending:()Z
+      74: ifeq          120
+      77: aload_3
+      78: invokevirtual #790                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList.isEmpty:()Z
+      81: ifeq          97
+      84: aload_3
+      85: aload         5
+      87: invokevirtual #795                // Method org/mtr/core/tool/Vector.y:()D
+      90: invokevirtual #798                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList.add:(D)Z
+      93: pop
+      94: aload         5
+      96: areturn
+      97: new           #792                // class org/mtr/core/tool/Vector
+     100: dup
+     101: aload         5
+     103: invokevirtual #801                // Method org/mtr/core/tool/Vector.x:()D
+     106: aload_3
+     107: iconst_0
+     108: invokevirtual #805                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList.getDouble:(I)D
+     111: aload         5
+     113: invokevirtual #808                // Method org/mtr/core/tool/Vector.z:()D
+     116: invokespecial #811                // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+     119: areturn
+     120: aload         5
+     122: areturn
+
+  private org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair<org.mtr.core.tool.Vector, org.mtr.core.tool.Vector> getBogiePositions(double, org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleArrayList);
+    Code:
+       0: aload_0
+       1: getfield      #100                // Field railProgress:D
+       4: aload_0
+       5: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+       8: invokevirtual #114                // Method org/mtr/core/data/VehicleExtraData.getTotalVehicleLength:()D
+      11: dsub
+      12: dstore        4
+      14: dload_1
+      15: dload         4
+      17: aload_0
+      18: getfield      #100                // Field railProgress:D
+      21: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      24: dstore        6
+      26: dload         6
+      28: dload         4
+      30: dsub
+      31: invokestatic  #821                // Method java/lang/Math.abs:(D)D
+      34: dload         6
+      36: aload_0
+      37: getfield      #100                // Field railProgress:D
+      40: dsub
+      41: invokestatic  #821                // Method java/lang/Math.abs:(D)D
+      44: invokestatic  #331                // Method java/lang/Math.min:(DD)D
+      47: ldc2_w        #822                // double 0.1d
+      50: dconst_1
+      51: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      54: dstore        12
+      56: dload         6
+      58: aload_0
+      59: getfield      #108                // Field reversed:Z
+      62: ifeq          71
+      65: dload         12
+      67: dneg
+      68: goto          73
+      71: dload         12
+      73: dadd
+      74: dload         4
+      76: aload_0
+      77: getfield      #100                // Field railProgress:D
+      80: ldc2_w        #824                // double 0.001d
+      83: dsub
+      84: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      87: dstore        8
+      89: dload         6
+      91: aload_0
+      92: getfield      #108                // Field reversed:Z
+      95: ifeq          104
+      98: dload         12
+     100: dneg
+     101: goto          106
+     104: dload         12
+     106: dsub
+     107: dload         4
+     109: aload_0
+     110: getfield      #100                // Field railProgress:D
+     113: ldc2_w        #824                // double 0.001d
+     116: dsub
+     117: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+     120: dstore        10
+     122: aload_0
+     123: dload         8
+     125: aload_3
+     126: invokespecial #401                // Method getPosition:(DLorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList;)Lorg/mtr/core/tool/Vector;
+     129: astore        14
+     131: aload_0
+     132: dload         10
+     134: aload_3
+     135: invokespecial #401                // Method getPosition:(DLorg/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleArrayList;)Lorg/mtr/core/tool/Vector;
+     138: astore        15
+     140: aload         14
+     142: ifnull        150
+     145: aload         15
+     147: ifnonnull     182
+     150: new           #377                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair
+     153: dup
+     154: new           #792                // class org/mtr/core/tool/Vector
+     157: dup
+     158: dload         8
+     160: dconst_0
+     161: dconst_0
+     162: invokespecial #811                // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+     165: new           #792                // class org/mtr/core/tool/Vector
+     168: dup
+     169: dload         10
+     171: dconst_0
+     172: dconst_0
+     173: invokespecial #811                // Method org/mtr/core/tool/Vector."<init>":(DDD)V
+     176: invokespecial #380                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair."<init>":(Ljava/lang/Object;Ljava/lang/Object;)V
+     179: goto          193
+     182: new           #377                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair
+     185: dup
+     186: aload         14
+     188: aload         15
+     190: invokespecial #380                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair."<init>":(Ljava/lang/Object;Ljava/lang/Object;)V
+     193: areturn
+
+  private static org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair getBlockedBounds(org.mtr.core.data.PathData, double, double);
+    Code:
+       0: dload_1
+       1: aload_0
+       2: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+       5: aload_0
+       6: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+       9: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      12: aload_0
+      13: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      16: dsub
+      17: dstore        5
+      19: aload_0
+      20: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+      23: dload_3
+      24: aload_0
+      25: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      28: aload_0
+      29: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+      32: invokestatic  #818                // InterfaceMethod org/mtr/core/tool/Utilities.clamp:(DDD)D
+      35: dsub
+      36: dstore        7
+      38: new           #596                // class org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair
+      41: dup
+      42: aload_0
+      43: getfield      #705                // Field org/mtr/core/data/PathData.reversePositions:Z
+      46: ifeq          54
+      49: dload         7
+      51: goto          56
+      54: dload         5
+      56: aload_0
+      57: invokevirtual #325                // Method org/mtr/core/data/PathData.getEndDistance:()D
+      60: aload_0
+      61: invokevirtual #465                // Method org/mtr/core/data/PathData.getStartDistance:()D
+      64: dsub
+      65: aload_0
+      66: getfield      #705                // Field org/mtr/core/data/PathData.reversePositions:Z
+      69: ifeq          77
+      72: dload         5
+      74: goto          79
+      77: dload         7
+      79: dsub
+      80: invokespecial #834                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair."<init>":(DD)V
+      83: areturn
+
+  private void lambda$writeVehiclePositions$4(org.mtr.core.data.Position[], boolean, int, org.mtr.core.data.Client);
+    Code:
+       0: aload         4
+       2: invokevirtual #841                // Method org/mtr/core/data/Client.getPosition:()Lorg/mtr/core/data/Position;
+       5: astore        5
+       7: aload         4
+       9: invokevirtual #844                // Method org/mtr/core/data/Client.getUpdateRadius:()D
+      12: dstore        6
+      14: aload_1
+      15: iconst_0
+      16: aaload
+      17: ifnull        26
+      20: aload_1
+      21: iconst_1
+      22: aaload
+      23: ifnonnull     49
+      26: aload_0
+      27: getfield      #50                 // Field siding:Lorg/mtr/core/data/Siding;
+      30: getfield      #642                // Field org/mtr/core/data/Siding.area:Lorg/mtr/core/data/AreaBase;
+      33: checkcast     #666                // class org/mtr/core/data/Depot
+      36: aload         5
+      38: dload         6
+      40: invokevirtual #848                // Method org/mtr/core/data/Depot.inArea:(Lorg/mtr/core/data/Position;D)Z
+      43: ifeq          95
+      46: goto          87
+      49: aload         5
+      51: aload_1
+      52: iconst_0
+      53: aaload
+      54: aload_1
+      55: iconst_1
+      56: aaload
+      57: dload         6
+      59: invokestatic  #852                // InterfaceMethod org/mtr/core/tool/Utilities.isBetween:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;D)Z
+      62: ifne          87
+      65: aload_0
+      66: invokevirtual #854                // Method closeToDepot:()Z
+      69: ifne          95
+      72: aload_0
+      73: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      76: aload         4
+      78: getfield      #858                // Field org/mtr/core/data/Client.uuid:Ljava/util/UUID;
+      81: invokevirtual #862                // Method org/mtr/core/data/VehicleExtraData.hasRidingEntity:(Ljava/util/UUID;)Z
+      84: ifeq          95
+      87: aload         4
+      89: aload_0
+      90: iload_2
+      91: iload_3
+      92: invokevirtual #866                // Method org/mtr/core/data/Client.update:(Lorg/mtr/core/data/Vehicle;ZI)V
+      95: return
+
+  private org.mtr.core.data.VehiclePosition lambda$writeVehiclePositions$3(org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair, org.mtr.core.data.VehiclePosition);
+    Code:
+       0: aload_2
+       1: ifnonnull     14
+       4: new           #702                // class org/mtr/core/data/VehiclePosition
+       7: dup
+       8: invokespecial #870                // Method org/mtr/core/data/VehiclePosition."<init>":()V
+      11: goto          15
+      14: aload_2
+      15: astore_3
+      16: aload_3
+      17: aload_1
+      18: invokevirtual #602                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.leftDouble:()D
+      21: aload_1
+      22: invokevirtual #599                // Method org/mtr/libraries/it/unimi/dsi/fastutil/doubles/DoubleDoubleImmutablePair.rightDouble:()D
+      25: aload_0
+      26: getfield      #630                // Field id:J
+      29: invokevirtual #874                // Method org/mtr/core/data/VehiclePosition.addSegment:(DDJ)V
+      32: aload_3
+      33: areturn
+
+  private static boolean lambda$updateRidingEntities$2(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, org.mtr.core.data.VehicleRidingEntity);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: getfield      #879                // Field org/mtr/core/data/VehicleRidingEntity.uuid:Ljava/util/UUID;
+       5: invokevirtual #881                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.contains:(Ljava/lang/Object;)Z
+       8: ireturn
+
+  private void lambda$updateRidingEntities$1(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, org.mtr.core.data.VehicleRidingEntity);
+    Code:
+       0: aload_1
+       1: aload_3
+       2: getfield      #879                // Field org/mtr/core/data/VehicleRidingEntity.uuid:Ljava/util/UUID;
+       5: invokevirtual #883                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.add:(Ljava/lang/Object;)Z
+       8: pop
+       9: aload_3
+      10: invokevirtual #886                // Method org/mtr/core/data/VehicleRidingEntity.isOnVehicle:()Z
+      13: ifeq          43
+      16: aload_2
+      17: aload_3
+      18: invokevirtual #883                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.add:(Ljava/lang/Object;)Z
+      21: pop
+      22: aload_0
+      23: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+      26: checkcast     #54                 // class org/mtr/core/simulation/Simulator
+      29: aload_3
+      30: getfield      #879                // Field org/mtr/core/data/VehicleRidingEntity.uuid:Ljava/util/UUID;
+      33: aload_0
+      34: getfield      #630                // Field id:J
+      37: invokevirtual #890                // Method org/mtr/core/simulation/Simulator.ride:(Ljava/util/UUID;J)V
+      40: goto          57
+      43: aload_0
+      44: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+      47: checkcast     #54                 // class org/mtr/core/simulation/Simulator
+      50: aload_3
+      51: getfield      #879                // Field org/mtr/core/data/VehicleRidingEntity.uuid:Ljava/util/UUID;
+      54: invokevirtual #894                // Method org/mtr/core/simulation/Simulator.stopRiding:(Ljava/util/UUID;)V
+      57: aload_0
+      58: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      61: invokevirtual #147                // Method org/mtr/core/data/VehicleExtraData.getIsManualAllowed:()Z
+      64: ifeq          207
+      67: aload_3
+      68: invokevirtual #897                // Method org/mtr/core/data/VehicleRidingEntity.isDriver:()Z
+      71: ifeq          207
+      74: aload_0
+      75: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+      78: invokevirtual #190                // Method org/mtr/core/data/VehicleExtraData.getPowerLevel:()I
+      81: istore        4
+      83: aload_3
+      84: invokevirtual #900                // Method org/mtr/core/data/VehicleRidingEntity.manualToggleDoors:()Z
+      87: ifeq          116
+      90: aload_0
+      91: getfield      #96                 // Field speed:D
+      94: dconst_0
+      95: dcmpl
+      96: ifle          109
+      99: aload_0
+     100: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     103: invokevirtual #288                // Method org/mtr/core/data/VehicleExtraData.closeDoors:()V
+     106: goto          116
+     109: aload_0
+     110: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     113: invokevirtual #903                // Method org/mtr/core/data/VehicleExtraData.toggleDoors:()V
+     116: aload_3
+     117: invokevirtual #906                // Method org/mtr/core/data/VehicleRidingEntity.manualToggleAto:()Z
+     120: ifeq          148
+     123: aload_0
+     124: aload_0
+     125: getfield      #96                 // Field speed:D
+     128: dconst_0
+     129: dcmpl
+     130: ifle          144
+     133: aload_0
+     134: getfield      #298                // Field atoOverride:Z
+     137: ifne          144
+     140: iconst_1
+     141: goto          145
+     144: iconst_0
+     145: putfield      #298                // Field atoOverride:Z
+     148: aload_3
+     149: invokevirtual #909                // Method org/mtr/core/data/VehicleRidingEntity.manualAccelerate:()Z
+     152: ifeq          179
+     155: aload_0
+     156: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     159: iload         4
+     161: iconst_1
+     162: iadd
+     163: bipush        7
+     165: invokestatic  #194                // Method java/lang/Math.min:(II)I
+     168: invokevirtual #198                // Method org/mtr/core/data/VehicleExtraData.setPowerLevel:(I)V
+     171: aload_0
+     172: iconst_0
+     173: putfield      #298                // Field atoOverride:Z
+     176: goto          207
+     179: aload_3
+     180: invokevirtual #912                // Method org/mtr/core/data/VehicleRidingEntity.manualBrake:()Z
+     183: ifeq          207
+     186: aload_0
+     187: getfield      #52                 // Field vehicleExtraData:Lorg/mtr/core/data/VehicleExtraData;
+     190: iload         4
+     192: iconst_1
+     193: isub
+     194: bipush        -8
+     196: invokestatic  #647                // Method java/lang/Math.max:(II)I
+     199: invokevirtual #198                // Method org/mtr/core/data/VehicleExtraData.setPowerLevel:(I)V
+     202: aload_0
+     203: iconst_0
+     204: putfield      #298                // Field atoOverride:Z
+     207: return
+
+  private boolean lambda$simulate$0(org.mtr.core.data.VehicleRidingEntity);
+    Code:
+       0: aload_0
+       1: getfield      #231                // Field data:Lorg/mtr/core/data/Data;
+       4: checkcast     #54                 // class org/mtr/core/simulation/Simulator
+       7: aload_1
+       8: getfield      #879                // Field org/mtr/core/data/VehicleRidingEntity.uuid:Ljava/util/UUID;
+      11: aload_0
+      12: getfield      #630                // Field id:J
+      15: invokevirtual #916                // Method org/mtr/core/simulation/Simulator.isRiding:(Ljava/util/UUID;J)Z
+      18: ifne          25
+      21: iconst_1
+      22: goto          26
+      25: iconst_0
+      26: ireturn
+}

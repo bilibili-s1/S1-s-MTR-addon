@@ -1,0 +1,242 @@
+﻿Compiled from "ItemNodeModifierBase.java"
+public abstract class org.mtr.mod.item.ItemNodeModifierBase extends org.mtr.mod.item.ItemBlockClickingBase {
+  public final boolean forNonContinuousMovementNode;
+
+  public final boolean forContinuousMovementNode;
+
+  public final boolean forAirplaneNode;
+
+  protected final boolean isConnector;
+
+  private static final java.lang.String TAG_TRANSPORT_MODE = "transport_mode";
+
+  public org.mtr.mod.item.ItemNodeModifierBase(boolean, boolean, boolean, boolean, org.mtr.mapping.holder.ItemSettings);
+    Code:
+       0: aload_0
+       1: aload         5
+       3: iconst_1
+       4: invokevirtual #33                 // Method org/mtr/mapping/holder/ItemSettings.maxCount:(I)Lorg/mtr/mapping/holder/ItemSettings;
+       7: invokespecial #36                 // Method org/mtr/mod/item/ItemBlockClickingBase."<init>":(Lorg/mtr/mapping/holder/ItemSettings;)V
+      10: aload_0
+      11: iload_1
+      12: putfield      #38                 // Field forNonContinuousMovementNode:Z
+      15: aload_0
+      16: iload_2
+      17: putfield      #40                 // Field forContinuousMovementNode:Z
+      20: aload_0
+      21: iload_3
+      22: putfield      #42                 // Field forAirplaneNode:Z
+      25: aload_0
+      26: iload         4
+      28: putfield      #44                 // Field isConnector:Z
+      31: return
+
+  protected void onStartClick(org.mtr.mapping.holder.ItemUsageContext, org.mtr.mapping.holder.CompoundTag);
+    Code:
+       0: aload_2
+       1: ldc           #24                 // String transport_mode
+       3: aload_1
+       4: invokevirtual #57                 // Method org/mtr/mapping/holder/ItemUsageContext.getWorld:()Lorg/mtr/mapping/holder/World;
+       7: aload_1
+       8: invokevirtual #61                 // Method org/mtr/mapping/holder/ItemUsageContext.getBlockPos:()Lorg/mtr/mapping/holder/BlockPos;
+      11: invokevirtual #67                 // Method org/mtr/mapping/holder/World.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+      14: invokevirtual #73                 // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      17: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      20: checkcast     #81                 // class org/mtr/mod/block/BlockNode
+      23: getfield      #85                 // Field org/mtr/mod/block/BlockNode.transportMode:Lorg/mtr/core/data/TransportMode;
+      26: invokevirtual #91                 // Method org/mtr/core/data/TransportMode.toString:()Ljava/lang/String;
+      29: invokevirtual #97                 // Method org/mtr/mapping/holder/CompoundTag.putString:(Ljava/lang/String;Ljava/lang/String;)V
+      32: return
+
+  protected void onEndClick(org.mtr.mapping.holder.ItemUsageContext, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.CompoundTag);
+    Code:
+       0: aload_1
+       1: invokevirtual #57                 // Method org/mtr/mapping/holder/ItemUsageContext.getWorld:()Lorg/mtr/mapping/holder/World;
+       4: astore        4
+       6: aload_1
+       7: invokevirtual #61                 // Method org/mtr/mapping/holder/ItemUsageContext.getBlockPos:()Lorg/mtr/mapping/holder/BlockPos;
+      10: astore        5
+      12: aload         4
+      14: aload         5
+      16: invokevirtual #67                 // Method org/mtr/mapping/holder/World.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+      19: astore        6
+      21: aload         6
+      23: invokevirtual #73                 // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      26: astore        7
+      28: aload         4
+      30: aload_2
+      31: invokevirtual #67                 // Method org/mtr/mapping/holder/World.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+      34: astore        8
+      36: aload_1
+      37: invokevirtual #106                // Method org/mtr/mapping/holder/ItemUsageContext.getPlayer:()Lorg/mtr/mapping/holder/PlayerEntity;
+      40: astore        9
+      42: aload         9
+      44: invokestatic  #112                // Method org/mtr/mapping/holder/ServerPlayerEntity.isInstance:(Lorg/mtr/mapping/tool/HolderBase;)Z
+      47: ifeq          196
+      50: aload         8
+      52: invokevirtual #73                 // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      55: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      58: instanceof    #81                 // class org/mtr/mod/block/BlockNode
+      61: ifeq          196
+      64: aload         7
+      66: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      69: checkcast     #81                 // class org/mtr/mod/block/BlockNode
+      72: getfield      #85                 // Field org/mtr/mod/block/BlockNode.transportMode:Lorg/mtr/core/data/TransportMode;
+      75: invokevirtual #91                 // Method org/mtr/core/data/TransportMode.toString:()Ljava/lang/String;
+      78: aload_3
+      79: ldc           #24                 // String transport_mode
+      81: invokevirtual #116                // Method org/mtr/mapping/holder/CompoundTag.getString:(Ljava/lang/String;)Ljava/lang/String;
+      84: invokevirtual #122                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+      87: ifeq          196
+      90: aload_0
+      91: getfield      #44                 // Field isConnector:Z
+      94: ifeq          182
+      97: aload         5
+      99: aload_2
+     100: invokevirtual #125                // Method org/mtr/mapping/holder/BlockPos.equals:(Ljava/lang/Object;)Z
+     103: ifne          196
+     106: aload         5
+     108: invokestatic  #131                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+     111: aload         6
+     113: invokestatic  #135                // Method org/mtr/mod/block/BlockNode.getAngle:(Lorg/mtr/mapping/holder/BlockState;)F
+     116: aload_2
+     117: invokestatic  #131                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+     120: aload         8
+     122: invokestatic  #135                // Method org/mtr/mod/block/BlockNode.getAngle:(Lorg/mtr/mapping/holder/BlockState;)F
+     125: invokestatic  #141                // Method org/mtr/core/data/Rail.getAngles:(Lorg/mtr/core/data/Position;FLorg/mtr/core/data/Position;F)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+     128: astore        10
+     130: aload_0
+     131: aload         4
+     133: aload_1
+     134: invokevirtual #145                // Method org/mtr/mapping/holder/ItemUsageContext.getStack:()Lorg/mtr/mapping/holder/ItemStack;
+     137: aload         7
+     139: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+     142: checkcast     #81                 // class org/mtr/mod/block/BlockNode
+     145: getfield      #85                 // Field org/mtr/mod/block/BlockNode.transportMode:Lorg/mtr/core/data/TransportMode;
+     148: aload         6
+     150: aload         8
+     152: aload         5
+     154: aload_2
+     155: aload         10
+     157: invokevirtual #151                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.left:()Ljava/lang/Object;
+     160: checkcast     #153                // class org/mtr/core/tool/Angle
+     163: aload         10
+     165: invokevirtual #156                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.right:()Ljava/lang/Object;
+     168: checkcast     #153                // class org/mtr/core/tool/Angle
+     171: aload         9
+     173: invokestatic  #160                // Method org/mtr/mapping/holder/ServerPlayerEntity.cast:(Lorg/mtr/mapping/tool/HolderBase;)Lorg/mtr/mapping/holder/ServerPlayerEntity;
+     176: invokevirtual #164                // Method onConnect:(Lorg/mtr/mapping/holder/World;Lorg/mtr/mapping/holder/ItemStack;Lorg/mtr/core/data/TransportMode;Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/tool/Angle;Lorg/mtr/mapping/holder/ServerPlayerEntity;)V
+     179: goto          196
+     182: aload_0
+     183: aload         4
+     185: aload         5
+     187: aload_2
+     188: aload         9
+     190: invokestatic  #160                // Method org/mtr/mapping/holder/ServerPlayerEntity.cast:(Lorg/mtr/mapping/tool/HolderBase;)Lorg/mtr/mapping/holder/ServerPlayerEntity;
+     193: invokevirtual #170                // Method onRemove:(Lorg/mtr/mapping/holder/World;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/ServerPlayerEntity;)V
+     196: aload_3
+     197: ldc           #24                 // String transport_mode
+     199: invokevirtual #174                // Method org/mtr/mapping/holder/CompoundTag.remove:(Ljava/lang/String;)V
+     202: return
+
+  protected boolean clickCondition(org.mtr.mapping.holder.ItemUsageContext);
+    Code:
+       0: aload_1
+       1: invokevirtual #57                 // Method org/mtr/mapping/holder/ItemUsageContext.getWorld:()Lorg/mtr/mapping/holder/World;
+       4: astore_2
+       5: aload_2
+       6: aload_1
+       7: invokevirtual #61                 // Method org/mtr/mapping/holder/ItemUsageContext.getBlockPos:()Lorg/mtr/mapping/holder/BlockPos;
+      10: invokevirtual #67                 // Method org/mtr/mapping/holder/World.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+      13: invokevirtual #73                 // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      16: astore_3
+      17: aload_3
+      18: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      21: instanceof    #81                 // class org/mtr/mod/block/BlockNode
+      24: ifeq          75
+      27: aload_3
+      28: getfield      #79                 // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      31: checkcast     #81                 // class org/mtr/mod/block/BlockNode
+      34: astore        4
+      36: aload         4
+      38: getfield      #85                 // Field org/mtr/mod/block/BlockNode.transportMode:Lorg/mtr/core/data/TransportMode;
+      41: getstatic     #193                // Field org/mtr/core/data/TransportMode.AIRPLANE:Lorg/mtr/core/data/TransportMode;
+      44: if_acmpne     52
+      47: aload_0
+      48: getfield      #42                 // Field forAirplaneNode:Z
+      51: ireturn
+      52: aload         4
+      54: getfield      #85                 // Field org/mtr/mod/block/BlockNode.transportMode:Lorg/mtr/core/data/TransportMode;
+      57: getfield      #196                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+      60: ifeq          70
+      63: aload_0
+      64: getfield      #40                 // Field forContinuousMovementNode:Z
+      67: goto          74
+      70: aload_0
+      71: getfield      #38                 // Field forNonContinuousMovementNode:Z
+      74: ireturn
+      75: iconst_0
+      76: ireturn
+
+  protected abstract void onConnect(org.mtr.mapping.holder.World, org.mtr.mapping.holder.ItemStack, org.mtr.core.data.TransportMode, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.core.tool.Angle, org.mtr.core.tool.Angle, org.mtr.mapping.holder.ServerPlayerEntity);
+
+  protected abstract void onRemove(org.mtr.mapping.holder.World, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.ServerPlayerEntity);
+
+  public static void getRail(org.mtr.mapping.holder.World, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.ServerPlayerEntity, java.util.function.Consumer<org.mtr.core.data.Rail>);
+    Code:
+       0: ldc           #208                // String rails
+       2: aload_0
+       3: invokevirtual #212                // Method org/mtr/mapping/holder/World.getServer:()Lorg/mtr/mapping/holder/MinecraftServer;
+       6: aload_0
+       7: new           #214                // class org/mtr/core/operation/RailsRequest
+      10: dup
+      11: invokespecial #217                // Method org/mtr/core/operation/RailsRequest."<init>":()V
+      14: aload_1
+      15: invokestatic  #131                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+      18: aload_2
+      19: invokestatic  #131                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+      22: invokestatic  #223                // Method org/mtr/core/data/TwoPositionsBase.getHexId:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      25: invokevirtual #227                // Method org/mtr/core/operation/RailsRequest.addRailId:(Ljava/lang/String;)Lorg/mtr/core/operation/RailsRequest;
+      28: aload_3
+      29: aload         4
+      31: invokedynamic #247,  0            // InvokeDynamic #0:accept:(Lorg/mtr/mapping/holder/ServerPlayerEntity;Ljava/util/function/Consumer;)Ljava/util/function/Consumer;
+      36: ldc           #249                // class org/mtr/core/operation/RailsResponse
+      38: invokestatic  #253                // Method org/mtr/mod/Init.sendMessageC2S:(Ljava/lang/String;Lorg/mtr/mapping/holder/MinecraftServer;Lorg/mtr/mapping/holder/World;Lorg/mtr/core/serializer/SerializedDataBase;Ljava/util/function/Consumer;Ljava/lang/Class;)V
+      41: return
+
+  public static org.mtr.core.data.TransportMode getTransportMode(org.mtr.mapping.holder.CompoundTag);
+    Code:
+       0: getstatic     #261                // Field org/mtr/core/data/TransportMode.TRAIN:Lorg/mtr/core/data/TransportMode;
+       3: aload_0
+       4: ldc           #24                 // String transport_mode
+       6: invokevirtual #116                // Method org/mtr/mapping/holder/CompoundTag.getString:(Ljava/lang/String;)Ljava/lang/String;
+       9: invokestatic  #267                // InterfaceMethod org/mtr/core/tool/EnumHelper.valueOf:(Ljava/lang/Enum;Ljava/lang/String;)Ljava/lang/Enum;
+      12: checkcast     #87                 // class org/mtr/core/data/TransportMode
+      15: areturn
+
+  private static void lambda$getRail$0(org.mtr.mapping.holder.ServerPlayerEntity, java.util.function.Consumer, org.mtr.core.operation.RailsResponse);
+    Code:
+       0: aload_2
+       1: invokevirtual #272                // Method org/mtr/core/operation/RailsResponse.getRails:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       4: astore_3
+       5: aload_3
+       6: invokevirtual #278                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.isEmpty:()Z
+       9: ifeq          34
+      12: aload_0
+      13: ifnull        48
+      16: aload_0
+      17: getstatic     #282                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_RAIL_NOT_FOUND_ACTION:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      20: iconst_0
+      21: anewarray     #284                // class java/lang/Object
+      24: invokevirtual #288                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/Text;
+      27: iconst_1
+      28: invokevirtual #292                // Method org/mtr/mapping/holder/ServerPlayerEntity.sendMessage:(Lorg/mtr/mapping/holder/Text;Z)V
+      31: goto          48
+      34: aload_1
+      35: aload_3
+      36: iconst_0
+      37: invokevirtual #296                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      40: checkcast     #137                // class org/mtr/core/data/Rail
+      43: invokeinterface #300,  2          // InterfaceMethod java/util/function/Consumer.accept:(Ljava/lang/Object;)V
+      48: return
+}

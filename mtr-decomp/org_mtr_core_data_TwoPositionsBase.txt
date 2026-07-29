@@ -1,0 +1,142 @@
+﻿Compiled from "TwoPositionsBase.java"
+public abstract class org.mtr.core.data.TwoPositionsBase implements org.mtr.core.serializer.SerializedDataBaseWithId {
+  private java.lang.String hexId;
+
+  public org.mtr.core.data.TwoPositionsBase();
+    Code:
+       0: aload_0
+       1: invokespecial #13                 // Method java/lang/Object."<init>":()V
+       4: return
+
+  public final java.lang.String getHexId();
+    Code:
+       0: aload_0
+       1: getfield      #19                 // Field hexId:Ljava/lang/String;
+       4: ifnonnull     22
+       7: aload_0
+       8: aload_0
+       9: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+      12: aload_0
+      13: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      16: invokestatic  #29                 // Method getHexId:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      19: putfield      #19                 // Field hexId:Ljava/lang/String;
+      22: aload_0
+      23: getfield      #19                 // Field hexId:Ljava/lang/String;
+      26: areturn
+
+  public final void writePositions(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArraySet<org.mtr.core.data.Position>);
+    Code:
+       0: aload_1
+       1: aload_0
+       2: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+       5: invokevirtual #39                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.add:(Ljava/lang/Object;)Z
+       8: pop
+       9: aload_1
+      10: aload_0
+      11: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      14: invokevirtual #39                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.add:(Ljava/lang/Object;)Z
+      17: pop
+      18: return
+
+  protected final boolean matchesPositions(org.mtr.core.data.TwoPositionsBase);
+    Code:
+       0: aload_0
+       1: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+       4: aload_1
+       5: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+       8: invokevirtual #49                 // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      11: ifeq          28
+      14: aload_0
+      15: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      18: aload_1
+      19: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      22: invokevirtual #49                 // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      25: ifne          56
+      28: aload_0
+      29: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      32: aload_1
+      33: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+      36: invokevirtual #49                 // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      39: ifeq          60
+      42: aload_0
+      43: invokevirtual #23                 // Method getPosition1:()Lorg/mtr/core/data/Position;
+      46: aload_1
+      47: invokevirtual #26                 // Method getPosition2:()Lorg/mtr/core/data/Position;
+      50: invokevirtual #49                 // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+      53: ifeq          60
+      56: iconst_1
+      57: goto          61
+      60: iconst_0
+      61: ireturn
+
+  protected abstract org.mtr.core.data.Position getPosition1();
+
+  protected abstract org.mtr.core.data.Position getPosition2();
+
+  public static java.lang.String getHexId(org.mtr.core.data.Position, org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #55                 // Method org/mtr/core/data/Position.compareTo:(Lorg/mtr/core/data/Position;)I
+       5: ifle          12
+       8: iconst_1
+       9: goto          13
+      12: iconst_0
+      13: istore_2
+      14: iload_2
+      15: ifeq          22
+      18: aload_1
+      19: goto          23
+      22: aload_0
+      23: iload_2
+      24: ifeq          31
+      27: aload_0
+      28: goto          32
+      31: aload_1
+      32: invokestatic  #58                 // Method getHexIdRaw:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      35: areturn
+
+  public static java.lang.String getHexIdRaw(org.mtr.core.data.Position, org.mtr.core.data.Position);
+    Code:
+       0: ldc           #63                 // String %s-%s-%s-%s-%s-%s
+       2: bipush        6
+       4: anewarray     #4                  // class java/lang/Object
+       7: dup
+       8: iconst_0
+       9: aload_0
+      10: invokevirtual #67                 // Method org/mtr/core/data/Position.getX:()J
+      13: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      16: aastore
+      17: dup
+      18: iconst_1
+      19: aload_0
+      20: invokevirtual #76                 // Method org/mtr/core/data/Position.getY:()J
+      23: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      26: aastore
+      27: dup
+      28: iconst_2
+      29: aload_0
+      30: invokevirtual #79                 // Method org/mtr/core/data/Position.getZ:()J
+      33: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      36: aastore
+      37: dup
+      38: iconst_3
+      39: aload_1
+      40: invokevirtual #67                 // Method org/mtr/core/data/Position.getX:()J
+      43: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      46: aastore
+      47: dup
+      48: iconst_4
+      49: aload_1
+      50: invokevirtual #76                 // Method org/mtr/core/data/Position.getY:()J
+      53: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      56: aastore
+      57: dup
+      58: iconst_5
+      59: aload_1
+      60: invokevirtual #79                 // Method org/mtr/core/data/Position.getZ:()J
+      63: invokestatic  #73                 // InterfaceMethod org/mtr/core/tool/Utilities.numberToPaddedHexString:(J)Ljava/lang/String;
+      66: aastore
+      67: invokestatic  #85                 // Method java/lang/String.format:(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;
+      70: areturn
+}

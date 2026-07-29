@@ -1,0 +1,369 @@
+﻿Compiled from "SavedRailScreenBase.java"
+public abstract class org.mtr.mod.screen.SavedRailScreenBase<T extends org.mtr.core.data.SavedRailBase<T, U>, U extends org.mtr.core.data.AreaBase<U, T>> extends org.mtr.mod.screen.MTRScreenBase implements org.mtr.mod.data.IGui {
+  protected final T savedRailBase;
+
+  protected final int textWidth;
+
+  protected final boolean showScheduleControls;
+
+  protected final org.mtr.mod.screen.WidgetShorterSlider sliderDwellTimeMin;
+
+  protected final org.mtr.mod.screen.WidgetShorterSlider sliderDwellTimeSec;
+
+  private final org.mtr.mapping.mapper.TextFieldWidgetExtension textFieldSavedRailNumber;
+
+  private final org.mtr.mapping.holder.MutableText savedRailNumberText;
+
+  protected static final int SECONDS_PER_MINUTE = 60;
+
+  private static final int MAX_DWELL_TIME = 1200;
+
+  private static final int MAX_SAVED_RAIL_NUMBER_LENGTH = 10;
+
+  public org.mtr.mod.screen.SavedRailScreenBase(T, org.mtr.core.data.TransportMode, org.mtr.mapping.mapper.ScreenExtension, org.mtr.mapping.holder.MutableText...);
+    Code:
+       0: aload_0
+       1: aload_3
+       2: invokespecial #47                 // Method org/mtr/mod/screen/MTRScreenBase."<init>":(Lorg/mtr/mapping/mapper/ScreenExtension;)V
+       5: aload_0
+       6: aload_1
+       7: putfield      #49                 // Field savedRailBase:Lorg/mtr/core/data/SavedRailBase;
+      10: aload_0
+      11: aload_2
+      12: getfield      #54                 // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+      15: ifne          22
+      18: iconst_1
+      19: goto          23
+      22: iconst_0
+      23: putfield      #62                 // Field showScheduleControls:Z
+      26: aload_0
+      27: aload_0
+      28: invokevirtual #66                 // Method getNumberStringKey:()Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      31: iconst_0
+      32: anewarray     #68                 // class java/lang/Object
+      35: invokevirtual #72                 // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getMutableText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/MutableText;
+      38: putfield      #74                 // Field savedRailNumberText:Lorg/mtr/mapping/holder/MutableText;
+      41: aload_0
+      42: new           #76                 // class org/mtr/mapping/mapper/TextFieldWidgetExtension
+      45: dup
+      46: iconst_0
+      47: iconst_0
+      48: iconst_0
+      49: bipush        20
+      51: bipush        10
+      53: getstatic     #82                 // Field org/mtr/mapping/tool/TextCase.DEFAULT:Lorg/mtr/mapping/tool/TextCase;
+      56: aconst_null
+      57: ldc           #84                 // String 1
+      59: invokespecial #87                 // Method org/mtr/mapping/mapper/TextFieldWidgetExtension."<init>":(IIIIILorg/mtr/mapping/tool/TextCase;Ljava/lang/String;Ljava/lang/String;)V
+      62: putfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+      65: iconst_0
+      66: istore        5
+      68: aload         4
+      70: astore        6
+      72: aload         6
+      74: arraylength
+      75: istore        7
+      77: iconst_0
+      78: istore        8
+      80: iload         8
+      82: iload         7
+      84: if_icmpge     112
+      87: aload         6
+      89: iload         8
+      91: aaload
+      92: astore        9
+      94: iload         5
+      96: aload         9
+      98: invokestatic  #95                 // Method org/mtr/mapping/mapper/GraphicsHolder.getTextWidth:(Lorg/mtr/mapping/holder/MutableText;)I
+     101: invokestatic  #101                // Method java/lang/Math.max:(II)I
+     104: istore        5
+     106: iinc          8, 1
+     109: goto          80
+     112: aload_0
+     113: aload_0
+     114: getfield      #74                 // Field savedRailNumberText:Lorg/mtr/mapping/holder/MutableText;
+     117: invokestatic  #95                 // Method org/mtr/mapping/mapper/GraphicsHolder.getTextWidth:(Lorg/mtr/mapping/holder/MutableText;)I
+     120: iload         5
+     122: invokestatic  #101                // Method java/lang/Math.max:(II)I
+     125: bipush        6
+     127: iadd
+     128: putfield      #103                // Field textWidth:I
+     131: aload_0
+     132: new           #105                // class org/mtr/mod/screen/WidgetShorterSlider
+     135: dup
+     136: iconst_0
+     137: iconst_0
+     138: ldc2_w        #106                // double 10.0d
+     141: invokestatic  #111                // Method java/lang/Math.floor:(D)D
+     144: d2i
+     145: getstatic     #115                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_ARRIVAL_MIN:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+     148: dup
+     149: invokestatic  #121                // Method java/util/Objects.requireNonNull:(Ljava/lang/Object;)Ljava/lang/Object;
+     152: pop
+     153: invokedynamic #141,  0            // InvokeDynamic #0:apply:(Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;)Ljava/util/function/IntFunction;
+     158: aconst_null
+     159: invokespecial #144                // Method org/mtr/mod/screen/WidgetShorterSlider."<init>":(IIILjava/util/function/IntFunction;Ljava/util/function/IntConsumer;)V
+     162: putfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     165: aload_0
+     166: new           #105                // class org/mtr/mod/screen/WidgetShorterSlider
+     169: dup
+     170: iconst_0
+     171: iconst_0
+     172: bipush        119
+     174: bipush        10
+     176: iconst_2
+     177: invokedynamic #153,  0            // InvokeDynamic #1:apply:()Ljava/util/function/IntFunction;
+     182: aconst_null
+     183: invokespecial #156                // Method org/mtr/mod/screen/WidgetShorterSlider."<init>":(IIIIILjava/util/function/IntFunction;Ljava/util/function/IntConsumer;)V
+     186: putfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     189: return
+
+  protected void init2();
+    Code:
+       0: aload_0
+       1: invokespecial #169                // Method org/mtr/mod/screen/MTRScreenBase.init2:()V
+       4: aload_0
+       5: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+       8: bipush        20
+      10: aload_0
+      11: getfield      #103                // Field textWidth:I
+      14: iadd
+      15: iconst_2
+      16: iadd
+      17: bipush        22
+      19: aload_0
+      20: getfield      #172                // Field width:I
+      23: aload_0
+      24: getfield      #103                // Field textWidth:I
+      27: isub
+      28: bipush        40
+      30: isub
+      31: iconst_4
+      32: isub
+      33: invokestatic  #178                // InterfaceMethod org/mtr/mod/client/IDrawing.setPositionAndWidth:(Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;III)V
+      36: aload_0
+      37: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+      40: aload_0
+      41: getfield      #49                 // Field savedRailBase:Lorg/mtr/core/data/SavedRailBase;
+      44: invokevirtual #182                // Method org/mtr/core/data/SavedRailBase.getName:()Ljava/lang/String;
+      47: invokevirtual #186                // Method org/mtr/mapping/mapper/TextFieldWidgetExtension.setText2:(Ljava/lang/String;)V
+      50: aload_0
+      51: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+      54: aload_0
+      55: invokedynamic #197,  0            // InvokeDynamic #2:accept:(Lorg/mtr/mod/screen/SavedRailScreenBase;)Ljava/util/function/Consumer;
+      60: invokevirtual #201                // Method org/mtr/mapping/mapper/TextFieldWidgetExtension.setChangedListener2:(Ljava/util/function/Consumer;)V
+      63: getstatic     #115                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_ARRIVAL_MIN:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      66: iconst_1
+      67: anewarray     #68                 // class java/lang/Object
+      70: dup
+      71: iconst_0
+      72: ldc           #203                // String 88
+      74: aastore
+      75: invokevirtual #72                 // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getMutableText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/MutableText;
+      78: invokestatic  #95                 // Method org/mtr/mapping/mapper/GraphicsHolder.getTextWidth:(Lorg/mtr/mapping/holder/MutableText;)I
+      81: getstatic     #206                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_ARRIVAL_SEC:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      84: iconst_1
+      85: anewarray     #68                 // class java/lang/Object
+      88: dup
+      89: iconst_0
+      90: ldc           #208                // String 88.8
+      92: aastore
+      93: invokevirtual #212                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getString:([Ljava/lang/Object;)Ljava/lang/String;
+      96: invokestatic  #215                // Method org/mtr/mapping/mapper/GraphicsHolder.getTextWidth:(Ljava/lang/String;)I
+      99: invokestatic  #101                // Method java/lang/Math.max:(II)I
+     102: bipush        6
+     104: iadd
+     105: istore_1
+     106: aload_0
+     107: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     110: bipush        20
+     112: aload_0
+     113: getfield      #103                // Field textWidth:I
+     116: iadd
+     117: invokevirtual #219                // Method org/mtr/mod/screen/WidgetShorterSlider.setX2:(I)V
+     120: aload_0
+     121: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     124: bipush        10
+     126: invokevirtual #222                // Method org/mtr/mod/screen/WidgetShorterSlider.setHeight:(I)V
+     129: aload_0
+     130: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     133: aload_0
+     134: getfield      #172                // Field width:I
+     137: aload_0
+     138: getfield      #103                // Field textWidth:I
+     141: isub
+     142: bipush        40
+     144: isub
+     145: iload_1
+     146: isub
+     147: invokevirtual #225                // Method org/mtr/mod/screen/WidgetShorterSlider.setWidth2:(I)V
+     150: aload_0
+     151: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     154: bipush        20
+     156: aload_0
+     157: getfield      #103                // Field textWidth:I
+     160: iadd
+     161: invokevirtual #219                // Method org/mtr/mod/screen/WidgetShorterSlider.setX2:(I)V
+     164: aload_0
+     165: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     168: bipush        10
+     170: invokevirtual #222                // Method org/mtr/mod/screen/WidgetShorterSlider.setHeight:(I)V
+     173: aload_0
+     174: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     177: aload_0
+     178: getfield      #172                // Field width:I
+     181: aload_0
+     182: getfield      #103                // Field textWidth:I
+     185: isub
+     186: bipush        40
+     188: isub
+     189: iload_1
+     190: isub
+     191: invokevirtual #225                // Method org/mtr/mod/screen/WidgetShorterSlider.setWidth2:(I)V
+     194: aload_0
+     195: new           #227                // class org/mtr/mapping/holder/ClickableWidget
+     198: dup
+     199: aload_0
+     200: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+     203: invokespecial #230                // Method org/mtr/mapping/holder/ClickableWidget."<init>":(Lnet/minecraft/client/gui/widget/ClickableWidget;)V
+     206: invokevirtual #234                // Method addChild:(Lorg/mtr/mapping/holder/ClickableWidget;)V
+     209: aload_0
+     210: getfield      #62                 // Field showScheduleControls:Z
+     213: ifeq          246
+     216: aload_0
+     217: new           #227                // class org/mtr/mapping/holder/ClickableWidget
+     220: dup
+     221: aload_0
+     222: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     225: invokespecial #230                // Method org/mtr/mapping/holder/ClickableWidget."<init>":(Lnet/minecraft/client/gui/widget/ClickableWidget;)V
+     228: invokevirtual #234                // Method addChild:(Lorg/mtr/mapping/holder/ClickableWidget;)V
+     231: aload_0
+     232: new           #227                // class org/mtr/mapping/holder/ClickableWidget
+     235: dup
+     236: aload_0
+     237: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+     240: invokespecial #230                // Method org/mtr/mapping/holder/ClickableWidget."<init>":(Lnet/minecraft/client/gui/widget/ClickableWidget;)V
+     243: invokevirtual #234                // Method addChild:(Lorg/mtr/mapping/holder/ClickableWidget;)V
+     246: return
+
+  public void tick2();
+    Code:
+       0: aload_0
+       1: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+       4: invokevirtual #238                // Method org/mtr/mapping/mapper/TextFieldWidgetExtension.tick2:()V
+       7: aload_0
+       8: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+      11: bipush        20
+      13: aload_0
+      14: getfield      #103                // Field textWidth:I
+      17: iadd
+      18: iconst_2
+      19: iadd
+      20: invokevirtual #239                // Method org/mtr/mapping/mapper/TextFieldWidgetExtension.setX2:(I)V
+      23: ldc2_w        #106                // double 10.0d
+      26: invokestatic  #111                // Method java/lang/Math.floor:(D)D
+      29: d2i
+      30: istore_1
+      31: aload_0
+      32: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      35: invokevirtual #243                // Method org/mtr/mod/screen/WidgetShorterSlider.getIntValue:()I
+      38: ifne          59
+      41: aload_0
+      42: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      45: invokevirtual #243                // Method org/mtr/mod/screen/WidgetShorterSlider.getIntValue:()I
+      48: ifne          59
+      51: aload_0
+      52: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      55: iconst_1
+      56: invokevirtual #246                // Method org/mtr/mod/screen/WidgetShorterSlider.setValue:(I)V
+      59: aload_0
+      60: getfield      #146                // Field sliderDwellTimeMin:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      63: invokevirtual #243                // Method org/mtr/mod/screen/WidgetShorterSlider.getIntValue:()I
+      66: iload_1
+      67: if_icmpne     88
+      70: aload_0
+      71: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      74: invokevirtual #243                // Method org/mtr/mod/screen/WidgetShorterSlider.getIntValue:()I
+      77: ifle          88
+      80: aload_0
+      81: getfield      #158                // Field sliderDwellTimeSec:Lorg/mtr/mod/screen/WidgetShorterSlider;
+      84: iconst_0
+      85: invokevirtual #246                // Method org/mtr/mod/screen/WidgetShorterSlider.setValue:(I)V
+      88: return
+
+  public void render(org.mtr.mapping.mapper.GraphicsHolder, int, int, float);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #259                // Method renderBackground:(Lorg/mtr/mapping/mapper/GraphicsHolder;)V
+       5: aload_1
+       6: aload_0
+       7: getfield      #74                 // Field savedRailNumberText:Lorg/mtr/mapping/holder/MutableText;
+      10: bipush        20
+      12: bipush        28
+      14: iconst_m1
+      15: iconst_0
+      16: invokestatic  #262                // Method org/mtr/mapping/mapper/GraphicsHolder.getDefaultLight:()I
+      19: invokevirtual #266                // Method org/mtr/mapping/mapper/GraphicsHolder.drawText:(Lorg/mtr/mapping/holder/MutableText;IIIZI)V
+      22: aload_0
+      23: aload_1
+      24: iload_2
+      25: iload_3
+      26: fload         4
+      28: invokespecial #268                // Method org/mtr/mod/screen/MTRScreenBase.render:(Lorg/mtr/mapping/mapper/GraphicsHolder;IIF)V
+      31: goto          49
+      34: astore        5
+      36: getstatic     #274                // Field org/mtr/mod/Init.LOGGER:Lorg/apache/logging/log4j/Logger;
+      39: ldc_w         #276                // String
+      42: aload         5
+      44: invokeinterface #282,  3          // InterfaceMethod org/apache/logging/log4j/Logger.error:(Ljava/lang/String;Ljava/lang/Throwable;)V
+      49: return
+    Exception table:
+       from    to  target type
+           0    31    34   Class java/lang/Exception
+
+  public boolean isPauseScreen2();
+    Code:
+       0: iconst_0
+       1: ireturn
+
+  protected abstract org.mtr.mod.generated.lang.TranslationProvider$TranslationHolder getNumberStringKey();
+
+  private void lambda$init2$2(java.lang.String);
+    Code:
+       0: aload_0
+       1: getfield      #49                 // Field savedRailBase:Lorg/mtr/core/data/SavedRailBase;
+       4: aload_0
+       5: getfield      #89                 // Field textFieldSavedRailNumber:Lorg/mtr/mapping/mapper/TextFieldWidgetExtension;
+       8: invokevirtual #292                // Method org/mtr/mapping/mapper/TextFieldWidgetExtension.getText2:()Ljava/lang/String;
+      11: invokevirtual #295                // Method org/mtr/core/data/SavedRailBase.setName:(Ljava/lang/String;)V
+      14: return
+
+  private static java.lang.String lambda$new$1(int);
+    Code:
+       0: getstatic     #206                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_ARRIVAL_SEC:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+       3: iconst_1
+       4: anewarray     #68                 // class java/lang/Object
+       7: dup
+       8: iconst_0
+       9: iload_0
+      10: i2f
+      11: fconst_2
+      12: fdiv
+      13: invokestatic  #303                // Method java/lang/Float.valueOf:(F)Ljava/lang/Float;
+      16: aastore
+      17: invokevirtual #212                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getString:([Ljava/lang/Object;)Ljava/lang/String;
+      20: areturn
+
+  private static java.lang.String lambda$new$0(org.mtr.mod.generated.lang.TranslationProvider$TranslationHolder, java.lang.Object);
+    Code:
+       0: aload_0
+       1: iconst_1
+       2: anewarray     #68                 // class java/lang/Object
+       5: dup
+       6: iconst_0
+       7: aload_1
+       8: aastore
+       9: invokevirtual #212                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getString:([Ljava/lang/Object;)Ljava/lang/String;
+      12: areturn
+}

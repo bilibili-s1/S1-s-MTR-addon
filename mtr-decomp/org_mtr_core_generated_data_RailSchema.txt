@@ -1,0 +1,30 @@
+﻿Compiled from "RailSchema.java"
+public abstract class org.mtr.core.generated.data.RailSchema extends org.mtr.core.data.TwoPositionsBase {
+  protected final org.mtr.core.data.Position position1;
+  protected final org.mtr.core.tool.Angle angle1;
+  protected final org.mtr.core.data.Position position2;
+  protected final org.mtr.core.tool.Angle angle2;
+  protected final org.mtr.core.data.Rail$Shape shape;
+  protected final double verticalRadius;
+  protected final org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String> styles;
+  protected final long speedLimit1;
+  protected final long speedLimit2;
+  protected final boolean isPlatform;
+  protected final boolean isSiding;
+  protected final boolean canAccelerate;
+  protected final boolean canTurnBack;
+  protected final boolean canConnectRemotely;
+  protected final boolean canHaveSignal;
+  protected final org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongArrayList signalColors;
+  protected final org.mtr.core.data.TransportMode transportMode;
+  protected boolean stylesMigratedLegacy;
+  protected org.mtr.core.generated.data.RailSchema(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, long, long, boolean, boolean, boolean, boolean, boolean, boolean, org.mtr.core.data.TransportMode);
+  protected org.mtr.core.generated.data.RailSchema(org.mtr.core.serializer.ReaderBase);
+  public void updateData(org.mtr.core.serializer.ReaderBase);
+  public void serializeData(org.mtr.core.serializer.WriterBase);
+  public java.lang.String toString();
+  protected void serializeStyles(org.mtr.core.serializer.WriterBase);
+  protected void serializeSignalColors(org.mtr.core.serializer.WriterBase);
+  protected void serializeStylesMigratedLegacy(org.mtr.core.serializer.WriterBase);
+  private void lambda$updateData$0(boolean);
+}

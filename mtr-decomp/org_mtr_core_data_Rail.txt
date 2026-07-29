@@ -1,0 +1,1220 @@
+﻿Compiled from "Rail.java"
+public final class org.mtr.core.data.Rail extends org.mtr.core.generated.data.RailSchema {
+  private long manualBlockCooldown;
+
+  public final double speedLimit1MetersPerMillisecond;
+
+  public final double speedLimit2MetersPerMillisecond;
+
+  public final org.mtr.core.data.RailMath railMath;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet<org.mtr.core.data.Rail> connectedRails1;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet<org.mtr.core.data.Rail> connectedRails2;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap preBlockedVehicleIds;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap currentlyBlockedVehicleIds;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap preBlockedVehicleIdsOld;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap currentlyBlockedVehicleIdsOld;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongArrayList manualBlockColors;
+
+  private final boolean reversePositions;
+
+  private static final int MANUAL_BLOCK_DURATION = 1000;
+
+  public static org.mtr.core.data.Rail newRail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, long, long, boolean, boolean, boolean, boolean, boolean, org.mtr.core.data.TransportMode);
+    Code:
+       0: new           #2                  // class org/mtr/core/data/Rail
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: aload_2
+       7: aload_3
+       8: aload         4
+      10: dload         5
+      12: aload         7
+      14: lload         8
+      16: lload         10
+      18: iload         12
+      20: iload         13
+      22: iload         14
+      24: iconst_0
+      25: iload         15
+      27: iload         16
+      29: aload         17
+      31: invokespecial #61                 // Method "<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      34: areturn
+
+  public static org.mtr.core.data.Rail newTurnBackRail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, org.mtr.core.data.TransportMode);
+    Code:
+       0: new           #2                  // class org/mtr/core/data/Rail
+       3: dup
+       4: aload_0
+       5: aload_1
+       6: aload_2
+       7: aload_3
+       8: aload         4
+      10: dload         5
+      12: aload         7
+      14: ldc2_w        #71                 // long 80l
+      17: ldc2_w        #71                 // long 80l
+      20: iconst_0
+      21: iconst_0
+      22: iconst_0
+      23: iconst_1
+      24: iconst_0
+      25: iconst_0
+      26: aload         8
+      28: invokespecial #61                 // Method "<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      31: areturn
+
+  public static org.mtr.core.data.Rail newPlatformRail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, org.mtr.core.data.TransportMode);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: dload         5
+       8: aload         7
+      10: iconst_1
+      11: aload         8
+      13: invokestatic  #77                 // Method newPlatformOrSidingRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZLorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+      16: areturn
+
+  public static org.mtr.core.data.Rail newSidingRail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, org.mtr.core.data.TransportMode);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: dload         5
+       8: aload         7
+      10: iconst_0
+      11: aload         8
+      13: invokestatic  #77                 // Method newPlatformOrSidingRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;ZLorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+      16: areturn
+
+  private static org.mtr.core.data.Rail newPlatformOrSidingRail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, boolean, org.mtr.core.data.TransportMode);
+    Code:
+       0: iload         8
+       2: ifeq          11
+       5: ldc2_w        #71                 // long 80l
+       8: goto          14
+      11: ldc2_w        #80                 // long 40l
+      14: lstore        10
+      16: new           #2                  // class org/mtr/core/data/Rail
+      19: dup
+      20: aload_0
+      21: aload_1
+      22: aload_2
+      23: aload_3
+      24: aload         4
+      26: dload         5
+      28: aload         7
+      30: lload         10
+      32: lload         10
+      34: iload         8
+      36: iload         8
+      38: ifne          45
+      41: iconst_1
+      42: goto          46
+      45: iconst_0
+      46: iconst_0
+      47: iconst_0
+      48: iconst_0
+      49: iconst_1
+      50: aload         9
+      52: invokespecial #61                 // Method "<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      55: areturn
+
+  public static org.mtr.core.data.Rail copy(org.mtr.core.data.Rail, org.mtr.core.data.Rail$Shape, double);
+    Code:
+       0: new           #2                  // class org/mtr/core/data/Rail
+       3: dup
+       4: aload_0
+       5: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       8: aload_0
+       9: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+      12: aload_0
+      13: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      16: aload_0
+      17: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+      20: aload_1
+      21: dload_2
+      22: aload_0
+      23: getfield      #105                // Field styles:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      26: aload_0
+      27: getfield      #107                // Field speedLimit1:J
+      30: aload_0
+      31: getfield      #109                // Field speedLimit2:J
+      34: aload_0
+      35: getfield      #111                // Field isPlatform:Z
+      38: aload_0
+      39: getfield      #113                // Field isSiding:Z
+      42: aload_0
+      43: getfield      #115                // Field canAccelerate:Z
+      46: aload_0
+      47: getfield      #118                // Field canTurnBack:Z
+      50: aload_0
+      51: getfield      #120                // Field canConnectRemotely:Z
+      54: aload_0
+      55: getfield      #122                // Field canHaveSignal:Z
+      58: aload_0
+      59: getfield      #124                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      62: invokespecial #61                 // Method "<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      65: areturn
+
+  public static org.mtr.core.data.Rail copy(org.mtr.core.data.Rail, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>);
+    Code:
+       0: new           #2                  // class org/mtr/core/data/Rail
+       3: dup
+       4: aload_0
+       5: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       8: aload_0
+       9: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+      12: aload_0
+      13: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      16: aload_0
+      17: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+      20: aload_0
+      21: getfield      #130                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+      24: aload_0
+      25: getfield      #132                // Field verticalRadius:D
+      28: aload_1
+      29: aload_0
+      30: getfield      #107                // Field speedLimit1:J
+      33: aload_0
+      34: getfield      #109                // Field speedLimit2:J
+      37: aload_0
+      38: getfield      #111                // Field isPlatform:Z
+      41: aload_0
+      42: getfield      #113                // Field isSiding:Z
+      45: aload_0
+      46: getfield      #115                // Field canAccelerate:Z
+      49: aload_0
+      50: getfield      #118                // Field canTurnBack:Z
+      53: aload_0
+      54: getfield      #120                // Field canConnectRemotely:Z
+      57: aload_0
+      58: getfield      #122                // Field canHaveSignal:Z
+      61: aload_0
+      62: getfield      #124                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      65: invokespecial #61                 // Method "<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      68: areturn
+
+  private org.mtr.core.data.Rail(org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Position, org.mtr.core.tool.Angle, org.mtr.core.data.Rail$Shape, double, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String>, long, long, boolean, boolean, boolean, boolean, boolean, boolean, org.mtr.core.data.TransportMode);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: aload         5
+       8: dload         6
+      10: lload         9
+      12: lload         11
+      14: iload         13
+      16: iload         14
+      18: iload         15
+      20: iload         16
+      22: iload         17
+      24: iload         18
+      26: aload         19
+      28: invokespecial #136                // Method org/mtr/core/generated/data/RailSchema."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DJJZZZZZZLorg/mtr/core/data/TransportMode;)V
+      31: aload_0
+      32: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+      35: dup
+      36: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      39: putfield      #143                // Field connectedRails1:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      42: aload_0
+      43: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+      46: dup
+      47: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      50: putfield      #145                // Field connectedRails2:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      53: aload_0
+      54: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      57: dup
+      58: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      61: putfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      64: aload_0
+      65: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      68: dup
+      69: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      72: putfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      75: aload_0
+      76: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      79: dup
+      80: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      83: putfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      86: aload_0
+      87: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      90: dup
+      91: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      94: putfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      97: aload_0
+      98: new           #158                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList
+     101: dup
+     102: invokespecial #159                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList."<init>":()V
+     105: putfield      #161                // Field manualBlockColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+     108: aload_0
+     109: aload_1
+     110: aload_3
+     111: invokevirtual #165                // Method org/mtr/core/data/Position.compareTo:(Lorg/mtr/core/data/Position;)I
+     114: ifle          121
+     117: iconst_1
+     118: goto          122
+     121: iconst_0
+     122: putfield      #167                // Field reversePositions:Z
+     125: aload_0
+     126: aload_0
+     127: getfield      #167                // Field reversePositions:Z
+     130: ifeq          152
+     133: new           #169                // class org/mtr/core/data/RailMath
+     136: dup
+     137: aload_3
+     138: aload         4
+     140: aload_1
+     141: aload_2
+     142: aload         5
+     144: dload         6
+     146: invokespecial #172                // Method org/mtr/core/data/RailMath."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;D)V
+     149: goto          168
+     152: new           #169                // class org/mtr/core/data/RailMath
+     155: dup
+     156: aload_1
+     157: aload_2
+     158: aload_3
+     159: aload         4
+     161: aload         5
+     163: dload         6
+     165: invokespecial #172                // Method org/mtr/core/data/RailMath."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;D)V
+     168: putfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+     171: aload_0
+     172: lload         9
+     174: l2d
+     175: invokestatic  #180                // InterfaceMethod org/mtr/core/tool/Utilities.kilometersPerHourToMetersPerMillisecond:(D)D
+     178: putfield      #182                // Field speedLimit1MetersPerMillisecond:D
+     181: aload_0
+     182: lload         11
+     184: l2d
+     185: invokestatic  #180                // InterfaceMethod org/mtr/core/tool/Utilities.kilometersPerHourToMetersPerMillisecond:(D)D
+     188: putfield      #184                // Field speedLimit2MetersPerMillisecond:D
+     191: aload_0
+     192: getfield      #105                // Field styles:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+     195: aload         8
+     197: invokevirtual #188                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.addAll:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList;)Z
+     200: pop
+     201: aload_0
+     202: iconst_1
+     203: putfield      #191                // Field stylesMigratedLegacy:Z
+     206: return
+
+  public org.mtr.core.data.Rail(org.mtr.core.serializer.ReaderBase);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokespecial #196                // Method org/mtr/core/generated/data/RailSchema."<init>":(Lorg/mtr/core/serializer/ReaderBase;)V
+       5: aload_0
+       6: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+       9: dup
+      10: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      13: putfield      #143                // Field connectedRails1:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      16: aload_0
+      17: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+      20: dup
+      21: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      24: putfield      #145                // Field connectedRails2:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      27: aload_0
+      28: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      31: dup
+      32: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      35: putfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      38: aload_0
+      39: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      42: dup
+      43: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      46: putfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      49: aload_0
+      50: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      53: dup
+      54: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      57: putfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      60: aload_0
+      61: new           #147                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap
+      64: dup
+      65: invokespecial #148                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap."<init>":()V
+      68: putfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      71: aload_0
+      72: new           #158                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList
+      75: dup
+      76: invokespecial #159                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList."<init>":()V
+      79: putfield      #161                // Field manualBlockColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      82: aload_0
+      83: aload_0
+      84: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+      87: aload_0
+      88: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      91: invokevirtual #165                // Method org/mtr/core/data/Position.compareTo:(Lorg/mtr/core/data/Position;)I
+      94: ifle          101
+      97: iconst_1
+      98: goto          102
+     101: iconst_0
+     102: putfield      #167                // Field reversePositions:Z
+     105: aload_0
+     106: aload_0
+     107: getfield      #167                // Field reversePositions:Z
+     110: ifeq          147
+     113: new           #169                // class org/mtr/core/data/RailMath
+     116: dup
+     117: aload_0
+     118: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+     121: aload_0
+     122: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+     125: aload_0
+     126: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+     129: aload_0
+     130: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+     133: aload_0
+     134: getfield      #130                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+     137: aload_0
+     138: getfield      #132                // Field verticalRadius:D
+     141: invokespecial #172                // Method org/mtr/core/data/RailMath."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;D)V
+     144: goto          178
+     147: new           #169                // class org/mtr/core/data/RailMath
+     150: dup
+     151: aload_0
+     152: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+     155: aload_0
+     156: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+     159: aload_0
+     160: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+     163: aload_0
+     164: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+     167: aload_0
+     168: getfield      #130                // Field shape:Lorg/mtr/core/data/Rail$Shape;
+     171: aload_0
+     172: getfield      #132                // Field verticalRadius:D
+     175: invokespecial #172                // Method org/mtr/core/data/RailMath."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;D)V
+     178: putfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+     181: aload_0
+     182: aload_0
+     183: getfield      #107                // Field speedLimit1:J
+     186: l2d
+     187: invokestatic  #180                // InterfaceMethod org/mtr/core/tool/Utilities.kilometersPerHourToMetersPerMillisecond:(D)D
+     190: putfield      #182                // Field speedLimit1MetersPerMillisecond:D
+     193: aload_0
+     194: aload_0
+     195: getfield      #109                // Field speedLimit2:J
+     198: l2d
+     199: invokestatic  #180                // InterfaceMethod org/mtr/core/tool/Utilities.kilometersPerHourToMetersPerMillisecond:(D)D
+     202: putfield      #184                // Field speedLimit2MetersPerMillisecond:D
+     205: aload_0
+     206: aload_1
+     207: invokevirtual #201                // Method updateData:(Lorg/mtr/core/serializer/ReaderBase;)V
+     210: return
+
+  public boolean isValid();
+    Code:
+       0: aload_0
+       1: getfield      #107                // Field speedLimit1:J
+       4: lconst_0
+       5: lcmp
+       6: ifgt          18
+       9: aload_0
+      10: getfield      #109                // Field speedLimit2:J
+      13: lconst_0
+      14: lcmp
+      15: ifle          46
+      18: aload_0
+      19: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      22: invokevirtual #206                // Method org/mtr/core/data/RailMath.isValid:()Z
+      25: ifeq          46
+      28: aload_0
+      29: getfield      #111                // Field isPlatform:Z
+      32: ifeq          42
+      35: aload_0
+      36: getfield      #113                // Field isSiding:Z
+      39: ifne          46
+      42: iconst_1
+      43: goto          47
+      46: iconst_0
+      47: ireturn
+
+  protected org.mtr.core.data.Position getPosition1();
+    Code:
+       0: aload_0
+       1: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       4: areturn
+
+  protected org.mtr.core.data.Position getPosition2();
+    Code:
+       0: aload_0
+       1: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+       4: areturn
+
+  public org.mtr.core.data.TransportMode getTransportMode();
+    Code:
+       0: aload_0
+       1: getfield      #124                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+       4: areturn
+
+  public org.mtr.core.tool.Angle getStartAngle(boolean);
+    Code:
+       0: aload_0
+       1: getfield      #167                // Field reversePositions:Z
+       4: iload_1
+       5: if_icmpne     15
+       8: aload_0
+       9: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+      12: goto          19
+      15: aload_0
+      16: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+      19: areturn
+
+  public org.mtr.core.tool.Angle getStartAngle(org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       4: aload_1
+       5: invokevirtual #220                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+       8: ifeq          18
+      11: aload_0
+      12: getfield      #99                 // Field angle1:Lorg/mtr/core/tool/Angle;
+      15: goto          22
+      18: aload_0
+      19: getfield      #103                // Field angle2:Lorg/mtr/core/tool/Angle;
+      22: areturn
+
+  public double getSpeedLimitMetersPerMillisecond(boolean);
+    Code:
+       0: aload_0
+       1: getfield      #167                // Field reversePositions:Z
+       4: iload_1
+       5: if_icmpne     15
+       8: aload_0
+       9: getfield      #182                // Field speedLimit1MetersPerMillisecond:D
+      12: goto          19
+      15: aload_0
+      16: getfield      #184                // Field speedLimit2MetersPerMillisecond:D
+      19: dreturn
+
+  public double getSpeedLimitMetersPerMillisecond(org.mtr.core.data.Position);
+    Code:
+       0: aload_0
+       1: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       4: aload_1
+       5: invokevirtual #220                // Method org/mtr/core/data/Position.equals:(Ljava/lang/Object;)Z
+       8: ifeq          18
+      11: aload_0
+      12: getfield      #182                // Field speedLimit1MetersPerMillisecond:D
+      15: goto          22
+      18: aload_0
+      19: getfield      #184                // Field speedLimit2MetersPerMillisecond:D
+      22: dreturn
+
+  public long getSpeedLimitKilometersPerHour(boolean);
+    Code:
+       0: aload_0
+       1: getfield      #167                // Field reversePositions:Z
+       4: iload_1
+       5: if_icmpne     15
+       8: aload_0
+       9: getfield      #107                // Field speedLimit1:J
+      12: goto          19
+      15: aload_0
+      16: getfield      #109                // Field speedLimit2:J
+      19: lreturn
+
+  public boolean canAccelerate();
+    Code:
+       0: aload_0
+       1: getfield      #115                // Field canAccelerate:Z
+       4: ireturn
+
+  public boolean isPlatform();
+    Code:
+       0: aload_0
+       1: getfield      #111                // Field isPlatform:Z
+       4: ireturn
+
+  public boolean isSiding();
+    Code:
+       0: aload_0
+       1: getfield      #113                // Field isSiding:Z
+       4: ireturn
+
+  public boolean canTurnBack();
+    Code:
+       0: aload_0
+       1: getfield      #118                // Field canTurnBack:Z
+       4: ireturn
+
+  public boolean canConnectRemotely();
+    Code:
+       0: aload_0
+       1: getfield      #120                // Field canConnectRemotely:Z
+       4: ireturn
+
+  public boolean closeTo(org.mtr.core.data.Position, double);
+    Code:
+       0: aload_1
+       1: aload_0
+       2: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+       5: getfield      #232                // Field org/mtr/core/data/RailMath.minX:J
+       8: l2d
+       9: aload_0
+      10: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      13: getfield      #235                // Field org/mtr/core/data/RailMath.minY:J
+      16: l2d
+      17: aload_0
+      18: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      21: getfield      #238                // Field org/mtr/core/data/RailMath.minZ:J
+      24: l2d
+      25: aload_0
+      26: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      29: getfield      #241                // Field org/mtr/core/data/RailMath.maxX:J
+      32: l2d
+      33: aload_0
+      34: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      37: getfield      #244                // Field org/mtr/core/data/RailMath.maxY:J
+      40: l2d
+      41: aload_0
+      42: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+      45: getfield      #247                // Field org/mtr/core/data/RailMath.maxZ:J
+      48: l2d
+      49: dload_2
+      50: invokestatic  #251                // InterfaceMethod org/mtr/core/tool/Utilities.isBetween:(Lorg/mtr/core/data/Position;DDDDDDD)Z
+      53: ireturn
+
+  public void tick1(org.mtr.core.simulation.Simulator);
+    Code:
+       0: aload_0
+       1: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+       4: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+       7: aload_0
+       8: getfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      11: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+      14: invokestatic  #262                // InterfaceMethod org/mtr/core/tool/Utilities.sameItems:(Ljava/util/Collection;Ljava/util/Collection;)Z
+      17: ifeq          40
+      20: aload_0
+      21: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      24: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+      27: aload_0
+      28: getfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      31: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+      34: invokestatic  #262                // InterfaceMethod org/mtr/core/tool/Utilities.sameItems:(Ljava/util/Collection;Ljava/util/Collection;)Z
+      37: ifne          44
+      40: iconst_1
+      41: goto          45
+      44: iconst_0
+      45: istore_2
+      46: aload_1
+      47: getfield      #268                // Field org/mtr/core/simulation/Simulator.clients:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+      50: aload_0
+      51: iload_2
+      52: invokedynamic #288,  0            // InvokeDynamic #0:accept:(Lorg/mtr/core/data/Rail;Z)Ljava/util/function/Consumer;
+      57: invokevirtual #294                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.forEach:(Ljava/util/function/Consumer;)V
+      60: aload_0
+      61: getfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      64: invokevirtual #297                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.clear:()V
+      67: aload_0
+      68: getfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      71: aload_0
+      72: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      75: invokevirtual #301                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.putAll:(Ljava/util/Map;)V
+      78: aload_0
+      79: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      82: invokevirtual #297                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.clear:()V
+      85: aload_0
+      86: getfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      89: invokevirtual #297                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.clear:()V
+      92: aload_0
+      93: getfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      96: aload_0
+      97: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+     100: invokevirtual #301                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.putAll:(Ljava/util/Map;)V
+     103: aload_0
+     104: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+     107: invokevirtual #297                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.clear:()V
+     110: return
+
+  public void tick2(long);
+    Code:
+       0: aload_0
+       1: getfield      #308                // Field manualBlockCooldown:J
+       4: lconst_0
+       5: lcmp
+       6: ifle          80
+       9: aload_0
+      10: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      13: lconst_0
+      14: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      17: ifeq          66
+      20: aload_0
+      21: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      24: lconst_0
+      25: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      28: ifeq          66
+      31: aload_0
+      32: getfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      35: lconst_0
+      36: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      39: ifeq          66
+      42: aload_0
+      43: getfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      46: lconst_0
+      47: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      50: ifeq          66
+      53: aload_0
+      54: getfield      #161                // Field manualBlockColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      57: aload_0
+      58: invokedynamic #320,  0            // InvokeDynamic #1:accept:(Lorg/mtr/core/data/Rail;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;
+      63: invokevirtual #323                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      66: aload_0
+      67: lconst_0
+      68: aload_0
+      69: getfield      #308                // Field manualBlockCooldown:J
+      72: lload_1
+      73: lsub
+      74: invokestatic  #329                // Method java/lang/Math.max:(JJ)J
+      77: putfield      #308                // Field manualBlockCooldown:J
+      80: return
+
+  public void checkOrCreateSavedRail(org.mtr.core.data.Data, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.core.data.Platform>, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<org.mtr.core.data.Siding>);
+    Code:
+       0: aload_0
+       1: getfield      #111                // Field isPlatform:Z
+       4: ifeq          67
+       7: aload_1
+       8: getfield      #340                // Field org/mtr/core/data/Data.platforms:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+      11: invokevirtual #344                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.stream:()Ljava/util/stream/Stream;
+      14: aload_0
+      15: invokedynamic #355,  0            // InvokeDynamic #2:test:(Lorg/mtr/core/data/Rail;)Ljava/util/function/Predicate;
+      20: invokeinterface #361,  2          // InterfaceMethod java/util/stream/Stream.noneMatch:(Ljava/util/function/Predicate;)Z
+      25: ifeq          67
+      28: new           #363                // class org/mtr/core/data/Platform
+      31: dup
+      32: aload_0
+      33: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+      36: aload_0
+      37: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      40: aload_0
+      41: getfield      #124                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      44: aload_1
+      45: invokespecial #366                // Method org/mtr/core/data/Platform."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;Lorg/mtr/core/data/TransportMode;Lorg/mtr/core/data/Data;)V
+      48: astore        4
+      50: aload_1
+      51: getfield      #340                // Field org/mtr/core/data/Data.platforms:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+      54: aload         4
+      56: invokevirtual #369                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.add:(Ljava/lang/Object;)Z
+      59: pop
+      60: aload_2
+      61: aload         4
+      63: invokevirtual #370                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+      66: pop
+      67: aload_0
+      68: getfield      #113                // Field isSiding:Z
+      71: ifeq          141
+      74: aload_1
+      75: getfield      #373                // Field org/mtr/core/data/Data.sidings:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+      78: invokevirtual #344                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.stream:()Ljava/util/stream/Stream;
+      81: aload_0
+      82: invokedynamic #380,  0            // InvokeDynamic #3:test:(Lorg/mtr/core/data/Rail;)Ljava/util/function/Predicate;
+      87: invokeinterface #361,  2          // InterfaceMethod java/util/stream/Stream.noneMatch:(Ljava/util/function/Predicate;)Z
+      92: ifeq          141
+      95: new           #382                // class org/mtr/core/data/Siding
+      98: dup
+      99: aload_0
+     100: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+     103: aload_0
+     104: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+     107: aload_0
+     108: getfield      #174                // Field railMath:Lorg/mtr/core/data/RailMath;
+     111: invokevirtual #386                // Method org/mtr/core/data/RailMath.getLength:()D
+     114: aload_0
+     115: getfield      #124                // Field transportMode:Lorg/mtr/core/data/TransportMode;
+     118: aload_1
+     119: invokespecial #389                // Method org/mtr/core/data/Siding."<init>":(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;DLorg/mtr/core/data/TransportMode;Lorg/mtr/core/data/Data;)V
+     122: astore        4
+     124: aload_1
+     125: getfield      #373                // Field org/mtr/core/data/Data.sidings:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+     128: aload         4
+     130: invokevirtual #369                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.add:(Ljava/lang/Object;)Z
+     133: pop
+     134: aload_3
+     135: aload         4
+     137: invokevirtual #370                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+     140: pop
+     141: return
+
+  public org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectImmutableList<java.lang.String> getStyles();
+    Code:
+       0: new           #401                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList
+       3: dup
+       4: aload_0
+       5: getfield      #105                // Field styles:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+       8: invokespecial #404                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList."<init>":(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList;)V
+      11: areturn
+
+  public org.mtr.libraries.it.unimi.dsi.fastutil.ints.IntAVLTreeSet getSignalColors();
+    Code:
+       0: new           #408                // class org/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet
+       3: dup
+       4: invokespecial #409                // Method org/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet."<init>":()V
+       7: astore_1
+       8: aload_0
+       9: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      12: aload_1
+      13: invokedynamic #420,  0            // InvokeDynamic #4:accept:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;
+      18: invokevirtual #323                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      21: aload_1
+      22: areturn
+
+  public void copySignalColors(org.mtr.core.data.Rail);
+    Code:
+       0: aload_0
+       1: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+       4: invokevirtual #425                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.clear:()V
+       7: aload_0
+       8: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      11: aload_1
+      12: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      15: invokevirtual #428                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.addAll:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongList;)Z
+      18: pop
+      19: return
+
+  public void iteratePreBlockedSignalColors(org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongConsumer);
+    Code:
+       0: aload_0
+       1: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+       4: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+       7: aload_1
+       8: invokeinterface #433,  2          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      13: return
+
+  public void iterateCurrentlyBlockedSignalColors(org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongConsumer);
+    Code:
+       0: aload_0
+       1: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+       4: invokevirtual #258                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.keySet:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet;
+       7: aload_1
+       8: invokeinterface #433,  2          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongSortedSet.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      13: return
+
+  public void applyModification(org.mtr.core.data.SignalModification);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #442                // Method matchesPositions:(Lorg/mtr/core/data/TwoPositionsBase;)Z
+       5: ifeq          68
+       8: aload_1
+       9: invokevirtual #447                // Method org/mtr/core/data/SignalModification.getIsClearAll:()Z
+      12: ifeq          25
+      15: aload_0
+      16: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      19: invokevirtual #425                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.clear:()V
+      22: goto          47
+      25: aload_0
+      26: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      29: aload_1
+      30: invokevirtual #451                // Method org/mtr/core/data/SignalModification.getSignalColorsRemove:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      33: dup
+      34: invokevirtual #457                // Method java/lang/Object.getClass:()Ljava/lang/Class;
+      37: pop
+      38: invokedynamic #468,  0            // InvokeDynamic #5:test:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongPredicate;
+      43: invokevirtual #472                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.removeIf:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongPredicate;)Z
+      46: pop
+      47: aload_1
+      48: invokevirtual #475                // Method org/mtr/core/data/SignalModification.getSignalColorsAdd:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      51: aload_0
+      52: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      55: dup
+      56: invokevirtual #457                // Method java/lang/Object.getClass:()Ljava/lang/Class;
+      59: pop
+      60: invokedynamic #481,  0            // InvokeDynamic #6:accept:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;
+      65: invokevirtual #323                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      68: return
+
+  public void checkMigrationStatus();
+    Code:
+       0: aload_0
+       1: getfield      #191                // Field stylesMigratedLegacy:Z
+       4: ifne          33
+       7: aload_0
+       8: getfield      #105                // Field styles:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      11: invokevirtual #486                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.isEmpty:()Z
+      14: ifeq          33
+      17: aload_0
+      18: getfield      #105                // Field styles:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      21: ldc_w         #488                // String default
+      24: invokevirtual #370                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+      27: pop
+      28: aload_0
+      29: iconst_1
+      30: putfield      #191                // Field stylesMigratedLegacy:Z
+      33: return
+
+  public void blockRail(org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongArrayList);
+    Code:
+       0: aload_0
+       1: ldc2_w        #492                // long 1000l
+       4: putfield      #308                // Field manualBlockCooldown:J
+       7: aload_0
+       8: getfield      #161                // Field manualBlockColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      11: invokevirtual #425                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.clear:()V
+      14: aload_0
+      15: getfield      #161                // Field manualBlockColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      18: aload_1
+      19: invokevirtual #494                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.isEmpty:()Z
+      22: ifeq          32
+      25: aload_0
+      26: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      29: goto          33
+      32: aload_1
+      33: invokevirtual #428                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.addAll:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongList;)Z
+      36: pop
+      37: return
+
+  boolean isBlocked(long, org.mtr.core.data.Rail$BlockReservation);
+    Code:
+       0: aload_0
+       1: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+       4: invokevirtual #494                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.isEmpty:()Z
+       7: ifne          54
+      10: aload_0
+      11: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      14: lload_1
+      15: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      18: ifeq          78
+      21: aload_0
+      22: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      25: lload_1
+      26: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      29: ifeq          78
+      32: aload_0
+      33: getfield      #154                // Field preBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      36: lload_1
+      37: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      40: ifeq          78
+      43: aload_0
+      44: getfield      #156                // Field currentlyBlockedVehicleIdsOld:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      47: lload_1
+      48: invokestatic  #312                // Method isNotBlocked:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;J)Z
+      51: ifeq          78
+      54: aload_3
+      55: getstatic     #504                // Field org/mtr/core/data/Rail$BlockReservation.DO_NOT_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+      58: if_acmpeq     76
+      61: aload_0
+      62: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      65: aload_0
+      66: lload_1
+      67: aload_3
+      68: invokedynamic #512,  0            // InvokeDynamic #7:accept:(Lorg/mtr/core/data/Rail;JLorg/mtr/core/data/Rail$BlockReservation;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;
+      73: invokevirtual #323                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      76: iconst_0
+      77: ireturn
+      78: iconst_1
+      79: ireturn
+
+  void writePositionsToRailCache(org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.core.data.Rail>>);
+    Code:
+       0: aload_1
+       1: aload_0
+       2: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       5: aload_0
+       6: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+       9: aload_0
+      10: invokedynamic #528,  0            // InvokeDynamic #8:apply:(Lorg/mtr/core/data/Rail;)Ljava/util/function/Function;
+      15: invokedynamic #540,  0            // InvokeDynamic #9:get:()Ljava/util/function/Supplier;
+      20: invokestatic  #544                // Method org/mtr/core/data/Data.put:(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/Supplier;)V
+      23: aload_1
+      24: aload_0
+      25: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      28: aload_0
+      29: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+      32: aload_0
+      33: invokedynamic #549,  0            // InvokeDynamic #10:apply:(Lorg/mtr/core/data/Rail;)Ljava/util/function/Function;
+      38: invokedynamic #540,  0            // InvokeDynamic #9:get:()Ljava/util/function/Supplier;
+      43: invokestatic  #544                // Method org/mtr/core/data/Data.put:(Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;Ljava/util/function/Function;Ljava/util/function/Supplier;)V
+      46: return
+
+  void writeConnectedRailsCacheFromMap(org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.core.data.Rail>>);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_0
+       3: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       6: aload_0
+       7: getfield      #143                // Field connectedRails1:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      10: invokespecial #555                // Method writeConnectedRailsCacheFromMap:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;Lorg/mtr/core/data/Position;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)V
+      13: aload_0
+      14: aload_1
+      15: aload_0
+      16: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      19: aload_0
+      20: getfield      #145                // Field connectedRails2:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      23: invokespecial #555                // Method writeConnectedRailsCacheFromMap:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap;Lorg/mtr/core/data/Position;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)V
+      26: return
+
+  private void writeConnectedRailsCacheFromMap(org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap<org.mtr.core.data.Position, org.mtr.core.data.Rail>>, org.mtr.core.data.Position, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet<org.mtr.core.data.Rail>);
+    Code:
+       0: aload_3
+       1: invokevirtual #558                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.clear:()V
+       4: aload_1
+       5: aload_2
+       6: new           #532                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap
+       9: dup
+      10: invokespecial #533                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap."<init>":()V
+      13: invokevirtual #562                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap.getOrDefault:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+      16: checkcast     #532                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap
+      19: aload_0
+      20: aload_3
+      21: invokedynamic #574,  0            // InvokeDynamic #11:accept:(Lorg/mtr/core/data/Rail;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;)Ljava/util/function/BiConsumer;
+      26: invokevirtual #577                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2ObjectOpenHashMap.forEach:(Ljava/util/function/BiConsumer;)V
+      29: return
+
+  public static org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectObjectImmutablePair<org.mtr.core.tool.Angle, org.mtr.core.tool.Angle> getAngles(org.mtr.core.data.Position, float, org.mtr.core.data.Position, float);
+    Code:
+       0: aload_2
+       1: invokevirtual #586                // Method org/mtr/core/data/Position.getZ:()J
+       4: aload_0
+       5: invokevirtual #586                // Method org/mtr/core/data/Position.getZ:()J
+       8: lsub
+       9: l2d
+      10: aload_2
+      11: invokevirtual #589                // Method org/mtr/core/data/Position.getX:()J
+      14: aload_0
+      15: invokevirtual #589                // Method org/mtr/core/data/Position.getX:()J
+      18: lsub
+      19: l2d
+      20: invokestatic  #593                // Method java/lang/Math.atan2:(DD)D
+      23: invokestatic  #596                // Method java/lang/Math.toDegrees:(D)D
+      26: d2f
+      27: fstore        4
+      29: new           #598                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair
+      32: dup
+      33: fload_1
+      34: fload         4
+      36: fload_1
+      37: invokestatic  #602                // Method org/mtr/core/tool/Angle.similarFacing:(FF)Z
+      40: ifeq          47
+      43: iconst_0
+      44: goto          50
+      47: sipush        180
+      50: i2f
+      51: fadd
+      52: invokestatic  #606                // Method org/mtr/core/tool/Angle.fromAngle:(F)Lorg/mtr/core/tool/Angle;
+      55: fload_3
+      56: fload         4
+      58: fload_3
+      59: invokestatic  #602                // Method org/mtr/core/tool/Angle.similarFacing:(FF)Z
+      62: ifeq          71
+      65: sipush        180
+      68: goto          72
+      71: iconst_0
+      72: i2f
+      73: fadd
+      74: invokestatic  #606                // Method org/mtr/core/tool/Angle.fromAngle:(F)Lorg/mtr/core/tool/Angle;
+      77: invokespecial #608                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair."<init>":(Ljava/lang/Object;Ljava/lang/Object;)V
+      80: areturn
+
+  private static void reserveRail(long, long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet<org.mtr.core.data.Rail>, org.mtr.core.data.Rail, boolean);
+    Code:
+       0: aload         4
+       2: aload         5
+       4: invokevirtual #618                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.contains:(Ljava/lang/Object;)Z
+       7: ifne          92
+      10: aload         5
+      12: getfield      #412                // Field signalColors:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;
+      15: lload_2
+      16: invokevirtual #619                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.contains:(J)Z
+      19: ifeq          92
+      22: iload         6
+      24: ifeq          35
+      27: aload         5
+      29: getfield      #152                // Field currentlyBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      32: goto          40
+      35: aload         5
+      37: getfield      #150                // Field preBlockedVehicleIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap;
+      40: lload_2
+      41: lload_0
+      42: invokevirtual #621                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.put:(JJ)J
+      45: pop2
+      46: aload         4
+      48: aload         5
+      50: invokevirtual #622                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.add:(Ljava/lang/Object;)Z
+      53: pop
+      54: aload         5
+      56: getfield      #143                // Field connectedRails1:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      59: lload_0
+      60: lload_2
+      61: aload         4
+      63: iload         6
+      65: invokedynamic #631,  0            // InvokeDynamic #12:accept:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Z)Ljava/util/function/Consumer;
+      70: invokevirtual #632                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.forEach:(Ljava/util/function/Consumer;)V
+      73: aload         5
+      75: getfield      #145                // Field connectedRails2:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;
+      78: lload_0
+      79: lload_2
+      80: aload         4
+      82: iload         6
+      84: invokedynamic #637,  0            // InvokeDynamic #13:accept:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Z)Ljava/util/function/Consumer;
+      89: invokevirtual #632                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.forEach:(Ljava/util/function/Consumer;)V
+      92: return
+
+  private static boolean isNotBlocked(org.mtr.libraries.it.unimi.dsi.fastutil.longs.Long2LongAVLTreeMap, long);
+    Code:
+       0: aload_0
+       1: invokevirtual #642                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2LongAVLTreeMap.values:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongCollection;
+       4: invokeinterface #648,  1          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongCollection.longStream:()Ljava/util/stream/LongStream;
+       9: lload_1
+      10: invokedynamic #656,  0            // InvokeDynamic #14:test:(J)Ljava/util/function/LongPredicate;
+      15: invokeinterface #662,  2          // InterfaceMethod java/util/stream/LongStream.allMatch:(Ljava/util/function/LongPredicate;)Z
+      20: ireturn
+
+  private static boolean lambda$isNotBlocked$11(long, long);
+    Code:
+       0: lload_2
+       1: lload_0
+       2: lcmp
+       3: ifne          10
+       6: iconst_1
+       7: goto          11
+      10: iconst_0
+      11: ireturn
+
+  private static void lambda$reserveRail$10(long, long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, boolean, org.mtr.core.data.Rail);
+    Code:
+       0: lload_0
+       1: lload_2
+       2: aload         4
+       4: aload         6
+       6: iload         5
+       8: invokestatic  #666                // Method reserveRail:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Lorg/mtr/core/data/Rail;Z)V
+      11: return
+
+  private static void lambda$reserveRail$9(long, long, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, boolean, org.mtr.core.data.Rail);
+    Code:
+       0: lload_0
+       1: lload_2
+       2: aload         4
+       4: aload         6
+       6: iload         5
+       8: invokestatic  #666                // Method reserveRail:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Lorg/mtr/core/data/Rail;Z)V
+      11: return
+
+  private void lambda$writeConnectedRailsCacheFromMap$8(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectOpenHashSet, org.mtr.core.data.Position, org.mtr.core.data.Rail);
+    Code:
+       0: aload_0
+       1: aload_3
+       2: invokevirtual #668                // Method java/lang/Object.equals:(Ljava/lang/Object;)Z
+       5: ifne          14
+       8: aload_1
+       9: aload_3
+      10: invokevirtual #622                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet.add:(Ljava/lang/Object;)Z
+      13: pop
+      14: return
+
+  private org.mtr.core.data.Rail lambda$writePositionsToRailCache$7(org.mtr.core.data.Rail);
+    Code:
+       0: aload_0
+       1: areturn
+
+  private org.mtr.core.data.Rail lambda$writePositionsToRailCache$6(org.mtr.core.data.Rail);
+    Code:
+       0: aload_0
+       1: areturn
+
+  private void lambda$isBlocked$5(long, org.mtr.core.data.Rail$BlockReservation, long);
+    Code:
+       0: lload_1
+       1: lload         4
+       3: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+       6: dup
+       7: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+      10: aload_0
+      11: aload_3
+      12: getstatic     #672                // Field org/mtr/core/data/Rail$BlockReservation.CURRENTLY_RESERVE:Lorg/mtr/core/data/Rail$BlockReservation;
+      15: if_acmpne     22
+      18: iconst_1
+      19: goto          23
+      22: iconst_0
+      23: invokestatic  #666                // Method reserveRail:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Lorg/mtr/core/data/Rail;Z)V
+      26: return
+
+  private static void lambda$getSignalColors$4(org.mtr.libraries.it.unimi.dsi.fastutil.ints.IntAVLTreeSet, long);
+    Code:
+       0: aload_0
+       1: lload_1
+       2: l2i
+       3: invokevirtual #675                // Method org/mtr/libraries/it/unimi/dsi/fastutil/ints/IntAVLTreeSet.add:(I)Z
+       6: pop
+       7: return
+
+  private boolean lambda$checkOrCreateSavedRail$3(org.mtr.core.data.Siding);
+    Code:
+       0: aload_1
+       1: aload_0
+       2: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       5: invokevirtual #679                // Method org/mtr/core/data/Siding.containsPos:(Lorg/mtr/core/data/Position;)Z
+       8: ifeq          26
+      11: aload_1
+      12: aload_0
+      13: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      16: invokevirtual #679                // Method org/mtr/core/data/Siding.containsPos:(Lorg/mtr/core/data/Position;)Z
+      19: ifeq          26
+      22: iconst_1
+      23: goto          27
+      26: iconst_0
+      27: ireturn
+
+  private boolean lambda$checkOrCreateSavedRail$2(org.mtr.core.data.Platform);
+    Code:
+       0: aload_1
+       1: aload_0
+       2: getfield      #97                 // Field position1:Lorg/mtr/core/data/Position;
+       5: invokevirtual #680                // Method org/mtr/core/data/Platform.containsPos:(Lorg/mtr/core/data/Position;)Z
+       8: ifeq          26
+      11: aload_1
+      12: aload_0
+      13: getfield      #101                // Field position2:Lorg/mtr/core/data/Position;
+      16: invokevirtual #680                // Method org/mtr/core/data/Platform.containsPos:(Lorg/mtr/core/data/Position;)Z
+      19: ifeq          26
+      22: iconst_1
+      23: goto          27
+      26: iconst_0
+      27: ireturn
+
+  private void lambda$tick2$1(long);
+    Code:
+       0: lconst_0
+       1: lload_1
+       2: new           #138                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet
+       5: dup
+       6: invokespecial #141                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet."<init>":()V
+       9: aload_0
+      10: iconst_1
+      11: invokestatic  #666                // Method reserveRail:(JJLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectOpenHashSet;Lorg/mtr/core/data/Rail;Z)V
+      14: return
+
+  private void lambda$tick1$0(boolean, org.mtr.core.data.Client);
+    Code:
+       0: aload_0
+       1: aload_2
+       2: invokevirtual #686                // Method org/mtr/core/data/Client.getPosition:()Lorg/mtr/core/data/Position;
+       5: aload_2
+       6: invokevirtual #689                // Method org/mtr/core/data/Client.getUpdateRadius:()D
+       9: invokevirtual #691                // Method closeTo:(Lorg/mtr/core/data/Position;D)Z
+      12: ifeq          21
+      15: aload_2
+      16: aload_0
+      17: iload_1
+      18: invokevirtual #695                // Method org/mtr/core/data/Client.update:(Lorg/mtr/core/data/Rail;Z)V
+      21: return
+}

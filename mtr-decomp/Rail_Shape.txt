@@ -1,0 +1,11 @@
+﻿Compiled from "Rail.java"
+public final class org.mtr.core.data.Rail$Shape extends java.lang.Enum<org.mtr.core.data.Rail$Shape> {
+  public static final org.mtr.core.data.Rail$Shape QUADRATIC;
+  public static final org.mtr.core.data.Rail$Shape TWO_RADII;
+  public static final org.mtr.core.data.Rail$Shape CABLE;
+  private static final org.mtr.core.data.Rail$Shape[] $VALUES;
+  public static org.mtr.core.data.Rail$Shape[] values();
+  public static org.mtr.core.data.Rail$Shape valueOf(java.lang.String);
+  private org.mtr.core.data.Rail$Shape();
+  static {};
+}

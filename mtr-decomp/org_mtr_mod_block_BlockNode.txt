@@ -1,0 +1,271 @@
+﻿Compiled from "BlockNode.java"
+public class org.mtr.mod.block.BlockNode extends org.mtr.mod.block.BlockWaterloggable implements org.mtr.mapping.mapper.DirectionHelper,org.mtr.mapping.holder.Waterloggable {
+  public final org.mtr.core.data.TransportMode transportMode;
+
+  public static final org.mtr.mapping.holder.BooleanProperty FACING;
+
+  public static final org.mtr.mapping.holder.BooleanProperty IS_22_5;
+
+  public static final org.mtr.mapping.holder.BooleanProperty IS_45;
+
+  public static final org.mtr.mapping.holder.BooleanProperty IS_CONNECTED;
+
+  private static final double SHAPE_PADDING = 0.1d;
+
+  public org.mtr.mod.block.BlockNode(org.mtr.core.data.TransportMode);
+    Code:
+       0: aload_0
+       1: iconst_1
+       2: invokestatic  #31                 // Method org/mtr/mod/Blocks.createDefaultBlockSettings:(Z)Lorg/mtr/mapping/holder/BlockSettings;
+       5: invokevirtual #37                 // Method org/mtr/mapping/holder/BlockSettings.nonOpaque:()Lorg/mtr/mapping/holder/BlockSettings;
+       8: invokespecial #40                 // Method org/mtr/mod/block/BlockWaterloggable."<init>":(Lorg/mtr/mapping/holder/BlockSettings;)V
+      11: aload_0
+      12: aload_1
+      13: putfield      #42                 // Field transportMode:Lorg/mtr/core/data/TransportMode;
+      16: return
+
+  public org.mtr.mapping.holder.ActionResult onUse2(org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.World, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.PlayerEntity, org.mtr.mapping.holder.Hand, org.mtr.mapping.holder.BlockHitResult);
+    Code:
+       0: aload_2
+       1: invokevirtual #59                 // Method org/mtr/mapping/holder/World.isClient:()Z
+       4: ifeq          57
+       7: aload         4
+       9: getstatic     #65                 // Field org/mtr/mod/Items.BRUSH:Lorg/mtr/mapping/registry/ItemRegistryObject;
+      12: invokevirtual #71                 // Method org/mtr/mapping/registry/ItemRegistryObject.get:()Lorg/mtr/mapping/holder/Item;
+      15: invokevirtual #77                 // Method org/mtr/mapping/holder/PlayerEntity.isHolding:(Lorg/mtr/mapping/holder/Item;)Z
+      18: ifeq          57
+      21: invokestatic  #83                 // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      24: iconst_0
+      25: invokevirtual #87                 // Method org/mtr/mod/client/MinecraftClientData.getFacingRailAndBlockPos:(Z)Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair;
+      28: astore        7
+      30: aload         7
+      32: ifnonnull     39
+      35: getstatic     #93                 // Field org/mtr/mapping/holder/ActionResult.FAIL:Lorg/mtr/mapping/holder/ActionResult;
+      38: areturn
+      39: aload         7
+      41: invokevirtual #99                 // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectObjectImmutablePair.left:()Ljava/lang/Object;
+      44: checkcast     #101                // class org/mtr/core/data/Rail
+      47: invokevirtual #105                // Method org/mtr/core/data/Rail.getHexId:()Ljava/lang/String;
+      50: invokestatic  #111                // Method org/mtr/mod/packet/ClientPacketHelper.openRailShapeModifierScreen:(Ljava/lang/String;)V
+      53: getstatic     #114                // Field org/mtr/mapping/holder/ActionResult.SUCCESS:Lorg/mtr/mapping/holder/ActionResult;
+      56: areturn
+      57: getstatic     #93                 // Field org/mtr/mapping/holder/ActionResult.FAIL:Lorg/mtr/mapping/holder/ActionResult;
+      60: areturn
+
+  public org.mtr.mapping.holder.BlockState getPlacementState2(org.mtr.mapping.holder.ItemPlacementContext);
+    Code:
+       0: aload_1
+       1: invokevirtual #132                // Method org/mtr/mapping/holder/ItemPlacementContext.getPlayerYaw:()F
+       4: iconst_1
+       5: invokestatic  #138                // Method org/mtr/core/tool/Angle.getQuadrant:(FZ)I
+       8: istore_2
+       9: aload_0
+      10: aload_1
+      11: invokespecial #140                // Method org/mtr/mod/block/BlockWaterloggable.getPlacementState2:(Lorg/mtr/mapping/holder/ItemPlacementContext;)Lorg/mtr/mapping/holder/BlockState;
+      14: new           #142                // class org/mtr/mapping/holder/Property
+      17: dup
+      18: getstatic     #144                // Field FACING:Lorg/mtr/mapping/holder/BooleanProperty;
+      21: getfield      #150                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      24: checkcast     #152                // class net/minecraft/state/property/Property
+      27: invokespecial #155                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      30: iload_2
+      31: bipush        8
+      33: irem
+      34: iconst_4
+      35: if_icmplt     42
+      38: iconst_1
+      39: goto          43
+      42: iconst_0
+      43: invokestatic  #163                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+      46: invokevirtual #167                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+      49: new           #142                // class org/mtr/mapping/holder/Property
+      52: dup
+      53: getstatic     #169                // Field IS_45:Lorg/mtr/mapping/holder/BooleanProperty;
+      56: getfield      #150                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      59: checkcast     #152                // class net/minecraft/state/property/Property
+      62: invokespecial #155                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      65: iload_2
+      66: iconst_4
+      67: irem
+      68: iconst_2
+      69: if_icmplt     76
+      72: iconst_1
+      73: goto          77
+      76: iconst_0
+      77: invokestatic  #163                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+      80: invokevirtual #167                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+      83: new           #142                // class org/mtr/mapping/holder/Property
+      86: dup
+      87: getstatic     #171                // Field IS_22_5:Lorg/mtr/mapping/holder/BooleanProperty;
+      90: getfield      #150                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      93: checkcast     #152                // class net/minecraft/state/property/Property
+      96: invokespecial #155                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      99: iload_2
+     100: iconst_2
+     101: irem
+     102: iconst_1
+     103: if_icmpne     110
+     106: iconst_1
+     107: goto          111
+     110: iconst_0
+     111: invokestatic  #163                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+     114: invokevirtual #167                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+     117: new           #142                // class org/mtr/mapping/holder/Property
+     120: dup
+     121: getstatic     #173                // Field IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+     124: getfield      #150                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+     127: checkcast     #152                // class net/minecraft/state/property/Property
+     130: invokespecial #155                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+     133: iconst_0
+     134: invokestatic  #163                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+     137: invokevirtual #167                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+     140: areturn
+
+  public void onBreak2(org.mtr.mapping.holder.World, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.PlayerEntity);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: aload_2
+       3: aload_3
+       4: aload         4
+       6: invokespecial #183                // Method org/mtr/mod/block/BlockWaterloggable.onBreak2:(Lorg/mtr/mapping/holder/World;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/PlayerEntity;)V
+       9: aload_1
+      10: invokevirtual #59                 // Method org/mtr/mapping/holder/World.isClient:()Z
+      13: ifne          27
+      16: aload_1
+      17: invokestatic  #189                // Method org/mtr/mapping/holder/ServerWorld.cast:(Lorg/mtr/mapping/tool/HolderBase;)Lorg/mtr/mapping/holder/ServerWorld;
+      20: aload_2
+      21: invokestatic  #195                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+      24: invokestatic  #201                // Method org/mtr/mod/packet/PacketDeleteData.sendDirectlyToServerRailNodePosition:(Lorg/mtr/mapping/holder/ServerWorld;Lorg/mtr/core/data/Position;)V
+      27: return
+
+  public final org.mtr.mapping.holder.VoxelShape getOutlineShape2(org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockView, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.ShapeContext);
+    Code:
+       0: ldc2_w        #22                 // double 0.1d
+       3: aload_0
+       4: invokevirtual #208                // Method getShapeY1:()D
+       7: ldc2_w        #22                 // double 0.1d
+      10: ldc2_w        #209                // double 15.9d
+      13: aload_0
+      14: aload_1
+      15: invokevirtual #214                // Method getShapeY2:(Lorg/mtr/mapping/holder/BlockState;)D
+      18: ldc2_w        #209                // double 15.9d
+      21: invokestatic  #220                // Method org/mtr/mapping/holder/Block.createCuboidShape:(DDDDDD)Lorg/mtr/mapping/holder/VoxelShape;
+      24: areturn
+
+  public org.mtr.mapping.holder.VoxelShape getCollisionShape2(org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockView, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.ShapeContext);
+    Code:
+       0: invokestatic  #229                // Method org/mtr/mapping/holder/VoxelShapes.empty:()Lorg/mtr/mapping/holder/VoxelShape;
+       3: areturn
+
+  public void addBlockProperties(java.util.List<org.mtr.mapping.tool.HolderBase<?>>);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokespecial #235                // Method org/mtr/mod/block/BlockWaterloggable.addBlockProperties:(Ljava/util/List;)V
+       5: aload_1
+       6: getstatic     #144                // Field FACING:Lorg/mtr/mapping/holder/BooleanProperty;
+       9: invokeinterface #241,  2          // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+      14: pop
+      15: aload_1
+      16: getstatic     #171                // Field IS_22_5:Lorg/mtr/mapping/holder/BooleanProperty;
+      19: invokeinterface #241,  2          // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+      24: pop
+      25: aload_1
+      26: getstatic     #169                // Field IS_45:Lorg/mtr/mapping/holder/BooleanProperty;
+      29: invokeinterface #241,  2          // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+      34: pop
+      35: aload_1
+      36: getstatic     #173                // Field IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+      39: invokeinterface #241,  2          // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+      44: pop
+      45: return
+
+  double getShapeY1();
+    Code:
+       0: ldc2_w        #22                 // double 0.1d
+       3: dreturn
+
+  double getShapeY2(org.mtr.mapping.holder.BlockState);
+    Code:
+       0: aload_1
+       1: getstatic     #173                // Field IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+       4: invokestatic  #249                // InterfaceMethod org/mtr/mod/block/IBlock.getStatePropertySafe:(Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BooleanProperty;)Z
+       7: ifeq          14
+      10: dconst_1
+      11: goto          17
+      14: ldc2_w        #209                // double 15.9d
+      17: dreturn
+
+  public static void resetRailNode(org.mtr.mapping.holder.ServerWorld, org.mtr.mapping.holder.BlockPos);
+    Code:
+       0: aload_0
+       1: aload_1
+       2: invokevirtual #256                // Method org/mtr/mapping/holder/ServerWorld.getBlockState:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockState;
+       5: astore_2
+       6: aload_2
+       7: invokevirtual #260                // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      10: getfield      #261                // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      13: instanceof    #2                  // class org/mtr/mod/block/BlockNode
+      16: ifeq          49
+      19: aload_0
+      20: aload_1
+      21: aload_2
+      22: new           #142                // class org/mtr/mapping/holder/Property
+      25: dup
+      26: getstatic     #173                // Field IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+      29: getfield      #150                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      32: checkcast     #152                // class net/minecraft/state/property/Property
+      35: invokespecial #155                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      38: iconst_0
+      39: invokestatic  #163                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+      42: invokevirtual #167                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+      45: invokevirtual #265                // Method org/mtr/mapping/holder/ServerWorld.setBlockState:(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockState;)Z
+      48: pop
+      49: return
+
+  public static float getAngle(org.mtr.mapping.holder.BlockState);
+    Code:
+       0: aload_0
+       1: getstatic     #144                // Field FACING:Lorg/mtr/mapping/holder/BooleanProperty;
+       4: invokestatic  #249                // InterfaceMethod org/mtr/mod/block/IBlock.getStatePropertySafe:(Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BooleanProperty;)Z
+       7: ifeq          14
+      10: iconst_0
+      11: goto          16
+      14: bipush        90
+      16: i2f
+      17: aload_0
+      18: getstatic     #171                // Field IS_22_5:Lorg/mtr/mapping/holder/BooleanProperty;
+      21: invokestatic  #249                // InterfaceMethod org/mtr/mod/block/IBlock.getStatePropertySafe:(Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BooleanProperty;)Z
+      24: ifeq          33
+      27: ldc_w         #269                // float 22.5f
+      30: goto          34
+      33: fconst_0
+      34: fadd
+      35: aload_0
+      36: getstatic     #169                // Field IS_45:Lorg/mtr/mapping/holder/BooleanProperty;
+      39: invokestatic  #249                // InterfaceMethod org/mtr/mod/block/IBlock.getStatePropertySafe:(Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BooleanProperty;)Z
+      42: ifeq          50
+      45: bipush        45
+      47: goto          51
+      50: iconst_0
+      51: i2f
+      52: fadd
+      53: freturn
+
+  static {};
+    Code:
+       0: ldc_w         #273                // String facing
+       3: invokestatic  #277                // Method org/mtr/mapping/holder/BooleanProperty.of:(Ljava/lang/String;)Lorg/mtr/mapping/holder/BooleanProperty;
+       6: putstatic     #144                // Field FACING:Lorg/mtr/mapping/holder/BooleanProperty;
+       9: ldc_w         #279                // String is_22_5
+      12: invokestatic  #277                // Method org/mtr/mapping/holder/BooleanProperty.of:(Ljava/lang/String;)Lorg/mtr/mapping/holder/BooleanProperty;
+      15: putstatic     #171                // Field IS_22_5:Lorg/mtr/mapping/holder/BooleanProperty;
+      18: ldc_w         #281                // String is_45
+      21: invokestatic  #277                // Method org/mtr/mapping/holder/BooleanProperty.of:(Ljava/lang/String;)Lorg/mtr/mapping/holder/BooleanProperty;
+      24: putstatic     #169                // Field IS_45:Lorg/mtr/mapping/holder/BooleanProperty;
+      27: ldc_w         #283                // String is_connected
+      30: invokestatic  #277                // Method org/mtr/mapping/holder/BooleanProperty.of:(Ljava/lang/String;)Lorg/mtr/mapping/holder/BooleanProperty;
+      33: putstatic     #173                // Field IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+      36: return
+}

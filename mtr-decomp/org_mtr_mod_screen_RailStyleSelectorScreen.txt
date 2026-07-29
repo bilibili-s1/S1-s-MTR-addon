@@ -1,0 +1,212 @@
+﻿Compiled from "RailStyleSelectorScreen.java"
+public class org.mtr.mod.screen.RailStyleSelectorScreen extends org.mtr.mod.screen.DashboardListSelectorScreen {
+  private final org.mtr.core.data.Rail rail;
+
+  private final org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectImmutableList<org.mtr.mod.resource.RailResource> allRails;
+
+  private org.mtr.mod.screen.RailStyleSelectorScreen(org.mtr.core.data.Rail, org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectImmutableList<org.mtr.mod.screen.DashboardListItem>, org.mtr.libraries.it.unimi.dsi.fastutil.longs.LongArrayList);
+    Code:
+       0: aload_0
+       1: aload_2
+       2: aload_3
+       3: iconst_0
+       4: iconst_0
+       5: aconst_null
+       6: invokespecial #23                 // Method org/mtr/mod/screen/DashboardListSelectorScreen."<init>":(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongCollection;ZZLorg/mtr/mapping/mapper/ScreenExtension;)V
+       9: aload_0
+      10: invokestatic  #29                 // Method org/mtr/mod/client/CustomResourceLoader.getRails:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      13: putfield      #31                 // Field allRails:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      16: aload_0
+      17: aload_1
+      18: putfield      #33                 // Field rail:Lorg/mtr/core/data/Rail;
+      21: return
+
+  public void onClose2();
+    Code:
+       0: aload_0
+       1: invokespecial #41                 // Method org/mtr/mod/screen/DashboardListSelectorScreen.onClose2:()V
+       4: invokestatic  #47                 // Method org/mtr/mapping/holder/MinecraftClient.getInstance:()Lorg/mtr/mapping/holder/MinecraftClient;
+       7: invokevirtual #51                 // Method org/mtr/mapping/holder/MinecraftClient.getPlayerMapped:()Lorg/mtr/mapping/holder/ClientPlayerEntity;
+      10: astore_1
+      11: aload_1
+      12: ifnull        43
+      15: getstatic     #57                 // Field org/mtr/mod/InitClient.REGISTRY_CLIENT:Lorg/mtr/mapping/registry/RegistryClient;
+      18: new           #59                 // class org/mtr/mod/packet/PacketUpdateLastRailStyles
+      21: dup
+      22: aload_1
+      23: invokevirtual #65                 // Method org/mtr/mapping/holder/ClientPlayerEntity.getUuid:()Ljava/util/UUID;
+      26: aload_0
+      27: getfield      #33                 // Field rail:Lorg/mtr/core/data/Rail;
+      30: invokevirtual #71                 // Method org/mtr/core/data/Rail.getTransportMode:()Lorg/mtr/core/data/TransportMode;
+      33: aload_0
+      34: invokevirtual #75                 // Method getStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      37: invokespecial #78                 // Method org/mtr/mod/packet/PacketUpdateLastRailStyles."<init>":(Ljava/util/UUID;Lorg/mtr/core/data/TransportMode;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;)V
+      40: invokevirtual #84                 // Method org/mtr/mapping/registry/RegistryClient.sendPacketToServer:(Lorg/mtr/mapping/registry/PacketHandler;)V
+      43: return
+
+  protected void updateList();
+    Code:
+       0: aload_0
+       1: invokespecial #89                 // Method org/mtr/mod/screen/DashboardListSelectorScreen.updateList:()V
+       4: getstatic     #57                 // Field org/mtr/mod/InitClient.REGISTRY_CLIENT:Lorg/mtr/mapping/registry/RegistryClient;
+       7: new           #91                 // class org/mtr/mod/packet/PacketUpdateData
+      10: dup
+      11: new           #93                 // class org/mtr/core/operation/UpdateDataRequest
+      14: dup
+      15: invokestatic  #98                 // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      18: invokespecial #101                // Method org/mtr/core/operation/UpdateDataRequest."<init>":(Lorg/mtr/core/data/Data;)V
+      21: aload_0
+      22: getfield      #33                 // Field rail:Lorg/mtr/core/data/Rail;
+      25: aload_0
+      26: invokevirtual #75                 // Method getStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;
+      29: invokestatic  #105                // Method org/mtr/core/data/Rail.copy:(Lorg/mtr/core/data/Rail;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;)Lorg/mtr/core/data/Rail;
+      32: invokevirtual #109                // Method org/mtr/core/operation/UpdateDataRequest.addRail:(Lorg/mtr/core/data/Rail;)Lorg/mtr/core/operation/UpdateDataRequest;
+      35: invokespecial #112                // Method org/mtr/mod/packet/PacketUpdateData."<init>":(Lorg/mtr/core/operation/UpdateDataRequest;)V
+      38: invokevirtual #84                 // Method org/mtr/mapping/registry/RegistryClient.sendPacketToServer:(Lorg/mtr/mapping/registry/PacketHandler;)V
+      41: return
+
+  public static org.mtr.mod.screen.RailStyleSelectorScreen create(org.mtr.core.data.Rail);
+    Code:
+       0: invokestatic  #29                 // Method org/mtr/mod/client/CustomResourceLoader.getRails:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       3: astore_1
+       4: new           #116                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+       7: dup
+       8: invokespecial #118                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+      11: astore_2
+      12: new           #120                // class org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList
+      15: dup
+      16: invokespecial #121                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList."<init>":()V
+      19: astore_3
+      20: aload_0
+      21: invokevirtual #123                // Method org/mtr/core/data/Rail.getStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      24: invokevirtual #129                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.stream:()Ljava/util/stream/Stream;
+      27: invokedynamic #150,  0            // InvokeDynamic #0:apply:()Ljava/util/function/Function;
+      32: invokeinterface #156,  2          // InterfaceMethod java/util/stream/Stream.map:(Ljava/util/function/Function;)Ljava/util/stream/Stream;
+      37: invokedynamic #164,  0            // InvokeDynamic #1:get:()Ljava/util/function/Supplier;
+      42: invokestatic  #170                // Method java/util/stream/Collectors.toCollection:(Ljava/util/function/Supplier;)Ljava/util/stream/Collector;
+      45: invokeinterface #174,  2          // InterfaceMethod java/util/stream/Stream.collect:(Ljava/util/stream/Collector;)Ljava/lang/Object;
+      50: checkcast     #116                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+      53: astore        4
+      55: iconst_0
+      56: istore        5
+      58: iload         5
+      60: aload_1
+      61: invokevirtual #178                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.size:()I
+      64: if_icmpge     133
+      67: aload_1
+      68: iload         5
+      70: invokevirtual #181                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+      73: checkcast     #133                // class org/mtr/mod/resource/RailResource
+      76: astore        6
+      78: aload_2
+      79: new           #183                // class org/mtr/mod/screen/DashboardListItem
+      82: dup
+      83: iload         5
+      85: i2l
+      86: aload         6
+      88: invokevirtual #187                // Method org/mtr/mod/resource/RailResource.getName:()Ljava/lang/String;
+      91: aload         6
+      93: invokevirtual #190                // Method org/mtr/mod/resource/RailResource.getColor:()I
+      96: ldc           #191                // int -16777216
+      98: ior
+      99: invokespecial #194                // Method org/mtr/mod/screen/DashboardListItem."<init>":(JLjava/lang/String;I)V
+     102: invokevirtual #198                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+     105: pop
+     106: aload         4
+     108: aload         6
+     110: invokevirtual #201                // Method org/mtr/mod/resource/RailResource.getId:()Ljava/lang/String;
+     113: invokevirtual #204                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.contains:(Ljava/lang/Object;)Z
+     116: ifeq          127
+     119: aload_3
+     120: iload         5
+     122: i2l
+     123: invokevirtual #207                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList.add:(J)Z
+     126: pop
+     127: iinc          5, 1
+     130: goto          58
+     133: new           #2                  // class org/mtr/mod/screen/RailStyleSelectorScreen
+     136: dup
+     137: aload_0
+     138: new           #125                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList
+     141: dup
+     142: aload_2
+     143: invokespecial #210                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList."<init>":(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectList;)V
+     146: aload_3
+     147: invokespecial #212                // Method "<init>":(Lorg/mtr/core/data/Rail;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongArrayList;)V
+     150: areturn
+
+  private org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList<java.lang.String> getStyles();
+    Code:
+       0: new           #116                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+       3: dup
+       4: invokespecial #118                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+       7: astore_1
+       8: new           #225                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap
+      11: dup
+      12: invokespecial #226                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap."<init>":()V
+      15: astore_2
+      16: aload_0
+      17: getfield      #33                 // Field rail:Lorg/mtr/core/data/Rail;
+      20: invokevirtual #123                // Method org/mtr/core/data/Rail.getStyles:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+      23: aload_2
+      24: invokedynamic #239,  0            // InvokeDynamic #2:accept:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap;)Ljava/util/function/Consumer;
+      29: invokevirtual #243                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.forEach:(Ljava/util/function/Consumer;)V
+      32: aload_0
+      33: getfield      #246                // Field selectedIds:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongCollection;
+      36: aload_0
+      37: aload_1
+      38: aload_2
+      39: invokedynamic #256,  0            // InvokeDynamic #3:accept:(Lorg/mtr/mod/screen/RailStyleSelectorScreen;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap;)Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;
+      44: invokeinterface #261,  2          // InterfaceMethod org/mtr/libraries/it/unimi/dsi/fastutil/longs/LongCollection.forEach:(Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/LongConsumer;)V
+      49: aload_1
+      50: invokedynamic #276,  0            // InvokeDynamic #4:compare:()Ljava/util/Comparator;
+      55: invokevirtual #280                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.sort:(Ljava/util/Comparator;)V
+      58: aload_1
+      59: areturn
+
+  private void lambda$getStyles$1(org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList, org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap, long);
+    Code:
+       0: aload_0
+       1: getfield      #31                 // Field allRails:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList;
+       4: lload_3
+       5: l2i
+       6: invokevirtual #181                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectImmutableList.get:(I)Ljava/lang/Object;
+       9: checkcast     #133                // class org/mtr/mod/resource/RailResource
+      12: invokevirtual #201                // Method org/mtr/mod/resource/RailResource.getId:()Ljava/lang/String;
+      15: astore        5
+      17: aload_1
+      18: aload         5
+      20: ldc_w         #287                // String default
+      23: invokevirtual #290                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+      26: ifeq          34
+      29: aload         5
+      31: goto          59
+      34: aload         5
+      36: aload_2
+      37: aload         5
+      39: invokevirtual #293                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap.getBoolean:(Ljava/lang/Object;)Z
+      42: ifeq          51
+      45: ldc_w         #295                // String _2
+      48: goto          54
+      51: ldc_w         #297                // String _1
+      54: invokedynamic #309,  0            // InvokeDynamic #5:makeConcatWithConstants:(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+      59: invokevirtual #198                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList.add:(Ljava/lang/Object;)Z
+      62: pop
+      63: return
+
+  private static void lambda$getStyles$0(org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2BooleanArrayMap, java.lang.String);
+    Code:
+       0: aload_1
+       1: ldc_w         #287                // String default
+       4: invokevirtual #290                // Method java/lang/String.equals:(Ljava/lang/Object;)Z
+       7: ifne          26
+      10: aload_0
+      11: aload_1
+      12: invokestatic  #137                // Method org/mtr/mod/resource/RailResource.getIdWithoutDirection:(Ljava/lang/String;)Ljava/lang/String;
+      15: aload_1
+      16: ldc_w         #295                // String _2
+      19: invokevirtual #317                // Method java/lang/String.endsWith:(Ljava/lang/String;)Z
+      22: invokevirtual #321                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/Object2BooleanArrayMap.put:(Ljava/lang/Object;Z)Z
+      25: pop
+      26: return
+}

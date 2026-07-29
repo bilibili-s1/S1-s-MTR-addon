@@ -1,0 +1,433 @@
+﻿Compiled from "ClientPacketHelper.java"
+public final class org.mtr.mod.packet.ClientPacketHelper {
+  public org.mtr.mod.packet.ClientPacketHelper();
+    Code:
+       0: aload_0
+       1: invokespecial #63                 // Method java/lang/Object."<init>":()V
+       4: return
+
+  public static void openBlockEntityScreen(org.mtr.mapping.holder.BlockPos);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: invokedynamic #88,  0             // InvokeDynamic #0:accept:(Lorg/mtr/mapping/holder/BlockPos;)Ljava/util/function/Consumer;
+       7: invokestatic  #92                 // Method getBlockEntity:(Lorg/mtr/mapping/holder/BlockPos;Ljava/util/function/Consumer;)V
+      10: return
+
+  public static void openDashboardScreen(org.mtr.core.data.TransportMode, org.mtr.mod.packet.PacketOpenDashboardScreen$ScreenType, long);
+    Code:
+       0: getstatic     #102                // Field org/mtr/mod/packet/ClientPacketHelper$1.$SwitchMap$org$mtr$mod$packet$PacketOpenDashboardScreen$ScreenType:[I
+       3: aload_1
+       4: invokevirtual #106                // Method org/mtr/mod/packet/PacketOpenDashboardScreen$ScreenType.ordinal:()I
+       7: iaload
+       8: tableswitch   { // 1 to 4
+
+                     1: 40
+
+                     2: 79
+
+                     3: 119
+
+                     4: 159
+               default: 199
+          }
+      40: new           #108                // class org/mtr/mod/screen/EditStationScreen
+      43: dup
+      44: invokestatic  #114                // Method org/mtr/mod/client/MinecraftClientData.getDashboardInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      47: getfield      #118                // Field org/mtr/mod/client/MinecraftClientData.stationIdMap:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
+      50: lload_2
+      51: invokevirtual #124                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.get:(J)Ljava/lang/Object;
+      54: checkcast     #126                // class org/mtr/core/data/Station
+      57: new           #128                // class org/mtr/mod/screen/DashboardScreen
+      60: dup
+      61: aload_0
+      62: invokespecial #131                // Method org/mtr/mod/screen/DashboardScreen."<init>":(Lorg/mtr/core/data/TransportMode;)V
+      65: invokespecial #134                // Method org/mtr/mod/screen/EditStationScreen."<init>":(Lorg/mtr/core/data/Station;Lorg/mtr/mapping/mapper/ScreenExtension;)V
+      68: invokedynamic #146,  0            // InvokeDynamic #1:test:()Ljava/util/function/Predicate;
+      73: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      76: goto          215
+      79: new           #152                // class org/mtr/mod/screen/EditDepotScreen
+      82: dup
+      83: invokestatic  #114                // Method org/mtr/mod/client/MinecraftClientData.getDashboardInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+      86: getfield      #155                // Field org/mtr/mod/client/MinecraftClientData.depotIdMap:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
+      89: lload_2
+      90: invokevirtual #124                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.get:(J)Ljava/lang/Object;
+      93: checkcast     #157                // class org/mtr/core/data/Depot
+      96: aload_0
+      97: new           #128                // class org/mtr/mod/screen/DashboardScreen
+     100: dup
+     101: aload_0
+     102: invokespecial #131                // Method org/mtr/mod/screen/DashboardScreen."<init>":(Lorg/mtr/core/data/TransportMode;)V
+     105: invokespecial #160                // Method org/mtr/mod/screen/EditDepotScreen."<init>":(Lorg/mtr/core/data/Depot;Lorg/mtr/core/data/TransportMode;Lorg/mtr/mapping/mapper/ScreenExtension;)V
+     108: invokedynamic #165,  0            // InvokeDynamic #2:test:()Ljava/util/function/Predicate;
+     113: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     116: goto          215
+     119: new           #167                // class org/mtr/mod/screen/PlatformScreen
+     122: dup
+     123: invokestatic  #114                // Method org/mtr/mod/client/MinecraftClientData.getDashboardInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+     126: getfield      #170                // Field org/mtr/mod/client/MinecraftClientData.platformIdMap:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
+     129: lload_2
+     130: invokevirtual #124                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.get:(J)Ljava/lang/Object;
+     133: checkcast     #172                // class org/mtr/core/data/Platform
+     136: aload_0
+     137: new           #128                // class org/mtr/mod/screen/DashboardScreen
+     140: dup
+     141: aload_0
+     142: invokespecial #131                // Method org/mtr/mod/screen/DashboardScreen."<init>":(Lorg/mtr/core/data/TransportMode;)V
+     145: invokespecial #175                // Method org/mtr/mod/screen/PlatformScreen."<init>":(Lorg/mtr/core/data/Platform;Lorg/mtr/core/data/TransportMode;Lorg/mtr/mapping/mapper/ScreenExtension;)V
+     148: invokedynamic #180,  0            // InvokeDynamic #3:test:()Ljava/util/function/Predicate;
+     153: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     156: goto          215
+     159: new           #182                // class org/mtr/mod/screen/SidingScreen
+     162: dup
+     163: invokestatic  #114                // Method org/mtr/mod/client/MinecraftClientData.getDashboardInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+     166: getfield      #185                // Field org/mtr/mod/client/MinecraftClientData.sidingIdMap:Lorg/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;
+     169: lload_2
+     170: invokevirtual #124                // Method org/mtr/libraries/it/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap.get:(J)Ljava/lang/Object;
+     173: checkcast     #187                // class org/mtr/core/data/Siding
+     176: aload_0
+     177: new           #128                // class org/mtr/mod/screen/DashboardScreen
+     180: dup
+     181: aload_0
+     182: invokespecial #131                // Method org/mtr/mod/screen/DashboardScreen."<init>":(Lorg/mtr/core/data/TransportMode;)V
+     185: invokespecial #190                // Method org/mtr/mod/screen/SidingScreen."<init>":(Lorg/mtr/core/data/Siding;Lorg/mtr/core/data/TransportMode;Lorg/mtr/mapping/mapper/ScreenExtension;)V
+     188: invokedynamic #195,  0            // InvokeDynamic #4:test:()Ljava/util/function/Predicate;
+     193: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     196: goto          215
+     199: new           #128                // class org/mtr/mod/screen/DashboardScreen
+     202: dup
+     203: aload_0
+     204: invokespecial #131                // Method org/mtr/mod/screen/DashboardScreen."<init>":(Lorg/mtr/core/data/TransportMode;)V
+     207: invokedynamic #200,  0            // InvokeDynamic #5:test:()Ljava/util/function/Predicate;
+     212: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     215: return
+
+  public static void openLiftCustomizationScreen(org.mtr.mapping.holder.BlockPos);
+    Code:
+       0: invokestatic  #207                // Method org/mtr/mod/client/MinecraftClientData.getInstance:()Lorg/mtr/mod/client/MinecraftClientData;
+       3: getfield      #211                // Field org/mtr/mod/client/MinecraftClientData.lifts:Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet;
+       6: invokevirtual #217                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArraySet.iterator:()Lorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectIterator;
+       9: astore_1
+      10: aload_1
+      11: invokeinterface #223,  1          // InterfaceMethod java/util/Iterator.hasNext:()Z
+      16: ifeq          67
+      19: aload_1
+      20: invokeinterface #227,  1          // InterfaceMethod java/util/Iterator.next:()Ljava/lang/Object;
+      25: checkcast     #229                // class org/mtr/core/data/Lift
+      28: astore_2
+      29: aload_2
+      30: aload_0
+      31: invokestatic  #235                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+      34: invokevirtual #239                // Method org/mtr/core/data/Lift.getFloorIndex:(Lorg/mtr/core/data/Position;)I
+      37: iflt          64
+      40: invokestatic  #244                // Method org/mtr/mapping/holder/MinecraftClient.getInstance:()Lorg/mtr/mapping/holder/MinecraftClient;
+      43: new           #246                // class org/mtr/mapping/holder/Screen
+      46: dup
+      47: new           #248                // class org/mtr/mod/screen/LiftCustomizationScreen
+      50: dup
+      51: aload_2
+      52: invokespecial #251                // Method org/mtr/mod/screen/LiftCustomizationScreen."<init>":(Lorg/mtr/core/data/Lift;)V
+      55: invokespecial #254                // Method org/mtr/mapping/holder/Screen."<init>":(Lnet/minecraft/client/gui/screen/Screen;)V
+      58: invokevirtual #257                // Method org/mtr/mapping/holder/MinecraftClient.openScreen:(Lorg/mtr/mapping/holder/Screen;)V
+      61: goto          67
+      64: goto          10
+      67: return
+
+  public static void openPIDSConfigScreen(org.mtr.mapping.holder.BlockPos, int);
+    Code:
+       0: aload_0
+       1: aload_0
+       2: iload_1
+       3: invokedynamic #270,  0            // InvokeDynamic #6:accept:(Lorg/mtr/mapping/holder/BlockPos;I)Ljava/util/function/Consumer;
+       8: invokestatic  #92                 // Method getBlockEntity:(Lorg/mtr/mapping/holder/BlockPos;Ljava/util/function/Consumer;)V
+      11: return
+
+  public static void openRailShapeModifierScreen(java.lang.String);
+    Code:
+       0: new           #276                // class org/mtr/mod/screen/RailModifierScreen
+       3: dup
+       4: aload_0
+       5: invokespecial #278                // Method org/mtr/mod/screen/RailModifierScreen."<init>":(Ljava/lang/String;)V
+       8: invokedynamic #283,  0            // InvokeDynamic #7:test:()Ljava/util/function/Predicate;
+      13: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      16: return
+
+  public static void openTicketMachineScreen(int);
+    Code:
+       0: new           #289                // class org/mtr/mod/screen/TicketMachineScreen
+       3: dup
+       4: iload_0
+       5: invokespecial #291                // Method org/mtr/mod/screen/TicketMachineScreen."<init>":(I)V
+       8: invokedynamic #296,  0            // InvokeDynamic #8:test:()Ljava/util/function/Predicate;
+      13: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      16: return
+
+  private static void openScreen(org.mtr.mapping.mapper.ScreenExtension, java.util.function.Predicate<org.mtr.mapping.mapper.ScreenExtension>);
+    Code:
+       0: invokestatic  #244                // Method org/mtr/mapping/holder/MinecraftClient.getInstance:()Lorg/mtr/mapping/holder/MinecraftClient;
+       3: astore_2
+       4: aload_2
+       5: invokevirtual #303                // Method org/mtr/mapping/holder/MinecraftClient.getCurrentScreenMapped:()Lorg/mtr/mapping/holder/Screen;
+       8: astore_3
+       9: aload_3
+      10: ifnull        39
+      13: aload_3
+      14: getfield      #307                // Field org/mtr/mapping/holder/Screen.data:Ljava/lang/Object;
+      17: instanceof    #309                // class org/mtr/mapping/mapper/ScreenExtension
+      20: ifeq          51
+      23: aload_1
+      24: aload_3
+      25: getfield      #307                // Field org/mtr/mapping/holder/Screen.data:Ljava/lang/Object;
+      28: checkcast     #309                // class org/mtr/mapping/mapper/ScreenExtension
+      31: invokeinterface #313,  2          // InterfaceMethod java/util/function/Predicate.test:(Ljava/lang/Object;)Z
+      36: ifne          51
+      39: aload_2
+      40: new           #246                // class org/mtr/mapping/holder/Screen
+      43: dup
+      44: aload_0
+      45: invokespecial #254                // Method org/mtr/mapping/holder/Screen."<init>":(Lnet/minecraft/client/gui/screen/Screen;)V
+      48: invokevirtual #257                // Method org/mtr/mapping/holder/MinecraftClient.openScreen:(Lorg/mtr/mapping/holder/Screen;)V
+      51: return
+
+  private static void getBlockEntity(org.mtr.mapping.holder.BlockPos, java.util.function.Consumer<org.mtr.mapping.holder.BlockEntity>);
+    Code:
+       0: invokestatic  #244                // Method org/mtr/mapping/holder/MinecraftClient.getInstance:()Lorg/mtr/mapping/holder/MinecraftClient;
+       3: invokevirtual #326                // Method org/mtr/mapping/holder/MinecraftClient.getWorldMapped:()Lorg/mtr/mapping/holder/ClientWorld;
+       6: astore_2
+       7: aload_2
+       8: ifnull        28
+      11: aload_2
+      12: aload_0
+      13: invokevirtual #331                // Method org/mtr/mapping/holder/ClientWorld.getBlockEntity:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/mapping/holder/BlockEntity;
+      16: astore_3
+      17: aload_3
+      18: ifnull        28
+      21: aload_1
+      22: aload_3
+      23: invokeinterface #335,  2          // InterfaceMethod java/util/function/Consumer.accept:(Ljava/lang/Object;)V
+      28: return
+
+  private static boolean lambda$openTicketMachineScreen$17(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #289                // class org/mtr/mod/screen/TicketMachineScreen
+       4: ireturn
+
+  private static boolean lambda$openRailShapeModifierScreen$16(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #276                // class org/mtr/mod/screen/RailModifierScreen
+       4: ireturn
+
+  private static void lambda$openPIDSConfigScreen$15(org.mtr.mapping.holder.BlockPos, int, org.mtr.mapping.holder.BlockEntity);
+    Code:
+       0: aload_2
+       1: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+       4: instanceof    #14                 // class org/mtr/mod/block/BlockPIDSBase$BlockEntityBase
+       7: ifeq          27
+      10: new           #346                // class org/mtr/mod/screen/PIDSConfigScreen
+      13: dup
+      14: aload_0
+      15: iload_1
+      16: invokespecial #348                // Method org/mtr/mod/screen/PIDSConfigScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;I)V
+      19: invokedynamic #353,  0            // InvokeDynamic #9:test:()Ljava/util/function/Predicate;
+      24: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      27: return
+
+  private static boolean lambda$openPIDSConfigScreen$14(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #346                // class org/mtr/mod/screen/PIDSConfigScreen
+       4: ireturn
+
+  private static boolean lambda$openDashboardScreen$13(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #128                // class org/mtr/mod/screen/DashboardScreen
+       4: ireturn
+
+  private static boolean lambda$openDashboardScreen$12(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #182                // class org/mtr/mod/screen/SidingScreen
+       4: ireturn
+
+  private static boolean lambda$openDashboardScreen$11(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #167                // class org/mtr/mod/screen/PlatformScreen
+       4: ireturn
+
+  private static boolean lambda$openDashboardScreen$10(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #152                // class org/mtr/mod/screen/EditDepotScreen
+       4: ireturn
+
+  private static boolean lambda$openDashboardScreen$9(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #108                // class org/mtr/mod/screen/EditStationScreen
+       4: ireturn
+
+  private static void lambda$openBlockEntityScreen$8(org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockEntity);
+    Code:
+       0: aload_1
+       1: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+       4: instanceof    #19                 // class org/mtr/mod/block/BlockTrainAnnouncer$BlockEntity
+       7: ifeq          36
+      10: new           #355                // class org/mtr/mod/screen/TrainAnnouncerScreen
+      13: dup
+      14: aload_0
+      15: aload_1
+      16: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+      19: checkcast     #19                 // class org/mtr/mod/block/BlockTrainAnnouncer$BlockEntity
+      22: invokespecial #358                // Method org/mtr/mod/screen/TrainAnnouncerScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockTrainAnnouncer$BlockEntity;)V
+      25: invokedynamic #363,  0            // InvokeDynamic #10:test:()Ljava/util/function/Predicate;
+      30: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      33: goto          281
+      36: aload_1
+      37: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+      40: instanceof    #24                 // class org/mtr/mod/block/BlockTrainScheduleSensor$BlockEntity
+      43: ifeq          72
+      46: new           #365                // class org/mtr/mod/screen/TrainScheduleSensorScreen
+      49: dup
+      50: aload_0
+      51: aload_1
+      52: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+      55: checkcast     #24                 // class org/mtr/mod/block/BlockTrainScheduleSensor$BlockEntity
+      58: invokespecial #368                // Method org/mtr/mod/screen/TrainScheduleSensorScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockTrainScheduleSensor$BlockEntity;)V
+      61: invokedynamic #373,  0            // InvokeDynamic #11:test:()Ljava/util/function/Predicate;
+      66: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      69: goto          281
+      72: aload_1
+      73: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+      76: instanceof    #28                 // class org/mtr/mod/block/BlockTrainSensorBase$BlockEntityBase
+      79: ifeq          101
+      82: new           #375                // class org/mtr/mod/screen/TrainBasicSensorScreen
+      85: dup
+      86: aload_0
+      87: invokespecial #377                // Method org/mtr/mod/screen/TrainBasicSensorScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;)V
+      90: invokedynamic #382,  0            // InvokeDynamic #12:test:()Ljava/util/function/Predicate;
+      95: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+      98: goto          281
+     101: aload_1
+     102: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     105: instanceof    #32                 // class org/mtr/mod/block/BlockRailwaySign$BlockEntity
+     108: ifne          121
+     111: aload_1
+     112: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     115: instanceof    #36                 // class org/mtr/mod/block/BlockRouteSignBase$BlockEntityBase
+     118: ifeq          140
+     121: new           #384                // class org/mtr/mod/screen/RailwaySignScreen
+     124: dup
+     125: aload_0
+     126: invokespecial #385                // Method org/mtr/mod/screen/RailwaySignScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;)V
+     129: invokedynamic #390,  0            // InvokeDynamic #13:test:()Ljava/util/function/Predicate;
+     134: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     137: goto          281
+     140: aload_1
+     141: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     144: instanceof    #40                 // class org/mtr/mod/block/BlockLiftTrackFloor$BlockEntity
+     147: ifeq          176
+     150: new           #392                // class org/mtr/mod/screen/LiftTrackFloorScreen
+     153: dup
+     154: aload_0
+     155: aload_1
+     156: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     159: checkcast     #40                 // class org/mtr/mod/block/BlockLiftTrackFloor$BlockEntity
+     162: invokespecial #395                // Method org/mtr/mod/screen/LiftTrackFloorScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockLiftTrackFloor$BlockEntity;)V
+     165: invokedynamic #400,  0            // InvokeDynamic #14:test:()Ljava/util/function/Predicate;
+     170: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     173: goto          281
+     176: aload_1
+     177: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     180: instanceof    #44                 // class org/mtr/mod/block/BlockSignalBase$BlockEntityBase
+     183: ifeq          212
+     186: new           #402                // class org/mtr/mod/screen/SignalColorScreen
+     189: dup
+     190: aload_0
+     191: aload_1
+     192: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     195: checkcast     #44                 // class org/mtr/mod/block/BlockSignalBase$BlockEntityBase
+     198: invokespecial #405                // Method org/mtr/mod/screen/SignalColorScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockSignalBase$BlockEntityBase;)V
+     201: invokedynamic #410,  0            // InvokeDynamic #15:test:()Ljava/util/function/Predicate;
+     206: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     209: goto          281
+     212: aload_1
+     213: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     216: instanceof    #48                 // class org/mtr/mod/block/BlockDriverKeyDispenser$BlockEntity
+     219: ifeq          248
+     222: new           #412                // class org/mtr/mod/screen/DriverKeyDispenserScreen
+     225: dup
+     226: aload_0
+     227: aload_1
+     228: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     231: checkcast     #48                 // class org/mtr/mod/block/BlockDriverKeyDispenser$BlockEntity
+     234: invokespecial #415                // Method org/mtr/mod/screen/DriverKeyDispenserScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockDriverKeyDispenser$BlockEntity;)V
+     237: invokedynamic #420,  0            // InvokeDynamic #16:test:()Ljava/util/function/Predicate;
+     242: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     245: goto          281
+     248: aload_1
+     249: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     252: instanceof    #52                 // class org/mtr/mod/block/BlockEyeCandy$BlockEntity
+     255: ifeq          281
+     258: new           #422                // class org/mtr/mod/screen/EyeCandyScreen
+     261: dup
+     262: aload_0
+     263: aload_1
+     264: getfield      #344                // Field org/mtr/mapping/holder/BlockEntity.data:Ljava/lang/Object;
+     267: checkcast     #52                 // class org/mtr/mod/block/BlockEyeCandy$BlockEntity
+     270: invokespecial #425                // Method org/mtr/mod/screen/EyeCandyScreen."<init>":(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mod/block/BlockEyeCandy$BlockEntity;)V
+     273: invokedynamic #430,  0            // InvokeDynamic #17:test:()Ljava/util/function/Predicate;
+     278: invokestatic  #150                // Method openScreen:(Lorg/mtr/mapping/mapper/ScreenExtension;Ljava/util/function/Predicate;)V
+     281: return
+
+  private static boolean lambda$openBlockEntityScreen$7(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #422                // class org/mtr/mod/screen/EyeCandyScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$6(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #412                // class org/mtr/mod/screen/DriverKeyDispenserScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$5(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #402                // class org/mtr/mod/screen/SignalColorScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$4(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #392                // class org/mtr/mod/screen/LiftTrackFloorScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$3(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #384                // class org/mtr/mod/screen/RailwaySignScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$2(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #375                // class org/mtr/mod/screen/TrainBasicSensorScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$1(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #365                // class org/mtr/mod/screen/TrainScheduleSensorScreen
+       4: ireturn
+
+  private static boolean lambda$openBlockEntityScreen$0(org.mtr.mapping.mapper.ScreenExtension);
+    Code:
+       0: aload_0
+       1: instanceof    #355                // class org/mtr/mod/screen/TrainAnnouncerScreen
+       4: ireturn
+}

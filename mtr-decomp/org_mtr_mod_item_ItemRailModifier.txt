@@ -1,0 +1,375 @@
+﻿Compiled from "ItemRailModifier.java"
+public class org.mtr.mod.item.ItemRailModifier extends org.mtr.mod.item.ItemNodeModifierBase {
+  private final boolean isOneWay;
+
+  private final org.mtr.mod.data.RailType railType;
+
+  public org.mtr.mod.item.ItemRailModifier(org.mtr.mapping.holder.ItemSettings);
+    Code:
+       0: aload_0
+       1: iconst_1
+       2: iconst_1
+       3: iconst_1
+       4: iconst_0
+       5: aload_1
+       6: invokespecial #37                 // Method org/mtr/mod/item/ItemNodeModifierBase."<init>":(ZZZZLorg/mtr/mapping/holder/ItemSettings;)V
+       9: aload_0
+      10: iconst_0
+      11: putfield      #39                 // Field isOneWay:Z
+      14: aload_0
+      15: aconst_null
+      16: putfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      19: return
+
+  public org.mtr.mod.item.ItemRailModifier(boolean, boolean, boolean, boolean, org.mtr.mod.data.RailType, org.mtr.mapping.holder.ItemSettings);
+    Code:
+       0: aload_0
+       1: iload_1
+       2: iload_2
+       3: iload_3
+       4: iconst_1
+       5: aload         6
+       7: invokespecial #37                 // Method org/mtr/mod/item/ItemNodeModifierBase."<init>":(ZZZZLorg/mtr/mapping/holder/ItemSettings;)V
+      10: aload_0
+      11: iload         4
+      13: putfield      #39                 // Field isOneWay:Z
+      16: aload_0
+      17: aload         5
+      19: putfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      22: return
+
+  public void addTooltips(org.mtr.mapping.holder.ItemStack, org.mtr.mapping.holder.World, java.util.List<org.mtr.mapping.holder.MutableText>, org.mtr.mapping.holder.TooltipContext);
+    Code:
+       0: aload_0
+       1: getfield      #59                 // Field isConnector:Z
+       4: ifeq          60
+       7: aload_0
+       8: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      11: ifnull        60
+      14: aload_0
+      15: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      18: getfield      #64                 // Field org/mtr/mod/data/RailType.canAccelerate:Z
+      21: ifeq          60
+      24: aload_3
+      25: getstatic     #68                 // Field org/mtr/mod/generated/lang/TranslationProvider.TOOLTIP_MTR_RAIL_SPEED_LIMIT:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+      28: iconst_1
+      29: anewarray     #70                 // class java/lang/Object
+      32: dup
+      33: iconst_0
+      34: aload_0
+      35: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      38: getfield      #74                 // Field org/mtr/mod/data/RailType.speedLimit:I
+      41: invokestatic  #80                 // Method java/lang/Integer.valueOf:(I)Ljava/lang/Integer;
+      44: aastore
+      45: invokevirtual #84                 // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getMutableText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/MutableText;
+      48: getstatic     #90                 // Field org/mtr/mapping/holder/TextFormatting.GRAY:Lorg/mtr/mapping/holder/TextFormatting;
+      51: invokevirtual #96                 // Method org/mtr/mapping/holder/MutableText.formatted:(Lorg/mtr/mapping/holder/TextFormatting;)Lorg/mtr/mapping/holder/MutableText;
+      54: invokeinterface #102,  2          // InterfaceMethod java/util/List.add:(Ljava/lang/Object;)Z
+      59: pop
+      60: aload_0
+      61: aload_1
+      62: aload_2
+      63: aload_3
+      64: aload         4
+      66: invokespecial #104                // Method org/mtr/mod/item/ItemNodeModifierBase.addTooltips:(Lorg/mtr/mapping/holder/ItemStack;Lorg/mtr/mapping/holder/World;Ljava/util/List;Lorg/mtr/mapping/holder/TooltipContext;)V
+      69: return
+
+  protected void onConnect(org.mtr.mapping.holder.World, org.mtr.mapping.holder.ItemStack, org.mtr.core.data.TransportMode, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.core.tool.Angle, org.mtr.core.tool.Angle, org.mtr.mapping.holder.ServerPlayerEntity);
+    Code:
+       0: aload_0
+       1: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+       4: ifnull        142
+       7: aload_0
+       8: aload         10
+      10: ifnonnull     17
+      13: aconst_null
+      14: goto          22
+      17: aload         10
+      19: invokevirtual #125                // Method org/mtr/mapping/holder/ServerPlayerEntity.getUuid:()Ljava/util/UUID;
+      22: aload_3
+      23: aload         4
+      25: aload         5
+      27: aload         6
+      29: aload         7
+      31: aload         8
+      33: aload         9
+      35: invokevirtual #143                // Method createRail:(Ljava/util/UUID;Lorg/mtr/core/data/TransportMode;Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BlockState;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/tool/Angle;)Lorg/mtr/core/data/Rail;
+      38: astore        11
+      40: aload         11
+      42: ifnull        121
+      45: aload_1
+      46: aload         6
+      48: aload         4
+      50: new           #145                // class org/mtr/mapping/holder/Property
+      53: dup
+      54: getstatic     #149                // Field org/mtr/mod/block/BlockNode.IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+      57: getfield      #155                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      60: checkcast     #157                // class net/minecraft/state/property/Property
+      63: invokespecial #160                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      66: iconst_1
+      67: invokestatic  #165                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+      70: invokevirtual #169                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+      73: invokevirtual #173                // Method org/mtr/mapping/holder/World.setBlockState:(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockState;)Z
+      76: pop
+      77: aload_1
+      78: aload         7
+      80: aload         5
+      82: new           #145                // class org/mtr/mapping/holder/Property
+      85: dup
+      86: getstatic     #149                // Field org/mtr/mod/block/BlockNode.IS_CONNECTED:Lorg/mtr/mapping/holder/BooleanProperty;
+      89: getfield      #155                // Field org/mtr/mapping/holder/BooleanProperty.data:Ljava/lang/Object;
+      92: checkcast     #157                // class net/minecraft/state/property/Property
+      95: invokespecial #160                // Method org/mtr/mapping/holder/Property."<init>":(Lnet/minecraft/state/property/Property;)V
+      98: iconst_1
+      99: invokestatic  #165                // Method java/lang/Boolean.valueOf:(Z)Ljava/lang/Boolean;
+     102: invokevirtual #169                // Method org/mtr/mapping/holder/BlockState.with:(Lorg/mtr/mapping/holder/Property;Ljava/lang/Comparable;)Lorg/mtr/mapping/holder/BlockState;
+     105: invokevirtual #173                // Method org/mtr/mapping/holder/World.setBlockState:(Lorg/mtr/mapping/holder/BlockPos;Lorg/mtr/mapping/holder/BlockState;)Z
+     108: pop
+     109: aload_1
+     110: invokestatic  #179                // Method org/mtr/mapping/holder/ServerWorld.cast:(Lorg/mtr/mapping/tool/HolderBase;)Lorg/mtr/mapping/holder/ServerWorld;
+     113: aload         11
+     115: invokestatic  #185                // Method org/mtr/mod/packet/PacketUpdateData.sendDirectlyToServerRail:(Lorg/mtr/mapping/holder/ServerWorld;Lorg/mtr/core/data/Rail;)V
+     118: goto          142
+     121: aload         10
+     123: ifnull        142
+     126: aload         10
+     128: getstatic     #188                // Field org/mtr/mod/generated/lang/TranslationProvider.GUI_MTR_INVALID_ORIENTATION:Lorg/mtr/mod/generated/lang/TranslationProvider$TranslationHolder;
+     131: iconst_0
+     132: anewarray     #70                 // class java/lang/Object
+     135: invokevirtual #192                // Method org/mtr/mod/generated/lang/TranslationProvider$TranslationHolder.getText:([Ljava/lang/Object;)Lorg/mtr/mapping/holder/Text;
+     138: iconst_1
+     139: invokevirtual #196                // Method org/mtr/mapping/holder/ServerPlayerEntity.sendMessage:(Lorg/mtr/mapping/holder/Text;Z)V
+     142: return
+
+  protected void onRemove(org.mtr.mapping.holder.World, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.ServerPlayerEntity);
+    Code:
+       0: aload_1
+       1: invokestatic  #179                // Method org/mtr/mapping/holder/ServerWorld.cast:(Lorg/mtr/mapping/tool/HolderBase;)Lorg/mtr/mapping/holder/ServerWorld;
+       4: aload_2
+       5: invokestatic  #211                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+       8: aload_3
+       9: invokestatic  #211                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+      12: invokestatic  #217                // Method org/mtr/core/data/TwoPositionsBase.getHexId:(Lorg/mtr/core/data/Position;Lorg/mtr/core/data/Position;)Ljava/lang/String;
+      15: invokestatic  #223                // Method org/mtr/mod/packet/PacketDeleteData.sendDirectlyToServerRailId:(Lorg/mtr/mapping/holder/ServerWorld;Ljava/lang/String;)V
+      18: return
+
+  public org.mtr.core.data.Rail createRail(java.util.UUID, org.mtr.core.data.TransportMode, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockState, org.mtr.mapping.holder.BlockPos, org.mtr.mapping.holder.BlockPos, org.mtr.core.tool.Angle, org.mtr.core.tool.Angle);
+    Code:
+       0: aload_0
+       1: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+       4: ifnull        498
+       7: aload_1
+       8: ifnull        498
+      11: aload_2
+      12: getfield      #227                // Field org/mtr/core/data/TransportMode.continuousMovement:Z
+      15: ifeq          259
+      18: aload_3
+      19: invokevirtual #231                // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      22: astore        11
+      24: aload         4
+      26: invokevirtual #231                // Method org/mtr/mapping/holder/BlockState.getBlock:()Lorg/mtr/mapping/holder/Block;
+      29: astore        12
+      31: aload         11
+      33: getfield      #234                // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      36: instanceof    #14                 // class org/mtr/mod/block/BlockNode$BlockContinuousMovementNode
+      39: ifeq          109
+      42: aload         12
+      44: getfield      #234                // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      47: instanceof    #14                 // class org/mtr/mod/block/BlockNode$BlockContinuousMovementNode
+      50: ifeq          109
+      53: aload         11
+      55: getfield      #234                // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      58: checkcast     #14                 // class org/mtr/mod/block/BlockNode$BlockContinuousMovementNode
+      61: getfield      #237                // Field org/mtr/mod/block/BlockNode$BlockContinuousMovementNode.isStation:Z
+      64: ifeq          109
+      67: aload         12
+      69: getfield      #234                // Field org/mtr/mapping/holder/Block.data:Ljava/lang/Object;
+      72: checkcast     #14                 // class org/mtr/mod/block/BlockNode$BlockContinuousMovementNode
+      75: getfield      #237                // Field org/mtr/mod/block/BlockNode$BlockContinuousMovementNode.isStation:Z
+      78: ifeq          109
+      81: iconst_1
+      82: istore        9
+      84: aload_0
+      85: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      88: getfield      #240                // Field org/mtr/mod/data/RailType.isSavedRail:Z
+      91: ifeq          101
+      94: aload_0
+      95: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+      98: goto          104
+     101: getstatic     #243                // Field org/mtr/mod/data/RailType.CABLE_CAR_STATION:Lorg/mtr/mod/data/RailType;
+     104: astore        10
+     106: goto          256
+     109: aload         6
+     111: invokevirtual #247                // Method org/mtr/mapping/holder/BlockPos.getX:()I
+     114: aload         5
+     116: invokevirtual #247                // Method org/mtr/mapping/holder/BlockPos.getX:()I
+     119: isub
+     120: istore        13
+     122: aload         6
+     124: invokevirtual #250                // Method org/mtr/mapping/holder/BlockPos.getZ:()I
+     127: aload         5
+     129: invokevirtual #250                // Method org/mtr/mapping/holder/BlockPos.getZ:()I
+     132: isub
+     133: istore        14
+     135: aload_0
+     136: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+     139: getfield      #240                // Field org/mtr/mod/data/RailType.isSavedRail:Z
+     142: ifne          248
+     145: aload         7
+     147: aload         8
+     149: invokevirtual #254                // Method org/mtr/core/tool/Angle.isParallel:(Lorg/mtr/core/tool/Angle;)Z
+     152: ifeq          248
+     155: aload         7
+     157: getstatic     #257                // Field org/mtr/core/tool/Angle.N:Lorg/mtr/core/tool/Angle;
+     160: if_acmpeq     171
+     163: aload         7
+     165: getstatic     #260                // Field org/mtr/core/tool/Angle.S:Lorg/mtr/core/tool/Angle;
+     168: if_acmpne     176
+     171: iload         13
+     173: ifeq          244
+     176: aload         7
+     178: getstatic     #263                // Field org/mtr/core/tool/Angle.E:Lorg/mtr/core/tool/Angle;
+     181: if_acmpeq     192
+     184: aload         7
+     186: getstatic     #266                // Field org/mtr/core/tool/Angle.W:Lorg/mtr/core/tool/Angle;
+     189: if_acmpne     197
+     192: iload         14
+     194: ifeq          244
+     197: aload         7
+     199: getstatic     #269                // Field org/mtr/core/tool/Angle.NE:Lorg/mtr/core/tool/Angle;
+     202: if_acmpeq     213
+     205: aload         7
+     207: getstatic     #272                // Field org/mtr/core/tool/Angle.SW:Lorg/mtr/core/tool/Angle;
+     210: if_acmpne     221
+     213: iload         13
+     215: iload         14
+     217: ineg
+     218: if_icmpeq     244
+     221: aload         7
+     223: getstatic     #275                // Field org/mtr/core/tool/Angle.SE:Lorg/mtr/core/tool/Angle;
+     226: if_acmpeq     237
+     229: aload         7
+     231: getstatic     #278                // Field org/mtr/core/tool/Angle.NW:Lorg/mtr/core/tool/Angle;
+     234: if_acmpne     248
+     237: iload         13
+     239: iload         14
+     241: if_icmpne     248
+     244: iconst_1
+     245: goto          249
+     248: iconst_0
+     249: istore        9
+     251: getstatic     #281                // Field org/mtr/mod/data/RailType.CABLE_CAR:Lorg/mtr/mod/data/RailType;
+     254: astore        10
+     256: goto          268
+     259: iconst_1
+     260: istore        9
+     262: aload_0
+     263: getfield      #41                 // Field railType:Lorg/mtr/mod/data/RailType;
+     266: astore        10
+     268: aload         5
+     270: invokestatic  #211                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+     273: astore        11
+     275: aload         6
+     277: invokestatic  #211                // Method org/mtr/mod/Init.blockPosToPosition:(Lorg/mtr/mapping/holder/BlockPos;)Lorg/mtr/core/data/Position;
+     280: astore        12
+     282: getstatic     #285                // Field org/mtr/mod/item/ItemRailModifier$1.$SwitchMap$org$mtr$mod$data$RailType:[I
+     285: aload         10
+     287: invokevirtual #288                // Method org/mtr/mod/data/RailType.ordinal:()I
+     290: iaload
+     291: tableswitch   { // 1 to 3
+
+                     1: 316
+
+                     2: 344
+
+                     3: 372
+               default: 400
+          }
+     316: aload         11
+     318: aload         7
+     320: aload         12
+     322: aload         8
+     324: getstatic     #294                // Field org/mtr/core/data/Rail$Shape.QUADRATIC:Lorg/mtr/core/data/Rail$Shape;
+     327: dconst_0
+     328: new           #296                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+     331: dup
+     332: invokespecial #299                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+     335: aload_2
+     336: invokestatic  #303                // Method org/mtr/core/data/Rail.newPlatformRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;Lorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+     339: astore        13
+     341: goto          475
+     344: aload         11
+     346: aload         7
+     348: aload         12
+     350: aload         8
+     352: getstatic     #294                // Field org/mtr/core/data/Rail$Shape.QUADRATIC:Lorg/mtr/core/data/Rail$Shape;
+     355: dconst_0
+     356: new           #296                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+     359: dup
+     360: invokespecial #299                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+     363: aload_2
+     364: invokestatic  #306                // Method org/mtr/core/data/Rail.newSidingRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;Lorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+     367: astore        13
+     369: goto          475
+     372: aload         11
+     374: aload         7
+     376: aload         12
+     378: aload         8
+     380: getstatic     #294                // Field org/mtr/core/data/Rail$Shape.QUADRATIC:Lorg/mtr/core/data/Rail$Shape;
+     383: dconst_0
+     384: new           #296                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+     387: dup
+     388: invokespecial #299                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+     391: aload_2
+     392: invokestatic  #309                // Method org/mtr/core/data/Rail.newTurnBackRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;Lorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+     395: astore        13
+     397: goto          475
+     400: aload         11
+     402: aload         7
+     404: aload         12
+     406: aload         8
+     408: aload         10
+     410: getfield      #312                // Field org/mtr/mod/data/RailType.railShape:Lorg/mtr/core/data/Rail$Shape;
+     413: dconst_0
+     414: new           #296                // class org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList
+     417: dup
+     418: invokespecial #299                // Method org/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList."<init>":()V
+     421: aload_0
+     422: getfield      #39                 // Field isOneWay:Z
+     425: ifeq          432
+     428: lconst_0
+     429: goto          438
+     432: aload         10
+     434: getfield      #74                 // Field org/mtr/mod/data/RailType.speedLimit:I
+     437: i2l
+     438: aload         10
+     440: getfield      #74                 // Field org/mtr/mod/data/RailType.speedLimit:I
+     443: i2l
+     444: iconst_0
+     445: iconst_0
+     446: aload         10
+     448: getfield      #64                 // Field org/mtr/mod/data/RailType.canAccelerate:Z
+     451: aload         10
+     453: getstatic     #315                // Field org/mtr/mod/data/RailType.RUNWAY:Lorg/mtr/mod/data/RailType;
+     456: if_acmpne     463
+     459: iconst_1
+     460: goto          464
+     463: iconst_0
+     464: aload         10
+     466: getfield      #318                // Field org/mtr/mod/data/RailType.hasSignal:Z
+     469: aload_2
+     470: invokestatic  #322                // Method org/mtr/core/data/Rail.newRail:(Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Position;Lorg/mtr/core/tool/Angle;Lorg/mtr/core/data/Rail$Shape;DLorg/mtr/libraries/it/unimi/dsi/fastutil/objects/ObjectArrayList;JJZZZZZLorg/mtr/core/data/TransportMode;)Lorg/mtr/core/data/Rail;
+     473: astore        13
+     475: aload         13
+     477: invokevirtual #326                // Method org/mtr/core/data/Rail.isValid:()Z
+     480: ifeq          498
+     483: iload         9
+     485: ifeq          498
+     488: getstatic     #330                // Field org/mtr/mod/packet/PacketUpdateLastRailStyles.SERVER_CACHE:Lorg/mtr/mod/packet/PacketUpdateLastRailStyles$Cache;
+     491: aload_1
+     492: aload         13
+     494: invokevirtual #334                // Method org/mtr/mod/packet/PacketUpdateLastRailStyles$Cache.getRailWithLastStyles:(Ljava/util/UUID;Lorg/mtr/core/data/Rail;)Lorg/mtr/core/data/Rail;
+     497: areturn
+     498: aconst_null
+     499: areturn
+}

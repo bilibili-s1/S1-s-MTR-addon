@@ -1,0 +1,8 @@
+{
+	"gui.s1mtr.speed": "速度：",
+	"gui.s1mtr.door_open_delay": "延迟开门：",
+	"gui.s1mtr.door_close_delay": "延迟发车：",
+	"gui.s1mtr.advanced_settings": "[S1MTR] 高级设置",
+	"gui.s1mtr.recommended_speed": "建议限速：≤%d km/h",
+	"gui.s1mtr.recommended_speed_infinite": "建议限速：不限"
+}
