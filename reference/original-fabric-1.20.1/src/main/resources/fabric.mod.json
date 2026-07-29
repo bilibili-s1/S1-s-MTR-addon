@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "s1mtraddon",
+	"version": "${version}",
+	"name": "S1 MTR Addon",
+	"description": "An extension mod for Minecraft Transit Railway (MTR)",
+	"authors": [
+		"s1metro"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/s1mtraddon/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"top.s1metro.s1mtr.S1mtraddon"
+		]
+	},
+	"mixins": [
+		"s1mtraddon.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.0",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*",
+		"mtr": ">=4.0.4"
+	}
+}

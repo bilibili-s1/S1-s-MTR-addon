@@ -1,0 +1,13 @@
+{
+  "required": false,
+  "minVersion": "0.8.7",
+  "package": "top.s1metro.s1mtr.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "PathDataMixin",
+    "VehicleSimulateMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

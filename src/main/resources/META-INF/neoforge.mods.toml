@@ -1,0 +1,37 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="s1mtraddon"
+version="1.2.3-neoforge.1"
+displayName="S1 MTR Addon"
+logoFile="assets/s1mtraddon/icon.png"
+authors="s1metro; NeoForge port"
+description='''Adds rail speed, delayed door opening, and delayed departure controls to MTR 4.1.'''
+displayTest="MATCH_VERSION"
+
+[[mixins]]
+config="s1mtraddon.mixins.json"
+requiredMods=["mtr"]
+
+[[dependencies.s1mtraddon]]
+modId="neoforge"
+type="required"
+versionRange="[21.1.0,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.s1mtraddon]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.s1mtraddon]]
+modId="mtr"
+type="required"
+versionRange="[4.1.0-beta.2,4.2)"
+ordering="AFTER"
+side="BOTH"

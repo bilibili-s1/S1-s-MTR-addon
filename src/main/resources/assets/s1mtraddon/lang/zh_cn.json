@@ -1,0 +1,9 @@
+{
+  "gui.s1mtr.speed": "铁轨限速（km/h）",
+  "gui.s1mtr.speed_hint": "范围：1～1000",
+  "gui.s1mtr.door_open_delay": "延迟开门（秒）",
+  "gui.s1mtr.door_close_delay": "关门后延迟发车（秒）",
+  "gui.s1mtr.advanced_settings": "[S1MTR] 高级设置",
+  "gui.s1mtr.save_build_failed": "无法生成更新后的铁轨，请查看 latest.log",
+  "gui.s1mtr.save_send_failed": "保存发送失败，请查看 latest.log"
+}
