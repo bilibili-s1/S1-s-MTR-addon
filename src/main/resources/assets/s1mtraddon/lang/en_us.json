@@ -1,0 +1,9 @@
+{
+  "gui.s1mtr.speed": "Rail Speed Limit (km/h)",
+  "gui.s1mtr.speed_hint": "Range: 1-1000",
+  "gui.s1mtr.door_open_delay": "Door Opening Delay (seconds)",
+  "gui.s1mtr.door_close_delay": "Departure Delay After Closing (seconds)",
+  "gui.s1mtr.advanced_settings": "[S1MTR] Advanced Settings",
+  "gui.s1mtr.save_build_failed": "Could not build the updated rail; check latest.log",
+  "gui.s1mtr.save_send_failed": "Failed to send the update; check latest.log"
+}

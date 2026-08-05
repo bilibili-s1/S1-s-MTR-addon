@@ -1,0 +1,21 @@
+{
+	"required": true,
+	"package": "top.s1metro.s1mtr.mixin",
+	"compatibilityLevel": "JAVA_17",
+	"mixins": [
+		"RailSchemaAccessor",
+		"PathDataMixin",
+		"VehicleSimulateMixin"
+	],
+	"client": [
+		"client.RailModifierScreenMixin",
+		"client.RailStyleSelectorScreenMixin",
+		"client.SavedRailScreenBaseMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
