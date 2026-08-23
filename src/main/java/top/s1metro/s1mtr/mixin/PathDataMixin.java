@@ -32,7 +32,7 @@ public abstract class PathDataMixin {
 			if (field != null) {
 				field.setAccessible(true);
 				long currentDwellTime = field.getLong(this);
-				field.setLong(this, currentDwellTime + doorOpenDelay);
+				field.setLong(this, currentDwellTime + doorOpenDelay + doorCloseDelay);
 			}
 		} catch (Exception ignored) {
 		}

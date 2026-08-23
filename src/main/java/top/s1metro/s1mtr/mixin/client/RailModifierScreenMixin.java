@@ -2,7 +2,7 @@ package top.s1metro.s1mtr.mixin.client;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import org.mtr.core.data.Rail;
 import org.mtr.core.data.Rail.Shape;
 import org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList;
@@ -49,8 +49,9 @@ public abstract class RailModifierScreenMixin {
 	private void s1mtr$initAdvancedSettingsButton(CallbackInfo ci) {
 		s1mtr$advancedSettingsLabel = TextHelper.translatable("gui.s1mtr.advanced_settings");
 
+		int screenHeight = ((Screen) (Object) this).height;
 		s1mtr$advancedSettingsButton = new ButtonWidgetExtension(
-				xStart + 2, 20, buttonsWidth - 4, 20,
+				xStart + 2, screenHeight - 22, buttonsWidth - 4, 20,
 				s1mtr$advancedSettingsLabel,
 				button -> openAdvancedSettings());
 

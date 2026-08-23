@@ -17,13 +17,16 @@
 	"entrypoints": {
 		"main": [
 			"top.s1metro.s1mtr.S1mtraddon"
+		],
+		"client": [
+			"top.s1metro.s1mtr.client.S1mtraddonClient"
 		]
 	},
 	"mixins": [
 		"s1mtraddon.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.18.0",
+		"fabricloader": ">=0.17.0",
 		"minecraft": "~1.20.1",
 		"java": ">=17",
 		"fabric-api": "*",

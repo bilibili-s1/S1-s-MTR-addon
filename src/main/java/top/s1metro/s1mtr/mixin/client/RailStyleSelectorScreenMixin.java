@@ -30,15 +30,18 @@ public abstract class RailStyleSelectorScreenMixin {
 		long doorOpenDelay = RailSpeedHelper.getDoorOpenDelay(rail) / 1000;
 		long doorCloseDelay = RailSpeedHelper.getDoorCloseDelay(rail) / 1000;
 
+		Rail result;
 		if (speedLimit1 > 0 || speedLimit2 > 0 || doorOpenDelay > 0 || doorCloseDelay > 0) {
 			long speed = (speedLimit2 > 0) ? speedLimit2 : speedLimit1;
-			return RailSpeedHelper.copyWithCustomParams(
+			result = RailSpeedHelper.copyWithCustomParams(
 					original,
 					RailSpeedHelper.getShape(original),
 					RailSpeedHelper.getRadius(original),
 					styles, speed, doorOpenDelay, doorCloseDelay);
+		} else {
+			result = originalOp.call(original, styles);
 		}
 
-		return originalOp.call(original, styles);
+		return RailSpeedHelper.preserveCompositeProfile(original, result);
 	}
 }

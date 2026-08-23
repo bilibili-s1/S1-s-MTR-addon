@@ -1,11 +1,10 @@
 package top.s1metro.s1mtr.client;
 
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-
 import java.lang.reflect.Field;
 import java.util.List;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.screen.Screen;
 
 /**
  * UI 错开检测工具。

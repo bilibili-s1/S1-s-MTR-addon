@@ -2,12 +2,13 @@ package top.s1metro.s1mtr.client;
 
 import org.mtr.core.data.Rail;
 import org.mtr.core.data.Rail.Shape;
-import org.mtr.core.data.TransportMode;
 import org.mtr.core.data.Position;
 import org.mtr.core.data.RailMath;
 import org.mtr.core.tool.Angle;
 import org.mtr.libraries.it.unimi.dsi.fastutil.doubles.DoubleDoubleImmutablePair;
 import org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import top.s1metro.s1mtr.client.builder.CompositeProfile;
+import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
 import top.s1metro.s1mtr.mixin.RailSchemaAccessor;
 
 import java.lang.reflect.Constructor;
@@ -16,6 +17,8 @@ public final class RailSpeedHelper {
 
 	private static final String DOOR_OPEN_DELAY_PREFIX = "s1mtr:doorOpenDelay=";
 	private static final String DOOR_CLOSE_DELAY_PREFIX = "s1mtr:doorCloseDelay=";
+	public static final String COMPOSITE_PROFILE_PREFIX = "s1mtr:compositeProfile=";
+	public static final String COMPOSITE_SCHEDULE_PREFIX = "s1mtr:compositeSchedule=";
 
 	private RailSpeedHelper() {
 	}
@@ -81,6 +84,110 @@ public final class RailSpeedHelper {
 				styles.remove(i);
 			}
 		}
+	}
+
+	/**
+	 * 从轨道的 styles 中读取已保存的分层调度表;若无则返回空调度表(单层默认剖面)。
+	 * <p>
+	 * 兼容旧 {@code compositeProfile=} 单剖面格式,转为单层无限长度的 schedule。
+	 */
+	public static CompositeLayerSchedule getCompositeSchedule(Rail rail) {
+		ObjectArrayList<String> styles = getStyles(rail);
+		for (String style : styles) {
+			if (style.startsWith(COMPOSITE_SCHEDULE_PREFIX)) {
+				try {
+					return CompositeLayerSchedule.deserialize(style.substring(COMPOSITE_SCHEDULE_PREFIX.length()));
+				} catch (Exception ignored) {
+				}
+			}
+		}
+		// 兼容旧单剖面格式
+		for (String style : styles) {
+			if (style.startsWith(COMPOSITE_PROFILE_PREFIX)) {
+				try {
+					final CompositeProfile profile = CompositeProfile.deserialize(style.substring(COMPOSITE_PROFILE_PREFIX.length()));
+					final CompositeLayerSchedule schedule = new CompositeLayerSchedule();
+					schedule.entries().get(0).profile = profile;
+					schedule.entries().get(0).length = 1;
+					return schedule;
+				} catch (Exception ignored) {
+				}
+			}
+		}
+		return new CompositeLayerSchedule();
+	}
+
+	/**
+	 * 从轨道的 styles 中读取已保存的复合剖面(取第一层);若无则返回默认剖面。
+	 * <p>
+	 * 兼容旧版直接读 compositeProfile= 的逻辑。
+	 */
+	public static CompositeProfile getCompositeProfile(Rail rail) {
+		return getCompositeSchedule(rail).entries().get(0).profile;
+	}
+
+	/** 轨道是否保存过分层调度表或旧的复合剖面条目。 */
+	public static boolean hasCompositeProfile(Rail rail) {
+		ObjectArrayList<String> styles = getStyles(rail);
+		for (String style : styles) {
+			if (style.startsWith(COMPOSITE_SCHEDULE_PREFIX) || style.startsWith(COMPOSITE_PROFILE_PREFIX)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 样式选择等场景会整体替换轨道的 styles,此方法在复制结果上重新写入原轨道的分层调度表,
+	 * 避免条目丢失。原轨道无调度表时原样返回。
+	 */
+	public static Rail preserveCompositeProfile(Rail original, Rail copy) {
+		if (hasCompositeProfile(original)) {
+			return copyWithCompositeSchedule(copy, getCompositeSchedule(original));
+		}
+		return copy;
+	}
+
+	/** 复制轨道并写入单层剖面(向后兼容入口,内部转为单层 schedule)。 */
+	public static Rail copyWithCompositeProfile(Rail original, CompositeProfile profile) {
+		final CompositeLayerSchedule schedule = new CompositeLayerSchedule();
+		if (profile != null) {
+			schedule.entries().get(0).profile = profile;
+			schedule.entries().get(0).length = 1;
+		}
+		return copyWithCompositeSchedule(original, schedule);
+	}
+
+	/**
+	 * 复制轨道并写入分层调度表(以 styles 条目持久化),同时保留原速度/开关门延迟参数。
+	 */
+	public static Rail copyWithCompositeSchedule(Rail original, CompositeLayerSchedule schedule) {
+		RailSchemaAccessor accessor = (RailSchemaAccessor) (Object) original;
+
+		ObjectArrayList<String> newStyles = new ObjectArrayList<>(accessor.s1mtr$getStyles());
+		for (int i = newStyles.size() - 1; i >= 0; i--) {
+			final String s = newStyles.get(i);
+			if (s.startsWith(COMPOSITE_SCHEDULE_PREFIX) || s.startsWith(COMPOSITE_PROFILE_PREFIX)) {
+				newStyles.remove(i);
+			}
+		}
+		if (schedule != null) {
+			newStyles.add(COMPOSITE_SCHEDULE_PREFIX + schedule.serialize());
+		}
+
+		long speed = getSpeedLimit2(original);
+		if (speed <= 0) {
+			speed = getSpeedLimit1(original);
+		}
+
+		return copyWithCustomParams(
+				original,
+				accessor.s1mtr$getShape(),
+				accessor.s1mtr$getVerticalRadius(),
+				newStyles,
+				speed,
+				getDoorOpenDelay(original) / 1000,
+				getDoorCloseDelay(original) / 1000);
 	}
 
 	public static long getSpeedLimit1(Rail rail) {

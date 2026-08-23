@@ -5,12 +5,14 @@
 	"mixins": [
 		"RailSchemaAccessor",
 		"PathDataMixin",
-		"VehicleSimulateMixin"
+		"VehicleSimulateMixin",
+		"BlockItemMixin"
 	],
 	"client": [
 		"client.RailModifierScreenMixin",
 		"client.RailStyleSelectorScreenMixin",
-		"client.SavedRailScreenBaseMixin"
+		"client.SavedRailScreenBaseMixin",
+		"client.WidgetMapMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1
