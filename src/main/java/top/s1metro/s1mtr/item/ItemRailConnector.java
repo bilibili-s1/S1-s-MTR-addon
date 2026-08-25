@@ -1,10 +1,9 @@
 package top.s1metro.s1mtr.item;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
-import top.s1metro.s1mtr.client.screen.RailNetworkMapScreen;
+import top.s1metro.s1mtr.client.S1mtrClientProxy;
 
 /**
  * 轨道连接工具。
@@ -23,7 +22,7 @@ public class ItemRailConnector extends Item {
 		if (!context.getWorld().isClient()) {
 			return ActionResult.PASS;
 		}
-		MinecraftClient.getInstance().setScreen(new RailNetworkMapScreen());
+		S1mtrClientProxy.openScreen("openRailNetworkMap");
 		return ActionResult.SUCCESS;
 	}
 }

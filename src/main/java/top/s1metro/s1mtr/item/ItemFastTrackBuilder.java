@@ -1,6 +1,5 @@
 package top.s1metro.s1mtr.item;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -9,8 +8,8 @@ import net.minecraft.item.ItemUsageContext;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
+import top.s1metro.s1mtr.client.S1mtrClientProxy;
 import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
-import top.s1metro.s1mtr.client.screen.FastTrackConfigScreen;
 
 /**
  * 快速建造轨道工具。
@@ -47,7 +46,7 @@ public class ItemFastTrackBuilder extends Item {
 		}
 		// Shift+右键打开配置界面
 		if (player.isSneaking()) {
-			MinecraftClient.getInstance().setScreen(new FastTrackConfigScreen(stack));
+			S1mtrClientProxy.openFastTrackConfig(stack);
 			return ActionResult.SUCCESS;
 		}
 		return ActionResult.PASS;
