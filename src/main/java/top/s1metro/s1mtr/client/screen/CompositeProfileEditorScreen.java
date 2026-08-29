@@ -12,6 +12,7 @@ import org.mtr.mod.InitClient;
 import org.mtr.mod.client.MinecraftClientData;
 import org.mtr.mod.packet.PacketUpdateData;
 import org.mtr.mod.screen.MTRScreenBase;
+import top.s1metro.s1mtr.client.CompositePreviewRenderer;
 import top.s1metro.s1mtr.client.RailSpeedHelper;
 import top.s1metro.s1mtr.client.S1mtraddonClient;
 import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
@@ -36,7 +37,8 @@ import net.minecraft.util.Identifier;
  * <p>
  * 顶部条:剖面切换 + 添加剖面 + 分层管理 + 预设管理。
  * 中部:14×14 网格(每格 16px),鼠标悬停显示 tooltip。
- * 底部:方块选择按钮(label 含当前方块名) + 旋转图标按钮 + 空气/清除/保存/放样/返回。
+ * 底部:方块选择按钮(label 含当前方块名) + 旋转图标按钮 + 空气/清除/放样/返回。
+ * 退出界面时自动保存,无需单独的"保存"按钮。
  * <p>
  * 数据以 {@link CompositeLayerSchedule} 持有,保存到 rail styles 时通过
  * {@link RailSpeedHelper#copyWithCompositeSchedule} 持久化。
@@ -66,7 +68,8 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 	private static final int BTN_HALF_W = (GRID_PIXEL - ICON_BTN_W - 8) / 2;
 
 	private CompositeLayerSchedule schedule;
-	private int currentLayer = 0;
+	/** 当前选中的剖面索引(跨实例保留,避免在"添加剖面/选方块/管理返回"后跳回剖面 1)。 */
+	public static int currentLayer = 0;
 
 	private ButtonWidgetExtension prevLayerButton;
 	private ButtonWidgetExtension nextLayerButton;
@@ -75,7 +78,6 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 	private ButtonWidgetExtension presetManagerButton;
 	private ButtonWidgetExtension blockSelectButton;
 	private ButtonWidgetExtension clearButton;
-	private ButtonWidgetExtension saveButton;
 	private ButtonWidgetExtension buildButton;
 	private ButtonWidgetExtension savePresetButton;
 	private ButtonWidgetExtension backButton;
@@ -224,13 +226,8 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 		});
 		addChild(new ClickableWidget(clearButton));
 
-		saveButton = new ButtonWidgetExtension(
-				gridX, belowGrid + 66, BTN_HALF_W, 20,
-				TextHelper.translatable("gui.s1mtr.profile.save"), button -> saveProfile());
-		addChild(new ClickableWidget(saveButton));
-
 		buildButton = new ButtonWidgetExtension(
-				gridX + BTN_HALF_W + 4, belowGrid + 66, BTN_HALF_W, 20,
+				gridX, belowGrid + 66, GRID_PIXEL, 20,
 				TextHelper.translatable("gui.s1mtr.profile.build"), button -> buildComposite());
 		addChild(new ClickableWidget(buildButton));
 
@@ -255,7 +252,10 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 				if (loaded != null) {
 					schedule.copyFrom(loaded);
 					s1mtr$schedule = schedule.copy();
-					currentLayer = 0;
+					// 加载预设后保留当前选中剖面(仅当越界时回退末尾),不强制回到剖面 1
+					if (currentLayer >= schedule.size()) {
+						currentLayer = Math.max(0, schedule.size() - 1);
+					}
 				}
 				MinecraftClient.getInstance().setScreen(new CompositeProfileEditorScreen());
 			});
@@ -266,6 +266,9 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 				width / 2 - 100, height - 40, 200, 20,
 				TextHelper.translatable("gui.s1mtr.profile.back"), button -> backToAdvancedSettings());
 		addChild(new ClickableWidget(backButton));
+
+		// 有目标轨道时在世界里显示当前剖面的 3D 方块预览;仅配置工具(无轨道)时不显示
+		CompositePreviewRenderer.setPreview(getRail(), schedule);
 	}
 
 	private void updateWidgetPositions() {
@@ -276,9 +279,6 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 		}
 		if (clearButton != null) {
 			clearButton.setY2(belowGrid + 42);
-		}
-		if (saveButton != null) {
-			saveButton.setY2(belowGrid + 66);
 		}
 		if (buildButton != null) {
 			buildButton.setY2(belowGrid + 66);
@@ -306,11 +306,6 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 			}
 		}
 		return true;
-	}
-
-	private void saveProfile() {
-		saveProfileSilent();
-		statusMessage = TextHelper.translatable("gui.s1mtr.profile.saved").getString();
 	}
 
 	private void saveProfileSilent() {
@@ -343,6 +338,12 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 	}
 
 	private void backToAdvancedSettings() {
+		// 关闭编辑器时清除世界内 3D 预览
+		CompositePreviewRenderer.clearPreview();
+		// 退出界面时自动静默保存(无需再点"保存"按钮)
+		if (getRail() != null) {
+			saveProfileSilent();
+		}
 		if (s1mtr$onReturnCallback != null) {
 			final java.util.function.Consumer<CompositeLayerSchedule> callback = s1mtr$onReturnCallback;
 			s1mtr$onReturnCallback = null;
@@ -416,15 +417,22 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 	public void render(GraphicsHolder graphicsHolder, int mouseX, int mouseY, float delta) {
 		renderBackground(graphicsHolder);
 
-		// 顶部剖面指示
+		if (gridX >= 0) {
+			renderProfileEditor(graphicsHolder, mouseX, mouseY);
+		}
+
+		// 给固定按钮所在的顶部条与底部返回区绘制不透明背景,避免滚动时网格/内容穿透点击与显示
+		final GuiDrawing chrome = new GuiDrawing(graphicsHolder);
+		chrome.beginDrawingRectangle();
+		chrome.drawRectangle(0, 0, width, CONTENT_TOP + 4, 0xFF181818);
+		chrome.drawRectangle(0, height - 56, width, height, 0xFF181818);
+		chrome.finishDrawingRectangle();
+
+		// 顶部剖面指示(画在背景之上)
 		graphicsHolder.drawCenteredText(
 				TextHelper.translatable("gui.s1mtr.profile.layer_n_of", currentLayer + 1, schedule.size()),
 				width / 2, 32,
 				-1);
-
-		if (gridX >= 0) {
-			renderProfileEditor(graphicsHolder, mouseX, mouseY);
-		}
 
 		super.render(graphicsHolder, mouseX, mouseY, delta);
 	}

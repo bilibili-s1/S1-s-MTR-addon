@@ -60,12 +60,10 @@ public final class FastTrackConnectionHelper {
 		final Angle angle2 = Angle.fromAngle(facing2);
 
 		final long speed = Math.max(1, ItemFastTrackBuilder.getSpeed(stack));
-		String style = ItemFastTrackBuilder.getStyle(stack);
-		if (style.isEmpty()) {
-			style = "default";
+		final ObjectArrayList<String> styles = new ObjectArrayList<>(ItemFastTrackBuilder.getStyles(stack));
+		if (styles.isEmpty()) {
+			styles.add("default");
 		}
-		final ObjectArrayList<String> styles = new ObjectArrayList<>();
-		styles.add(style);
 
 		final Rail rail = Rail.newRail(
 				position1, angle1, position2, angle2,

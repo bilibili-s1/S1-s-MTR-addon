@@ -76,19 +76,19 @@ public class FastTrackConfigScreen extends MTRScreenBase {
 		speedField.setText2(String.valueOf(ItemFastTrackBuilder.getSpeed(stack)));
 		addChild(new ClickableWidget(speedField));
 
-		final String currentStyle = ItemFastTrackBuilder.getStyle(stack);
+		final java.util.Set<String> selectedStyles = ItemFastTrackBuilder.getStyles(stack);
 
-		// 样式列表按钮
+		// 样式多选列表(复选):点击切换选中状态,可同时选中多个
 		for (int i = 0; i < styles.size(); i++) {
 			final String style = styles.get(i);
 			final int y = panelY + LIST_TOP + (i - styleScroll) * (STYLE_BTN_H + 2);
 			if (y < panelY + LIST_TOP || y > panelY + LIST_BOTTOM) {
 				continue;
 			}
-			final boolean isSelected = style.equals(currentStyle);
-			final MutableText label = TextHelper.literal(isSelected ? "» " + style : style);
+			final boolean isSelected = selectedStyles.contains(style);
+			final MutableText label = TextHelper.literal((isSelected ? "\u2713 " : "\u25CB ") + style);
 			final ButtonWidgetExtension button = new ButtonWidgetExtension(
-					panelX + 20, y, PANEL_W - 40, STYLE_BTN_H, label, btn -> selectStyle(style));
+					panelX + 20, y, PANEL_W - 40, STYLE_BTN_H, label, btn -> toggleStyle(style));
 			addChild(new ClickableWidget(button));
 		}
 
@@ -107,8 +107,14 @@ public class FastTrackConfigScreen extends MTRScreenBase {
 		addChild(new ClickableWidget(doneButton));
 	}
 
-	private void selectStyle(String style) {
-		ItemFastTrackBuilder.setStyle(stack, style);
+	private void toggleStyle(String style) {
+		final java.util.Set<String> selected = ItemFastTrackBuilder.getStyles(stack);
+		if (selected.contains(style)) {
+			selected.remove(style);
+		} else {
+			selected.add(style);
+		}
+		ItemFastTrackBuilder.setStyles(stack, selected);
 		sendConfigToServer();
 		MinecraftClient.getInstance().setScreen(new FastTrackConfigScreen(stack));
 	}
@@ -137,7 +143,7 @@ public class FastTrackConfigScreen extends MTRScreenBase {
 		top.s1metro.s1mtr.client.S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
 				new top.s1metro.s1mtr.network.PacketS1mtrSaveFastTrackConfig(
 						ItemFastTrackBuilder.getSpeed(stack),
-						ItemFastTrackBuilder.getStyle(stack),
+						String.join(",", ItemFastTrackBuilder.getStyles(stack)),
 						ItemFastTrackBuilder.getSchedule(stack).serialize()));
 	}
 

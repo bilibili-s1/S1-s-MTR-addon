@@ -14,6 +14,10 @@ repositories {
 			includeGroup "curse.maven"
 		}
 	}
+	maven {
+		name = "ModMenu"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 dependencies {
@@ -22,8 +26,15 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	// fabric-api 聚合 jar 的子模块类嵌套在 META-INF/jars 下,编译期不可见;
+	// 这里显式引入 networking 子模块,以便使用 ServerPlayNetworking / ClientPlayNetworking。
+	modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_api_version}"
 
 	modImplementation "curse.maven:minecraft-transit-railway-266707:${project.mtr_version}"
+
+	// Mod Menu 集成(可选):仅用于提供配置界面,不装也能正常运行;
+	// 配置值也会持久化到 config/s1mtr/config.json,可直接手改。
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 }
 
 processResources {

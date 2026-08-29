@@ -16,25 +16,25 @@ import top.s1metro.s1mtr.item.ItemFastTrackBuilder;
 public class PacketS1mtrSaveFastTrackConfig extends PacketHandler {
 
 	private final long speed;
-	private final String style;
+	private final String styles;
 	private final String schedule;
 
 	public PacketS1mtrSaveFastTrackConfig(PacketBufferReceiver receiver) {
 		speed = receiver.readLong();
-		style = receiver.readString();
+		styles = receiver.readString();
 		schedule = receiver.readString();
 	}
 
-	public PacketS1mtrSaveFastTrackConfig(long speed, String style, String schedule) {
+	public PacketS1mtrSaveFastTrackConfig(long speed, String styles, String schedule) {
 		this.speed = Math.max(1, speed);
-		this.style = style == null ? "" : style;
+		this.styles = styles == null ? "" : styles;
 		this.schedule = schedule == null ? "" : schedule;
 	}
 
 	@Override
 	public void write(PacketBufferSender sender) {
 		sender.writeLong(speed);
-		sender.writeString(style);
+		sender.writeString(styles);
 		sender.writeString(schedule);
 	}
 
@@ -44,7 +44,15 @@ public class PacketS1mtrSaveFastTrackConfig extends PacketHandler {
 		final net.minecraft.item.ItemStack stack = holderStack == null ? null : holderStack.data;
 		if (stack != null && stack.getItem() instanceof ItemFastTrackBuilder) {
 			ItemFastTrackBuilder.setSpeed(stack, speed);
-			ItemFastTrackBuilder.setStyle(stack, style);
+			final java.util.Set<String> set = new java.util.LinkedHashSet<>();
+			if (!styles.isEmpty()) {
+				for (String s : styles.split(",")) {
+					if (!s.isEmpty()) {
+						set.add(s);
+					}
+				}
+			}
+			ItemFastTrackBuilder.setStyles(stack, set);
 			if (!schedule.isEmpty()) {
 				stack.getOrCreateNbt().putString(ItemFastTrackBuilder.KEY_SCHEDULE, schedule);
 			}

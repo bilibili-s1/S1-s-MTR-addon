@@ -56,6 +56,15 @@ public final class CompositeLayerSchedule {
 		return entries.size() - 1;
 	}
 
+	/** 添加指定剖面(深拷贝)到末尾,返回新剖面索引;已达上限返回 -1。 */
+	public int addLayer(CompositeProfile profile) {
+		if (entries.size() >= MAX_LAYERS || profile == null) {
+			return -1;
+		}
+		entries.add(new Entry(profile.copy(), 1));
+		return entries.size() - 1;
+	}
+
 	/** 删除指定索引的剖面;至少保留一个剖面。 */
 	public void removeLayer(int index) {
 		if (entries.size() <= 1 || index < 0 || index >= entries.size()) {

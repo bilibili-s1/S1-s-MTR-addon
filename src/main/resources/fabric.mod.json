@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"top.s1metro.s1mtr.client.S1mtraddonClient"
+		],
+		"modmenu": [
+			"top.s1metro.s1mtr.ModMenuIntegration"
 		]
 	},
 	"mixins": [

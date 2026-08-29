@@ -11,6 +11,8 @@ import net.minecraft.world.World;
 import top.s1metro.s1mtr.client.S1mtrClientProxy;
 import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
 
+import java.util.Set;
+
 /**
  * 快速建造轨道工具。
  * <p>
@@ -23,7 +25,7 @@ import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
 public class ItemFastTrackBuilder extends Item {
 
 	public static final String KEY_SPEED = "s1mtr_speed";
-	public static final String KEY_STYLE = "s1mtr_style";
+	public static final String KEY_STYLES = "s1mtr_styles";
 	public static final String KEY_SCHEDULE = "s1mtr_schedule";
 	public static final String KEY_PREV_X = "s1mtr_prev_x";
 	public static final String KEY_PREV_Y = "s1mtr_prev_y";
@@ -87,12 +89,26 @@ public class ItemFastTrackBuilder extends Item {
 		stack.getOrCreateNbt().putLong(KEY_SPEED, Math.max(1, speed));
 	}
 
-	public static String getStyle(ItemStack stack) {
-		return stack.getOrCreateNbt().getString(KEY_STYLE);
+	/** 已选轨道样式集合(可多选)。 */
+	public static Set<String> getStyles(ItemStack stack) {
+		final Set<String> set = new java.util.LinkedHashSet<>();
+		final String raw = stack.getOrCreateNbt().getString(KEY_STYLES);
+		if (!raw.isEmpty()) {
+			for (String s : raw.split(",")) {
+				if (!s.isEmpty()) {
+					set.add(s);
+				}
+			}
+		}
+		return set;
 	}
 
-	public static void setStyle(ItemStack stack, String style) {
-		stack.getOrCreateNbt().putString(KEY_STYLE, style == null ? "" : style);
+	public static void setStyles(ItemStack stack, Set<String> styles) {
+		if (styles == null || styles.isEmpty()) {
+			stack.getOrCreateNbt().putString(KEY_STYLES, "");
+		} else {
+			stack.getOrCreateNbt().putString(KEY_STYLES, String.join(",", styles));
+		}
 	}
 
 	public static CompositeLayerSchedule getSchedule(ItemStack stack) {

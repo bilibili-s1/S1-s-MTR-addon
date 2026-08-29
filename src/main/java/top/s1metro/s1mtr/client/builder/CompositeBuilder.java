@@ -2,16 +2,17 @@ package top.s1metro.s1mtr.client.builder;
 
 import net.minecraft.world.World;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.Identifier;
-import net.minecraft.registry.Registries;
 import org.mtr.core.data.Rail;
 import org.mtr.core.tool.Vector;
 import org.mtr.mapping.holder.ServerWorld;
 import org.mtr.mod.block.BlockNode;
+import top.s1metro.s1mtr.service.PlacementQueue;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 复合构建器放样核心(反向映射算法)。
@@ -71,6 +72,62 @@ public final class CompositeBuilder {
 		if (length <= SAMPLE_STEP) {
 			return;
 		}
+		// 开启一个进度批次,使分帧放置过程能向玩家显示进度条
+		final int batchId = PlacementQueue.beginBatch("放样");
+
+		collect(world, rail, schedule, (pos, state) -> {
+			// 不直接写入,而是入队由 PlacementQueue 分 tick 批量放置,削平 CPU 峰值
+			PlacementQueue.enqueue(batchId, world, pos, state);
+		});
+
+		// 入队结束,标记批次完成(此后 done 逼近 total 时进度条走向 100%)
+		PlacementQueue.endBatch(batchId);
+	}
+
+	/** 3D 预览用的一个方块条目:世界坐标 + 放样后的方块状态(已按轨道切线旋转)。 */
+	public static final class PreviewBlock {
+		public final BlockPos pos;
+		public final BlockState state;
+
+		public PreviewBlock(BlockPos pos, BlockState state) {
+			this.pos = pos;
+			this.state = state;
+		}
+	}
+
+	/**
+	 * 纯计算版本的反向映射:把轨道的分层放样结果收集为方块列表(不写入世界、不入队)。
+	 * <p>
+	 * 供 {@code CompositeProfileEditorScreen} 在 3D 预览时调用,复用与 {@link #build} 完全相同的
+	 * 映射算法,保证预览与真实放样一致。
+	 *
+	 * @param rail     目标轨道
+	 * @param schedule 分层调度表(至少一个剖面)
+	 * @return 预览方块列表(位置 + 旋转后的方块状态)
+	 */
+	public static List<PreviewBlock> collectBlocks(Rail rail, CompositeLayerSchedule schedule) {
+		final List<PreviewBlock> result = new ArrayList<>();
+		if (rail == null || schedule == null || schedule.size() == 0) {
+			return result;
+		}
+		collect(null, rail, schedule, (pos, state) -> result.add(new PreviewBlock(pos, state)));
+		return result;
+	}
+
+	/**
+	 * 反向映射核心(与放样共用)。遍历候选区内每个方块位置,命中剖面非空格子则交给 consumer。
+	 *
+	 * @param world     世界(可为 null,此时跳过 canPlace 检查)
+	 * @param rail      目标轨道
+	 * @param schedule  分层调度表
+	 * @param consumer  命中方块的回调(位置 + 旋转后的状态)
+	 */
+	private static void collect(World world, Rail rail, CompositeLayerSchedule schedule,
+			java.util.function.BiConsumer<BlockPos, BlockState> consumer) {
+		final double length = rail.railMath.getLength();
+		if (length <= SAMPLE_STEP) {
+			return;
+		}
 
 		// 1. 密集采样中心线,同时计算每个采样点处的横向(左右)方向
 		final int sampleCount = (int) Math.ceil(length / SAMPLE_STEP) + 1;
@@ -105,9 +162,12 @@ public final class CompositeBuilder {
 		maxZ += RADIUS;
 
 		// 3. 反向映射:每个 (x, z) 列找最近的轨道采样点(只看水平距离),再对列内每个 y 放置
+		//    用跨列沿用的 hint 让 findClosest 只在局部窗口搜索(近似 O(1)),避免每列全量扫描(O(N))。
+		int hint = 0;
 		for (int x = minX; x <= maxX; x++) {
 			for (int z = minZ; z <= maxZ; z++) {
-				final int best = findClosest(centers, x, z);
+				final int best = findClosest(centers, x, z, hint);
+				hint = best;
 				if (best < 0) {
 					continue;
 				}
@@ -142,8 +202,10 @@ public final class CompositeBuilder {
 				final CompositeProfile profile = schedule.get(layerIndex).profile;
 
 				for (int y = minY; y <= maxY; y++) {
-					final double gyF = y - center.y();
-					final int gy = (int) Math.round(gyF);
+					// 以轨道所在方块(floor(center.y()))为基准,gy=0 即轨道所在方块,gy=+1 为其上一格。
+					// 用 floor 而非 round,避免上下坡时轨道接近方块边界导致 gy 错位(方块没盖过轨道)。
+					final int floorY = (int) Math.floor(center.y());
+					final int gy = y - floorY;
 					if (gy < -RADIUS || gy > RADIUS - 1) {
 						continue;
 					}
@@ -152,31 +214,73 @@ public final class CompositeBuilder {
 						continue;
 					}
 					final BlockPos blockPos = new BlockPos(x, y, z);
-					if (!canPlace(world, blockPos)) {
+					if (world != null && !canPlace(world, blockPos)) {
 						continue;
 					}
 					final BlockState state = resolveBlockState(cellString, tangent);
 					if (state != null) {
-						world.setBlockState(blockPos, state, 3);
+						consumer.accept(blockPos, state);
 					}
 				}
 			}
 		}
 	}
 
-	private static int findClosest(Vector[] centers, int x, int z) {
+	/**
+	 * 找水平距离最近的轨道采样点。
+	 * <p>
+	 * 从 {@code hint}(上一列的最近点索引)出发,向两侧爬山直到距离开始增大,通常一步命中全局最优。
+	 * 若 hint 失效(本列到 hint 的距离超过兜底阈值),则退化为全量扫描以保证正确。
+	 */
+	private static int findClosest(Vector[] centers, int x, int z, int hint) {
+		if (centers.length == 0) {
+			return -1;
+		}
+		final int start = Math.min(Math.max(hint, 0), centers.length - 1);
+		double bestDistSquared = distSquared(centers[start], x, z);
+		// 兜底:hint 离得太远说明沿用失效,直接全扫描
+		if (bestDistSquared > 4.0) {
+			return fullScan(centers, x, z);
+		}
+		int best = start;
+		for (int i = start + 1; i < centers.length; i++) {
+			final double d = distSquared(centers[i], x, z);
+			if (d < bestDistSquared) {
+				bestDistSquared = d;
+				best = i;
+			} else {
+				break;
+			}
+		}
+		for (int i = best - 1; i >= 0; i--) {
+			final double d = distSquared(centers[i], x, z);
+			if (d < bestDistSquared) {
+				bestDistSquared = d;
+				best = i;
+			} else {
+				break;
+			}
+		}
+		return best;
+	}
+
+	private static int fullScan(Vector[] centers, int x, int z) {
 		int best = -1;
 		double bestDistSquared = Double.MAX_VALUE;
 		for (int i = 0; i < centers.length; i++) {
-			final double dx = x - centers[i].x();
-			final double dz = z - centers[i].z();
-			final double distSquared = dx * dx + dz * dz;
-			if (distSquared < bestDistSquared) {
-				bestDistSquared = distSquared;
+			final double d = distSquared(centers[i], x, z);
+			if (d < bestDistSquared) {
+				bestDistSquared = d;
 				best = i;
 			}
 		}
 		return best;
+	}
+
+	private static double distSquared(Vector center, int x, int z) {
+		final double dx = x - center.x();
+		final double dz = z - center.z();
+		return dx * dx + dz * dz;
 	}
 
 	private static Vector getTangent(Rail rail, double distance, double length) {
