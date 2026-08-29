@@ -43,7 +43,6 @@ public class LayerManagerScreen extends MTRScreenBase {
 	private static final int ROW_HEIGHT = 24;
 	private static final int ROW_TOP = 40;
 	private static final int ROW_LEFT = 20;
-	private static final int ROW_RIGHT_OFFSET = 20;
 	private static final int LABEL_W = 60;
 	private static final int FIELD_W = 60;
 	private static final int BTN_W = 40;
@@ -229,13 +228,13 @@ public class LayerManagerScreen extends MTRScreenBase {
 
 		for (int i = 0; i < schedule.size(); i++) {
 			final int y = ROW_TOP + i * ROW_HEIGHT;
-			// 高亮当前选中的剖面
+			// 高亮当前选中的剖面:仅用极淡的底色,避免遮挡该行的输入框/按钮
 			if (i == s1mtr$highlightLayer) {
 				final GuiDrawing hl = new GuiDrawing(graphicsHolder);
 				hl.beginDrawingRectangle();
 				hl.drawRectangle(ROW_LEFT - 4, y - 2,
 						ROW_LEFT + LABEL_W + FIELD_W + 8 + 5 * (BTN_W + BTN_GAP) + 4, y + ROW_HEIGHT - 2,
-						0x3355AAFF);
+						0x1155AAFF);
 				hl.finishDrawingRectangle();
 			}
 			graphicsHolder.drawText(

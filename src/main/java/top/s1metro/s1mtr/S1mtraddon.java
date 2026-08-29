@@ -13,6 +13,7 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.s1metro.s1mtr.item.ItemFastTrackBuilder;
+import top.s1metro.s1mtr.item.ItemNodeCopier;
 import top.s1metro.s1mtr.item.ItemRailConnector;
 import top.s1metro.s1mtr.item.ItemRailConnectorAuto;
 import top.s1metro.s1mtr.item.ItemStationTeleporter;
@@ -20,6 +21,7 @@ import top.s1metro.s1mtr.network.PacketS1mtrBuildComposite;
 import top.s1metro.s1mtr.network.PacketS1mtrConnectRails;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveAutoConnectorConfig;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveFastTrackConfig;
+import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleport;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleportToStation;
 import top.s1metro.s1mtr.service.S1mtrConfig;
@@ -44,6 +46,9 @@ public class S1mtraddon implements ModInitializer {
 	/** 自动速度轨道连接器 (点对点连接,自动选择推荐限速,复用 MTR 原版选点+预览)。 */
 	public static final Item RAIL_CONNECTOR_AUTO = new ItemRailConnectorAuto();
 
+	/** 轨道节点复制粘贴工具 (右键节点复制连接+属性, 右键空地放置新节点并自动重连)。 */
+	public static final Item NODE_COPIER = new ItemNodeCopier(new Item.Settings());
+
 	/** S1MTR mod 图标物品 (仅用于创造物品组标签页 icon, 不在物品列表中显示)。 */
 	public static final Item S1MTR_ICON = new Item(new Item.Settings());
 
@@ -56,6 +61,7 @@ public class S1mtraddon implements ModInitializer {
 				entries.add(RAIL_CONNECTOR);
 				entries.add(RAIL_CONNECTOR_AUTO);
 				entries.add(FAST_TRACK_BUILDER);
+				entries.add(NODE_COPIER);
 			})
 			.build();
 
@@ -68,6 +74,7 @@ public class S1mtraddon implements ModInitializer {
 		REGISTRY.registerPacket(PacketS1mtrConnectRails.class, PacketS1mtrConnectRails::new);
 		REGISTRY.registerPacket(PacketS1mtrSaveFastTrackConfig.class, PacketS1mtrSaveFastTrackConfig::new);
 		REGISTRY.registerPacket(PacketS1mtrSaveAutoConnectorConfig.class, PacketS1mtrSaveAutoConnectorConfig::new);
+		REGISTRY.registerPacket(PacketS1mtrSaveNodeCopy.class, PacketS1mtrSaveNodeCopy::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleport.class, PacketS1mtrTeleport::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleportToStation.class, PacketS1mtrTeleportToStation::new);
 		REGISTRY.setupPackets(new org.mtr.mapping.holder.Identifier(MOD_ID, "packet"));
@@ -81,6 +88,8 @@ public class S1mtraddon implements ModInitializer {
 				FAST_TRACK_BUILDER);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("rail_connector_auto"),
 				RAIL_CONNECTOR_AUTO);
+		net.minecraft.registry.Registry.register(Registries.ITEM, id("node_copier"),
+				NODE_COPIER);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("s1mtr_icon"),
 				S1MTR_ICON);
 
