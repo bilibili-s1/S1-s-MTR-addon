@@ -56,11 +56,14 @@ public class ItemNodeCopier extends Item {
 			return ActionResult.PASS;
 		}
 
-		// 服务端:右键空地且持有数据 -> 放置新节点并自动连接
+		// 服务端:右键且持有数据 -> 像放置方块一样,在点击面的相邻位置放置新节点并自动连接
 		final net.minecraft.block.BlockState state = world.getBlockState(context.getBlockPos());
 		if (!(state.getBlock() instanceof org.mtr.mod.block.BlockNode) && hasCopiedData(stack)) {
 			if (player instanceof net.minecraft.server.network.ServerPlayerEntity serverPlayer) {
-				PacketS1mtrPasteNode.handle(serverPlayer, stack, context.getBlockPos());
+				// 放置位置 = 点击方块 + 点击面方向(不替换原方块,与放置方块逻辑一致)
+				final net.minecraft.util.math.BlockPos placePos =
+						context.getBlockPos().offset(context.getSide());
+				PacketS1mtrPasteNode.handle(serverPlayer, stack, placePos);
 			}
 			return ActionResult.SUCCESS;
 		}
