@@ -25,10 +25,12 @@ public class NodeCopierConfigScreen extends MTRScreenBase {
 	private static final int PANEL_H = 120;
 
 	private final ItemStack stack;
+	private final boolean offHand;
 
-	public NodeCopierConfigScreen(net.minecraft.item.ItemStack stack) {
+	public NodeCopierConfigScreen(net.minecraft.item.ItemStack stack, boolean offHand) {
 		super();
 		this.stack = stack;
+		this.offHand = offHand;
 	}
 
 	@Override
@@ -45,7 +47,8 @@ public class NodeCopierConfigScreen extends MTRScreenBase {
 						+ TextHelper.translatable("gui.s1mtr.node_copier.mode_connect").getString()),
 				btn -> {
 					ItemNodeCopier.setMode(stack, ItemNodeCopier.MODE_CONNECT);
-					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
+					sendModeToServer(ItemNodeCopier.MODE_CONNECT);
+					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack, offHand));
 				});
 		addChild(new ClickableWidget(connectModeButton));
 
@@ -55,7 +58,8 @@ public class NodeCopierConfigScreen extends MTRScreenBase {
 						+ TextHelper.translatable("gui.s1mtr.node_copier.mode_copy_all").getString()),
 				btn -> {
 					ItemNodeCopier.setMode(stack, ItemNodeCopier.MODE_COPY_ALL);
-					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
+					sendModeToServer(ItemNodeCopier.MODE_COPY_ALL);
+					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack, offHand));
 				});
 		addChild(new ClickableWidget(copyAllModeButton));
 
@@ -63,6 +67,12 @@ public class NodeCopierConfigScreen extends MTRScreenBase {
 				panelX + 20, panelY + PANEL_H - 30, PANEL_W - 40, 20,
 				TextHelper.translatable("gui.done"), btn -> MinecraftClient.getInstance().setScreen(null));
 		addChild(new ClickableWidget(doneButton));
+	}
+
+	/** 把模式同步到服务端手持物品 NBT,防止服务端重新同步背包时覆盖客户端修改。 */
+	private void sendModeToServer(int mode) {
+		top.s1metro.s1mtr.client.S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
+				new top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopierMode(mode, offHand));
 	}
 
 	@Override

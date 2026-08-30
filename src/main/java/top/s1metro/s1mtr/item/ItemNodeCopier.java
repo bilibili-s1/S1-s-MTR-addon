@@ -64,7 +64,8 @@ public class ItemNodeCopier extends Item {
 		if (world.isClient()) {
 			// Shift+右键:打开配置界面切换复制模式
 			if (player.isSneaking()) {
-				MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
+				MinecraftClient.getInstance().setScreen(
+						new NodeCopierConfigScreen(stack, context.getHand() == Hand.OFF_HAND));
 				return ActionResult.SUCCESS;
 			}
 			// 右键轨道节点 -> 读取连接数据并发往服务端保存
