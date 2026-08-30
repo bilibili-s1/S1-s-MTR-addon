@@ -22,8 +22,11 @@ import net.minecraft.util.math.BlockPos;
 /**
  * 轨道节点复制工具的"粘贴"逻辑(服务端)。
  * <p>
- * 在目标位置放置一个 MTR 轨道节点方块,并用复制时保存的轨道属性
- * 把新节点与各原连接节点自动连接。
+ * 连接模式:在目标位置放置一个新节点,并用复制时保存的轨道属性把新节点与各原连接节点连接。
+ * <p>
+ * 完全复制模式:原节点放粘贴点,每个相连节点按<b>相对位置</b>放置对应新节点
+ * (位置 = 粘贴点 + 相对偏移,朝向保留),并把这些新节点与粘贴点的新节点连接。
+ * 适合快速建设多线铁路。
  */
 public final class PacketS1mtrPasteNode {
 
@@ -33,7 +36,7 @@ public final class PacketS1mtrPasteNode {
 	}
 
 	/** 服务端处理:放置节点并自动连接。 */
-	public static void handle(ServerPlayerEntity player, net.minecraft.item.ItemStack stack, BlockPos newPos, boolean autoSpeed) {
+	public static void handle(ServerPlayerEntity player, net.minecraft.item.ItemStack stack, BlockPos newPos, int mode) {
 		if (stack == null || !(stack.getItem() instanceof ItemNodeCopier)) {
 			return;
 		}
@@ -64,7 +67,11 @@ public final class PacketS1mtrPasteNode {
 		final ServerWorld serverWorld = new ServerWorld(player.getServerWorld());
 		final Position newPosition = new Position(newPos.getX(), newPos.getY(), newPos.getZ());
 
-		// 放置轨道节点方块:复用原节点的 BlockNode 实例(保证 transportMode 一致),并保持原朝向
+		final boolean facing = root.has("facing") ? root.get("facing").getAsBoolean() : true;
+		final boolean is22_5 = root.has("is22_5") ? root.get("is22_5").getAsBoolean() : false;
+		final boolean is45 = root.has("is45") ? root.get("is45").getAsBoolean() : false;
+
+		// 复用原节点的 BlockNode 实例(保证 transportMode 一致)
 		final net.minecraft.block.BlockState originState = player.getServerWorld().getBlockState(
 				new BlockPos((int) originX, (int) originY, (int) originZ));
 		final net.minecraft.block.Block originBlock = originState.getBlock();
@@ -73,15 +80,9 @@ public final class PacketS1mtrPasteNode {
 			return;
 		}
 
-		final boolean facing = root.has("facing") ? root.get("facing").getAsBoolean() : true;
-		final boolean is22_5 = root.has("is22_5") ? root.get("is22_5").getAsBoolean() : false;
-		final boolean is45 = root.has("is45") ? root.get("is45").getAsBoolean() : false;
-
-		net.minecraft.block.BlockState placeState = originBlock.getDefaultState();
-		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.FACING, facing);
-		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.IS_22_5, is22_5);
-		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.IS_45, is45);
-		player.getServerWorld().setBlockState(newPos, placeState, 3);
+		// 放置原节点(粘贴点),保持原朝向
+		player.getServerWorld().setBlockState(newPos,
+				applyNodeProps(originBlock.getDefaultState(), facing, is22_5, is45), 3);
 
 		int connectedCount = 0;
 		for (int i = 0; i < connections.size(); i++) {
@@ -94,9 +95,28 @@ public final class PacketS1mtrPasteNode {
 			final Angle savedAngle1 = Angle.fromAngle(conn.get("angle1").getAsFloat());
 			final Angle savedAngle2 = Angle.fromAngle(conn.get("angle2").getAsFloat());
 
-			// 用新节点位置 + 保存的朝向重算两端真实角度
+			// 另一端节点位置:连接模式用原节点,完全复制模式用相对位置的新节点
+			final Position targetPos;
+			if (mode == ItemNodeCopier.MODE_COPY_ALL) {
+				targetPos = new Position(
+						newPosition.getX() + (other.getX() - originX),
+						newPosition.getY() + (other.getY() - originY),
+						newPosition.getZ() + (other.getZ() - originZ));
+
+				// 在相对位置放置对应的新节点(保留其朝向)
+				final boolean ofacing = conn.has("otherFacing") ? conn.get("otherFacing").getAsBoolean() : true;
+				final boolean ois22_5 = conn.has("otherIs22_5") ? conn.get("otherIs22_5").getAsBoolean() : false;
+				final boolean ois45 = conn.has("otherIs45") ? conn.get("otherIs45").getAsBoolean() : false;
+				player.getServerWorld().setBlockState(
+						new BlockPos((int) targetPos.getX(), (int) targetPos.getY(), (int) targetPos.getZ()),
+						applyNodeProps(originBlock.getDefaultState(), ofacing, ois22_5, ois45), 3);
+			} else {
+				targetPos = other;
+			}
+
+			// 用两端真实朝向重算角度
 			final ObjectObjectImmutablePair<Angle, Angle> angles =
-					Rail.getAngles(newPosition, savedAngle1.angleDegrees, other, savedAngle2.angleDegrees);
+					Rail.getAngles(newPosition, savedAngle1.angleDegrees, targetPos, savedAngle2.angleDegrees);
 			if (angles == null) {
 				continue;
 			}
@@ -121,36 +141,16 @@ public final class PacketS1mtrPasteNode {
 				styles.add("default");
 			}
 
-			// 速度:保存的 speed1/speed2 决定单向(speed2==0 表示单向)
-			long s1 = speed1;
-			long s2 = speed2;
-			if (autoSpeed) {
-				// 勾选"自动切换速度":用真实朝向构造临时轨道计算推荐限速,并 clamp 到配置上限
-				final ObjectArrayList<String> probeStyles = new ObjectArrayList<>();
-				final Rail probe = Rail.newRail(
-						newPosition, angles.left(), other, angles.right(),
-						shape, radius, probeStyles,
-						1, 1, isPlatform, isSiding,
-						canAccelerate, canTurnBack, canConnectRemotely, transportMode);
-				long recommended = -1;
-				if (probe != null && probe.isValid()) {
-					recommended = top.s1metro.s1mtr.client.RailSpeedHelper.calculateRecommendedSpeed(probe);
-				}
-				final int maxSpeed = top.s1metro.s1mtr.service.S1mtrConfig.autoConnectorMaxSpeed();
-				s1 = recommended <= 0 ? maxSpeed : Math.min(recommended, maxSpeed);
-				s2 = s2 == 0 ? 0 : s1;
-			}
-
 			final Rail rail = Rail.newRail(
-					newPosition, angles.left(), other, angles.right(),
+					newPosition, angles.left(), targetPos, angles.right(),
 					shape, radius, styles,
-					s1, s2, isPlatform, isSiding,
+					speed1, speed2, isPlatform, isSiding,
 					canAccelerate, canTurnBack, canConnectRemotely, transportMode);
 
 			if (rail != null && rail.isValid()) {
 				PacketUpdateData.sendDirectlyToServerRail(serverWorld, rail);
 				markConnected(serverWorld, newPos);
-				markConnected(serverWorld, new BlockPos((int) other.getX(), (int) other.getY(), (int) other.getZ()));
+				markConnected(serverWorld, new BlockPos((int) targetPos.getX(), (int) targetPos.getY(), (int) targetPos.getZ()));
 				connectedCount++;
 			}
 		}
@@ -159,6 +159,16 @@ public final class PacketS1mtrPasteNode {
 		player.sendMessage(
 				net.minecraft.text.Text.translatable("item.s1mtraddon.node_copier.pasted", connectedCount),
 				true);
+	}
+
+	/** 设置 BlockNode 的三个朝向属性。 */
+	private static net.minecraft.block.BlockState applyNodeProps(
+			net.minecraft.block.BlockState state, boolean facing, boolean is22_5, boolean is45) {
+		net.minecraft.block.BlockState result = state;
+		result = applyNodeProp(result, org.mtr.mod.block.BlockNode.FACING, facing);
+		result = applyNodeProp(result, org.mtr.mod.block.BlockNode.IS_22_5, is22_5);
+		result = applyNodeProp(result, org.mtr.mod.block.BlockNode.IS_45, is45);
+		return result;
 	}
 
 	/** 设置 BlockNode 的 BooleanProperty 属性值。 */

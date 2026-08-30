@@ -13,8 +13,11 @@ import top.s1metro.s1mtr.item.ItemNodeCopier;
 /**
  * 轨道节点复制工具配置界面(Shift+右键打开)。
  * <p>
- * 可勾选"自动切换速度":粘贴连接轨道时,用推荐限速(含曲率/坡度)计算并修改轨道速度,
- * 最高不超过配置的自动最高速度。
+ * 切换复制模式:
+ * <ul>
+ *   <li>连接模式(默认):粘贴时放置新节点并连接已有节点。</li>
+ *   <li>完全复制:按相对位置复制整组节点,快速建设多线铁路。</li>
+ * </ul>
  */
 public class NodeCopierConfigScreen extends MTRScreenBase {
 
@@ -34,16 +37,27 @@ public class NodeCopierConfigScreen extends MTRScreenBase {
 		final int panelX = (width - PANEL_W) / 2;
 		final int panelY = (height - PANEL_H) / 2;
 
-		final boolean autoSpeed = ItemNodeCopier.isAutoSpeed(stack);
-		final ButtonWidgetExtension autoSpeedButton = new ButtonWidgetExtension(
+		final int mode = ItemNodeCopier.getMode(stack);
+
+		final ButtonWidgetExtension connectModeButton = new ButtonWidgetExtension(
 				panelX + 20, panelY + 30, PANEL_W - 40, 20,
-				TextHelper.literal((autoSpeed ? "\u2713 " : "\u25CB ")
-						+ TextHelper.translatable("gui.s1mtr.node_copier.auto_speed").getString()),
+				TextHelper.literal((mode == ItemNodeCopier.MODE_CONNECT ? "\u2713 " : "\u25CB ")
+						+ TextHelper.translatable("gui.s1mtr.node_copier.mode_connect").getString()),
 				btn -> {
-					ItemNodeCopier.setAutoSpeed(stack, !ItemNodeCopier.isAutoSpeed(stack));
+					ItemNodeCopier.setMode(stack, ItemNodeCopier.MODE_CONNECT);
 					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
 				});
-		addChild(new ClickableWidget(autoSpeedButton));
+		addChild(new ClickableWidget(connectModeButton));
+
+		final ButtonWidgetExtension copyAllModeButton = new ButtonWidgetExtension(
+				panelX + 20, panelY + 54, PANEL_W - 40, 20,
+				TextHelper.literal((mode == ItemNodeCopier.MODE_COPY_ALL ? "\u2713 " : "\u25CB ")
+						+ TextHelper.translatable("gui.s1mtr.node_copier.mode_copy_all").getString()),
+				btn -> {
+					ItemNodeCopier.setMode(stack, ItemNodeCopier.MODE_COPY_ALL);
+					MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
+				});
+		addChild(new ClickableWidget(copyAllModeButton));
 
 		final ButtonWidgetExtension doneButton = new ButtonWidgetExtension(
 				panelX + 20, panelY + PANEL_H - 30, PANEL_W - 40, 20,

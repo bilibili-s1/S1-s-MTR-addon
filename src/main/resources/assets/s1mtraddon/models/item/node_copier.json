@@ -6,7 +6,7 @@
 	"overrides": [
 		{
 			"predicate": {
-				"custom_model_data": 1
+				"damaged": 1
 			},
 			"model": "s1mtraddon:item/node_copier_loaded"
 		}

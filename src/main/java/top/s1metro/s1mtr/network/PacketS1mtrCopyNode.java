@@ -53,6 +53,8 @@ public final class PacketS1mtrCopyNode {
 			root.addProperty("is45", false);
 		}
 
+		final net.minecraft.client.world.ClientWorld world = net.minecraft.client.MinecraftClient.getInstance().world;
+
 		final Map<Position, Map<Position, Rail>> positionsToRail = getClientPositionsToRail();
 		if (positionsToRail != null) {
 			final Map<Position, Rail> connected = positionsToRail.get(origin);
@@ -60,6 +62,15 @@ public final class PacketS1mtrCopyNode {
 				for (Map.Entry<Position, Rail> entry : connected.entrySet()) {
 					final JsonObject conn = serializeRail(entry.getKey(), entry.getValue());
 					if (conn != null) {
+						// 保存相连节点的朝向(完全复制模式需要在相对位置放置并保持方向)
+						final net.minecraft.block.BlockState otherState = world == null ? null
+								: world.getBlockState(new BlockPos((int) entry.getKey().getX(),
+										(int) entry.getKey().getY(), (int) entry.getKey().getZ()));
+						if (otherState != null && otherState.getBlock() instanceof org.mtr.mod.block.BlockNode) {
+							conn.addProperty("otherFacing", getNodeProp(otherState, org.mtr.mod.block.BlockNode.FACING));
+							conn.addProperty("otherIs22_5", getNodeProp(otherState, org.mtr.mod.block.BlockNode.IS_22_5));
+							conn.addProperty("otherIs45", getNodeProp(otherState, org.mtr.mod.block.BlockNode.IS_45));
+						}
 						connections.add(conn);
 					}
 				}
