@@ -75,6 +75,8 @@
 	"item.s1mtraddon.node_copier.no_connections": "This node has no connected rails",
 	"item.s1mtraddon.node_copier.pasted": "Placed node and connected %d rails",
 	"item.s1mtraddon.node_copier.fail": "Failed to place rail node",
+	"gui.s1mtr.node_copier.config_title": "Node Copier Config",
+	"gui.s1mtr.node_copier.auto_speed": "Auto-switch speed (recalculate recommended speed on paste, capped at config max)",
 	"gui.s1mtr.auto_connector.selected": "First node selected (%d, %d, %d), click the second node to connect",
 	"gui.s1mtr.auto_connector.cancelled": "Selection cancelled",
 	"gui.s1mtr.auto_connector.connected": "Connected automatically, speed limit %d km/h",

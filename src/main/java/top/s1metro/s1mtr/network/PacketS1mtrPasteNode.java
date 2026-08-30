@@ -33,7 +33,7 @@ public final class PacketS1mtrPasteNode {
 	}
 
 	/** 服务端处理:放置节点并自动连接。 */
-	public static void handle(ServerPlayerEntity player, net.minecraft.item.ItemStack stack, BlockPos newPos) {
+	public static void handle(ServerPlayerEntity player, net.minecraft.item.ItemStack stack, BlockPos newPos, boolean autoSpeed) {
 		if (stack == null || !(stack.getItem() instanceof ItemNodeCopier)) {
 			return;
 		}
@@ -64,7 +64,7 @@ public final class PacketS1mtrPasteNode {
 		final ServerWorld serverWorld = new ServerWorld(player.getServerWorld());
 		final Position newPosition = new Position(newPos.getX(), newPos.getY(), newPos.getZ());
 
-		// 放置轨道节点方块:复用原节点的 BlockNode 实例(保证 transportMode 一致)
+		// 放置轨道节点方块:复用原节点的 BlockNode 实例(保证 transportMode 一致),并保持原朝向
 		final net.minecraft.block.BlockState originState = player.getServerWorld().getBlockState(
 				new BlockPos((int) originX, (int) originY, (int) originZ));
 		final net.minecraft.block.Block originBlock = originState.getBlock();
@@ -72,7 +72,16 @@ public final class PacketS1mtrPasteNode {
 			player.sendMessage(net.minecraft.text.Text.translatable("item.s1mtraddon.node_copier.fail"), true);
 			return;
 		}
-		player.getServerWorld().setBlockState(newPos, originBlock.getDefaultState(), 3);
+
+		final boolean facing = root.has("facing") ? root.get("facing").getAsBoolean() : true;
+		final boolean is22_5 = root.has("is22_5") ? root.get("is22_5").getAsBoolean() : false;
+		final boolean is45 = root.has("is45") ? root.get("is45").getAsBoolean() : false;
+
+		net.minecraft.block.BlockState placeState = originBlock.getDefaultState();
+		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.FACING, facing);
+		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.IS_22_5, is22_5);
+		placeState = applyNodeProp(placeState, org.mtr.mod.block.BlockNode.IS_45, is45);
+		player.getServerWorld().setBlockState(newPos, placeState, 3);
 
 		int connectedCount = 0;
 		for (int i = 0; i < connections.size(); i++) {
@@ -113,10 +122,29 @@ public final class PacketS1mtrPasteNode {
 			}
 
 			// 速度:保存的 speed1/speed2 决定单向(speed2==0 表示单向)
+			long s1 = speed1;
+			long s2 = speed2;
+			if (autoSpeed) {
+				// 勾选"自动切换速度":用真实朝向构造临时轨道计算推荐限速,并 clamp 到配置上限
+				final ObjectArrayList<String> probeStyles = new ObjectArrayList<>();
+				final Rail probe = Rail.newRail(
+						newPosition, angles.left(), other, angles.right(),
+						shape, radius, probeStyles,
+						1, 1, isPlatform, isSiding,
+						canAccelerate, canTurnBack, canConnectRemotely, transportMode);
+				long recommended = -1;
+				if (probe != null && probe.isValid()) {
+					recommended = top.s1metro.s1mtr.client.RailSpeedHelper.calculateRecommendedSpeed(probe);
+				}
+				final int maxSpeed = top.s1metro.s1mtr.service.S1mtrConfig.autoConnectorMaxSpeed();
+				s1 = recommended <= 0 ? maxSpeed : Math.min(recommended, maxSpeed);
+				s2 = s2 == 0 ? 0 : s1;
+			}
+
 			final Rail rail = Rail.newRail(
 					newPosition, angles.left(), other, angles.right(),
 					shape, radius, styles,
-					speed1, speed2, isPlatform, isSiding,
+					s1, s2, isPlatform, isSiding,
 					canAccelerate, canTurnBack, canConnectRemotely, transportMode);
 
 			if (rail != null && rail.isValid()) {
@@ -131,6 +159,20 @@ public final class PacketS1mtrPasteNode {
 		player.sendMessage(
 				net.minecraft.text.Text.translatable("item.s1mtraddon.node_copier.pasted", connectedCount),
 				true);
+	}
+
+	/** 设置 BlockNode 的 BooleanProperty 属性值。 */
+	private static net.minecraft.block.BlockState applyNodeProp(
+			net.minecraft.block.BlockState state, org.mtr.mapping.holder.BooleanProperty prop, boolean value) {
+		try {
+			final net.minecraft.state.property.Property<Boolean> p =
+					(net.minecraft.state.property.Property<Boolean>) prop.data;
+			if (state.contains(p)) {
+				return state.with(p, value);
+			}
+		} catch (Exception ignored) {
+		}
+		return state;
 	}
 
 	private static void markConnected(ServerWorld world, BlockPos pos) {

@@ -1,12 +1,15 @@
 package top.s1metro.s1mtr.item;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import top.s1metro.s1mtr.client.S1mtraddonClient;
+import top.s1metro.s1mtr.client.screen.NodeCopierConfigScreen;
 import top.s1metro.s1mtr.network.PacketS1mtrCopyNode;
 import top.s1metro.s1mtr.network.PacketS1mtrPasteNode;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
@@ -15,16 +18,18 @@ import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
  * 轨道节点复制粘贴工具。
  * <p>
  * <b>贴图 1(默认)</b>:右键一个<b>已连接轨道的轨道节点</b>,读取该节点所有连接
- * (另一端节点坐标 + 每条轨道的属性:限速/样式/形状/单向等),保存到物品 NBT,并切换到贴图 2。
+ * (另一端节点坐标 + 节点朝向 + 每条轨道的属性:限速/样式/形状/单向等),保存到物品 NBT,并切换到贴图 2。
  * <p>
- * <b>贴图 2(已复制)</b>:右键一个空地,放置一个 MTR 轨道节点方块,并用保存的属性
- * 自动把新节点连接到原节点。随后清除数据,切回贴图 1。
+ * <b>贴图 2(已复制)</b>:右键一个空地,像放置方块一样在点击面旁放置一个 MTR 轨道节点方块
+ * (保持原节点朝向),并用保存的属性自动把新节点连接到原节点。随后清除数据,切回贴图 1。
  * <p>
- * 可用于方便地移动轨道节点位置(在原节点旁放置新节点并自动重连)。
+ * <b>Shift+右键</b>:打开配置界面,可勾选"自动切换速度"——粘贴连接时按推荐限速
+ * (含曲率/坡度) 计算并修改轨道速度,最高不超过配置的自动最高速度。
  */
 public class ItemNodeCopier extends Item {
 
 	public static final String KEY_DATA = "s1mtr_copied";
+	public static final String KEY_AUTO_SPEED = "s1mtr_auto_speed";
 
 	public ItemNodeCopier(Settings settings) {
 		super(settings.maxCount(1));
@@ -40,15 +45,19 @@ public class ItemNodeCopier extends Item {
 		}
 
 		if (world.isClient()) {
-			// 客户端:右键轨道节点 -> 读取连接数据并发往服务端保存
+			// Shift+右键:打开配置界面
+			if (player.isSneaking()) {
+				MinecraftClient.getInstance().setScreen(new NodeCopierConfigScreen(stack));
+				return ActionResult.SUCCESS;
+			}
+			// 右键轨道节点 -> 读取连接数据并发往服务端保存
 			final net.minecraft.block.BlockState state = world.getBlockState(context.getBlockPos());
-			final boolean isNode = state.getBlock() instanceof org.mtr.mod.block.BlockNode;
-			if (isNode) {
-				final String json = PacketS1mtrCopyNode.collectConnections(context.getBlockPos());
+			if (state.getBlock() instanceof org.mtr.mod.block.BlockNode) {
+				final String json = PacketS1mtrCopyNode.collectConnections(context.getBlockPos(), state);
 				if (json != null) {
 					S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
-							new PacketS1mtrSaveNodeCopy(json));
-					// 立即切换贴图(custom_model_data 触发模型 overrides;服务端回执后也保持)
+							new PacketS1mtrSaveNodeCopy(json, context.getHand() == net.minecraft.util.Hand.OFF_HAND));
+					// 立即切换贴图(服务端同步后保持)
 					setCopiedData(stack, json);
 				}
 				return ActionResult.SUCCESS;
@@ -56,14 +65,15 @@ public class ItemNodeCopier extends Item {
 			return ActionResult.PASS;
 		}
 
-		// 服务端:右键且持有数据 -> 像放置方块一样,在点击面的相邻位置放置新节点并自动连接
+		// 服务端:右键非节点且非 Shift+右键、且持有数据 -> 像放置方块一样,在点击面的相邻位置放置新节点
+		if (player.isSneaking()) {
+			return ActionResult.PASS;
+		}
 		final net.minecraft.block.BlockState state = world.getBlockState(context.getBlockPos());
 		if (!(state.getBlock() instanceof org.mtr.mod.block.BlockNode) && hasCopiedData(stack)) {
 			if (player instanceof net.minecraft.server.network.ServerPlayerEntity serverPlayer) {
-				// 放置位置 = 点击方块 + 点击面方向(不替换原方块,与放置方块逻辑一致)
-				final net.minecraft.util.math.BlockPos placePos =
-						context.getBlockPos().offset(context.getSide());
-				PacketS1mtrPasteNode.handle(serverPlayer, stack, placePos);
+				final BlockPos placePos = context.getBlockPos().offset(context.getSide());
+				PacketS1mtrPasteNode.handle(serverPlayer, stack, placePos, isAutoSpeed(stack));
 			}
 			return ActionResult.SUCCESS;
 		}
@@ -89,5 +99,13 @@ public class ItemNodeCopier extends Item {
 	public static void clearCopiedData(ItemStack stack) {
 		stack.getOrCreateNbt().remove(KEY_DATA);
 		stack.getOrCreateNbt().putInt("custom_model_data", 0);
+	}
+
+	public static boolean isAutoSpeed(ItemStack stack) {
+		return stack.getOrCreateNbt().getBoolean(KEY_AUTO_SPEED);
+	}
+
+	public static void setAutoSpeed(ItemStack stack, boolean autoSpeed) {
+		stack.getOrCreateNbt().putBoolean(KEY_AUTO_SPEED, autoSpeed);
 	}
 }

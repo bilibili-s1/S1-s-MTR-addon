@@ -30,16 +30,28 @@ public final class PacketS1mtrCopyNode {
 	}
 
 	/**
-	 * 客户端:读取节点连接并返回序列化 JSON 字符串。
+	 * 客户端:读取节点连接(含节点朝向)并返回序列化 JSON 字符串。
 	 * 调用方负责把结果发往服务端。
 	 *
-	 * @param pos 被右键的轨道节点坐标
+	 * @param pos   被右键的轨道节点坐标
+	 * @param state 该节点方块的 BlockState(用于读取朝向 FACING/IS_22_5/IS_45)
 	 * @return 序列化的连接数据 JSON;无连接或失败返回 null
 	 */
-	public static String collectConnections(BlockPos pos) {
+	public static String collectConnections(BlockPos pos, net.minecraft.block.BlockState state) {
 		final Position origin = new Position(pos.getX(), pos.getY(), pos.getZ());
 		final JsonObject root = new JsonObject();
 		final JsonArray connections = new JsonArray();
+
+		// 保存原节点朝向:放置新节点时保持相同方向
+		if (state != null) {
+			root.addProperty("facing", getNodeProp(state, org.mtr.mod.block.BlockNode.FACING));
+			root.addProperty("is22_5", getNodeProp(state, org.mtr.mod.block.BlockNode.IS_22_5));
+			root.addProperty("is45", getNodeProp(state, org.mtr.mod.block.BlockNode.IS_45));
+		} else {
+			root.addProperty("facing", true);
+			root.addProperty("is22_5", false);
+			root.addProperty("is45", false);
+		}
 
 		final Map<Position, Map<Position, Rail>> positionsToRail = getClientPositionsToRail();
 		if (positionsToRail != null) {
@@ -60,6 +72,17 @@ public final class PacketS1mtrCopyNode {
 		root.add("connections", connections);
 
 		return GSON.toJson(root);
+	}
+
+	/** 读取 BlockNode 的 BooleanProperty 属性值。 */
+	private static boolean getNodeProp(net.minecraft.block.BlockState state, org.mtr.mapping.holder.BooleanProperty prop) {
+		try {
+			final net.minecraft.state.property.Property<Boolean> p =
+					(net.minecraft.state.property.Property<Boolean>) prop.data;
+			return state.get(p);
+		} catch (Exception ignored) {
+			return false;
+		}
 	}
 
 	/** 服务端:把连接数据写入玩家手持物品 NBT。 */

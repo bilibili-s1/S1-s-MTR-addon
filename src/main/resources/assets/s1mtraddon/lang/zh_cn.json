@@ -75,6 +75,8 @@
 	"item.s1mtraddon.node_copier.no_connections": "该节点没有已连接的轨道",
 	"item.s1mtraddon.node_copier.pasted": "已放置节点并连接 %d 条轨道",
 	"item.s1mtraddon.node_copier.fail": "无法放置轨道节点",
+	"gui.s1mtr.node_copier.config_title": "节点复制工具配置",
+	"gui.s1mtr.node_copier.auto_speed": "自动切换速度（粘贴时按推荐限速修改，最高不超过配置上限）",
 	"gui.s1mtr.auto_connector.selected": "已选第一点 (%d, %d, %d)，点击第二个轨道节点以连接",
 	"gui.s1mtr.auto_connector.cancelled": "已取消选择",
 	"gui.s1mtr.auto_connector.connected": "已自动连接，限速 %d km/h",
