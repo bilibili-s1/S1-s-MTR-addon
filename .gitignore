@@ -42,3 +42,6 @@ replay_*.log
 # 反编译调试产物(不入库)
 
 mtr-decomp/
+
+# mimosa 安全扫描插件本地状态(不入库)
+.mimosa/
