@@ -1,6 +1,5 @@
 package top.s1metro.s1mtr.item;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -9,11 +8,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import top.s1metro.s1mtr.client.S1mtraddonClient;
-import top.s1metro.s1mtr.client.screen.NodeCopierConfigScreen;
-import top.s1metro.s1mtr.network.PacketS1mtrCopyNode;
+import top.s1metro.s1mtr.client.S1mtrClientProxy;
 import top.s1metro.s1mtr.network.PacketS1mtrPasteNode;
-import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
 
 /**
  * 轨道节点复制粘贴工具。
@@ -31,6 +27,9 @@ import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
  * </ul>
  * <p>
  * 贴图切换用物品 damage(核心属性,自动同步,绕开 NBT 同步时序问题)。
+ * <p>
+ * 客户端界面/数据读取操作(配置界面、复制逻辑)通过 {@link S1mtrClientProxy} 反射委托给
+ * {@code ClientScreenOpener},避免本类(服务端也会加载)直接依赖 client 包下的 {@code Screen} 子类。
  */
 public class ItemNodeCopier extends Item {
 
@@ -64,20 +63,14 @@ public class ItemNodeCopier extends Item {
 		if (world.isClient()) {
 			// Shift+右键:打开配置界面切换复制模式
 			if (player.isSneaking()) {
-				MinecraftClient.getInstance().setScreen(
-						new NodeCopierConfigScreen(stack, context.getHand() == Hand.OFF_HAND));
+				S1mtrClientProxy.openNodeCopierConfig(stack, context.getHand() == Hand.OFF_HAND);
 				return ActionResult.SUCCESS;
 			}
 			// 右键轨道节点 -> 读取连接数据并发往服务端保存
 			final net.minecraft.block.BlockState state = world.getBlockState(context.getBlockPos());
 			if (state.getBlock() instanceof org.mtr.mod.block.BlockNode) {
-				final String json = PacketS1mtrCopyNode.collectConnections(context.getBlockPos(), state);
-				if (json != null) {
-					S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
-							new PacketS1mtrSaveNodeCopy(json, context.getHand() == Hand.OFF_HAND));
-					// 立即切换贴图(damage 触发模型 overrides;服务端同步后保持)
-					setCopiedData(stack, json);
-				}
+				S1mtrClientProxy.copyNodeConnections(stack, context.getBlockPos(), state,
+						context.getHand() == Hand.OFF_HAND);
 				return ActionResult.SUCCESS;
 			}
 			return ActionResult.PASS;

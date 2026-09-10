@@ -5,7 +5,6 @@ import org.mtr.core.data.Rail;
 import org.mtr.core.data.TransportMode;
 import org.mtr.core.tool.Angle;
 import org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.MinecraftClient;
 import org.mtr.mapping.holder.ActionResult;
 import org.mtr.mapping.holder.BlockPos;
 import org.mtr.mapping.holder.BlockState;
@@ -25,7 +24,7 @@ import org.mtr.mod.data.RailType;
 import org.mtr.mod.item.ItemNodeModifierBase;
 import org.mtr.mod.packet.PacketUpdateData;
 import top.s1metro.s1mtr.client.RailSpeedHelper;
-import top.s1metro.s1mtr.client.screen.AutoConnectorConfigScreen;
+import top.s1metro.s1mtr.client.S1mtrClientProxy;
 import top.s1metro.s1mtr.client.builder.CompositeBuilder;
 import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
 import top.s1metro.s1mtr.service.S1mtrConfig;
@@ -80,8 +79,7 @@ public class ItemRailConnectorAuto extends ItemNodeModifierBase {
 		if (context.getWorld().isClient()) {
 			final PlayerEntity player = context.getPlayer();
 			if (player != null && player.isSneaking()) {
-				MinecraftClient.getInstance().setScreen(
-						new AutoConnectorConfigScreen(context.getStack().data));
+				S1mtrClientProxy.openAutoConnectorConfig(context.getStack().data);
 				return ActionResult.SUCCESS;
 			}
 		}
