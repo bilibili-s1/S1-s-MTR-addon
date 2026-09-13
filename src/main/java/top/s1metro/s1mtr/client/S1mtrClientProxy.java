@@ -1,6 +1,8 @@
 package top.s1metro.s1mtr.client;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 
 /**
  * 主源码集到客户端代码的反射桥梁。
@@ -35,6 +37,34 @@ public final class S1mtrClientProxy {
 		try {
 			final Class<?> opener = Class.forName(OPENER_CLASS);
 			opener.getMethod("openFastTrackConfig", ItemStack.class).invoke(null, stack);
+		} catch (Throwable ignored) {
+		}
+	}
+
+	/** 打开自动速度连接器配置界面（需要 ItemStack 参数）。 */
+	public static void openAutoConnectorConfig(ItemStack stack) {
+		try {
+			final Class<?> opener = Class.forName(OPENER_CLASS);
+			opener.getMethod("openAutoConnectorConfig", ItemStack.class).invoke(null, stack);
+		} catch (Throwable ignored) {
+		}
+	}
+
+	/** 打开节点复制器配置界面（需要 ItemStack + 是否副手 参数）。 */
+	public static void openNodeCopierConfig(ItemStack stack, boolean offHand) {
+		try {
+			final Class<?> opener = Class.forName(OPENER_CLASS);
+			opener.getMethod("openNodeCopierConfig", ItemStack.class, boolean.class).invoke(null, stack, offHand);
+		} catch (Throwable ignored) {
+		}
+	}
+
+	/** 客户端复制轨道节点连接数据（收集 + 发服务端 + 本地切换贴图）。 */
+	public static void copyNodeConnections(ItemStack stack, BlockPos pos, BlockState state, boolean offHand) {
+		try {
+			final Class<?> opener = Class.forName(OPENER_CLASS);
+			opener.getMethod("copyNodeConnections", ItemStack.class, BlockPos.class, BlockState.class, boolean.class)
+					.invoke(null, stack, pos, state, offHand);
 		} catch (Throwable ignored) {
 		}
 	}
