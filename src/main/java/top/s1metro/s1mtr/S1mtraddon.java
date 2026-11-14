@@ -12,6 +12,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import top.s1metro.s1mtr.item.ItemAnteCompositeBuilder;
 import top.s1metro.s1mtr.item.ItemFastTrackBuilder;
 import top.s1metro.s1mtr.item.ItemNodeCopier;
 import top.s1metro.s1mtr.item.ItemRailConnector;
@@ -50,6 +51,9 @@ public class S1mtraddon implements ModInitializer {
 	/** 轨道节点复制粘贴工具 (右键节点复制连接+属性, 右键空地放置新节点并自动重连)。 */
 	public static final Item NODE_COPIER = new ItemNodeCopier(new Item.Settings());
 
+	/** ANTE 复合构建器 (右键轨道节点打开放样编辑器,支持分层与通用预设)。 */
+	public static final Item ANTE_COMPOSITE_BUILDER = new ItemAnteCompositeBuilder(new Item.Settings());
+
 	/** S1MTR mod 图标物品 (仅用于创造物品组标签页 icon, 不在物品列表中显示)。 */
 	public static final Item S1MTR_ICON = new Item(new Item.Settings());
 
@@ -63,6 +67,7 @@ public class S1mtraddon implements ModInitializer {
 				entries.add(RAIL_CONNECTOR_AUTO);
 				entries.add(FAST_TRACK_BUILDER);
 				entries.add(NODE_COPIER);
+				entries.add(ANTE_COMPOSITE_BUILDER);
 			})
 			.build();
 
@@ -92,6 +97,8 @@ public class S1mtraddon implements ModInitializer {
 				RAIL_CONNECTOR_AUTO);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("node_copier"),
 				NODE_COPIER);
+		net.minecraft.registry.Registry.register(Registries.ITEM, id("ante_composite_builder"),
+				ANTE_COMPOSITE_BUILDER);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("s1mtr_icon"),
 				S1MTR_ICON);
 

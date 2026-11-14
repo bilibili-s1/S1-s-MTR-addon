@@ -98,5 +98,10 @@
 	"gui.s1mtr.config.placement_per_tick": "放样每 tick 方块数 (1-1024)：",
 	"gui.hud.title": "配置",
 	"gui.s1mtr.config.auto_max_speed.tooltip": "自动速度连接器连接轨道时允许的最高限速。若推荐速度超过此值，则封顶到此值（默认 80）。",
-	"gui.s1mtr.config.placement_per_tick.tooltip": "每次服务器 tick 最多写入的方块数。性能好的机器可调大以加快放样；低端机可调小以免卡顿。默认 256，范围 1-1024。"
+	"gui.s1mtr.config.placement_per_tick.tooltip": "每次服务器 tick 最多写入的方块数。性能好的机器可调大以加快放样；低端机可调小以免卡顿。默认 256，范围 1-1024。",
+	"gui.s1mtr.siding_speed_limit": "侧线限速 (km/h)：",
+	"gui.s1mtr.siding_speed_limit.hint": "列车在该侧线上行驶时的最高速度，实际速度取轨道限速与侧线限速的较小值。留空或填 0 表示不限制。",
+	"item.s1mtraddon.ante_composite_builder": "ANTE 复合构建器",
+	"gui.s1mtr.config.composite_preview_style": "方块预览样式 (0=默认, 1=统一平面图标)：",
+	"gui.s1mtr.config.composite_preview_style.tooltip": "复合构建编辑器方块网格的显示方式。0 = 默认(原 S1 复合构建器为立体方块,ANTE 复合构建器为平面物品图标);1 = 两者都强制使用平面物品图标。"
 }

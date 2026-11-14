@@ -27,6 +27,55 @@ public final class RailSpeedHelper {
 	public static final String COMPOSITE_PROFILE_PREFIX = "s1mtr:compositeProfile=";
 	public static final String COMPOSITE_SCHEDULE_PREFIX = "s1mtr:compositeSchedule=";
 
+	// ===== 地铁轨道铺设标准(推荐限速计算依据) =====
+
+	/**
+	 * 地铁标准最高设计速度(km/h),对应平面曲线半径大于 600m 的档位。
+	 */
+	private static final long METRO_MAX_SPEED = 160L;
+
+	/**
+	 * 平面曲线半径分档上界(米)。
+	 * <p>
+	 * 配套 {@link #CURVE_SPEED_TIERS}:&lt;60→20,60~100→40,100~150→60,150~220→80,
+	 * 220~350→100,350~600→120,&gt;600→160。
+	 */
+	private static final double[] CURVE_RADIUS_TIERS = {60, 100, 150, 220, 350, 600};
+
+	/**
+	 * 与 {@link #CURVE_RADIUS_TIERS} 一一对应的限速(km/h);最后一项为 ≥600m 的档位。
+	 */
+	private static final long[] CURVE_SPEED_TIERS = {20, 40, 60, 80, 100, 120, 160};
+
+	/**
+	 * 地铁最大坡度 60‰(每 100 格上升 6 格)。
+	 * <p>
+	 * 坡度不超过该值时坡度不构成限速(这是相对旧版"任意坡度都限速"的放宽点)。
+	 */
+	private static final double MAX_GRADIENT = 0.06D;
+
+	/**
+	 * 坡度超标后的限速分档上界(‰),与 {@link #GRADIENT_EXCEED_SPEEDS} 一一对应。
+	 */
+	private static final double[] GRADIENT_EXCEED_TIERS = {90, 120, 150, 200};
+
+	/**
+	 * 坡度超标后的限速(km/h):60~90‰→120,90~120‰→100,120~150‰→80,150~200‰→60。
+	 */
+	private static final long[] GRADIENT_EXCEED_SPEEDS = {120, 100, 80, 60};
+
+	/**
+	 * 坡度超过 200‰ 时的兜底限速(km/h)。
+	 */
+	private static final long GRADIENT_MIN_SPEED = 40L;
+
+	/**
+	 * 竖曲线半径分档:≥800m 可跑 &gt;120km/h,≥600m 可跑 80~120km/h,≥450m 可跑 &lt;80km/h。
+	 */
+	private static final double VERTICAL_RADIUS_HIGH = 800D;
+	private static final double VERTICAL_RADIUS_MID = 600D;
+	private static final double VERTICAL_RADIUS_LOW = 450D;
+
 	private RailSpeedHelper() {
 	}
 
@@ -283,6 +332,17 @@ public final class RailSpeedHelper {
 				getDoorCloseDelay(rail) / 1000);
 	}
 
+	/**
+	 * 计算轨道的推荐限速(km/h)。
+	 * <p>
+	 * 依据地铁轨道铺设标准,综合三项约束后取最严格者:
+	 * <ol>
+	 *   <li><b>平面曲线半径</b>:分档表(见 {@link #calculateCurveSpeed});</li>
+	 *   <li><b>竖曲线半径</b>:见 {@link #calculateVerticalSpeed};</li>
+	 *   <li><b>坡度</b>:地铁最大坡度 60‰ 以内不限速,超标后降档(见 {@link #calculateGradientSpeed})。</li>
+	 * </ol>
+	 * 站台/侧线/可掉头轨道不参与自动限速,返回 0;无任何约束时返回 -1(由调用方使用配置上限)。
+	 */
 	public static long calculateRecommendedSpeed(Rail rail) {
 		RailSchemaAccessor accessor = (RailSchemaAccessor) (Object) rail;
 
@@ -322,57 +382,98 @@ public final class RailSpeedHelper {
 
 		double minHorizontalRadius = r1 > 0 && r2 > 0 ? Math.min(r1, r2) : (r1 > 0 ? r1 : (r2 > 0 ? r2 : -1));
 
-		long curveSpeed = calculateCurveSpeed(minHorizontalRadius);
-		long slopeSpeed = calculateSlopeSpeed(slope);
-
-		if (curveSpeed < 0 && slopeSpeed < 0) {
-			return -1;
-		} else if (curveSpeed < 0) {
-			return slopeSpeed;
-		} else if (slopeSpeed < 0) {
-			return curveSpeed;
-		} else {
-			return Math.min(curveSpeed, slopeSpeed);
-		}
+		// 竖曲线半径取 RailMath 内按几何上限收敛后的值(轨道太短时实际竖曲线半径会更小)
+		return combineSpeedLimits(
+				calculateCurveSpeed(minHorizontalRadius),
+				calculateVerticalSpeed(railMath.getVerticalRadius()),
+				calculateGradientSpeed(slope));
 	}
 
 	/**
-	 * 弯道限速(连续公式,按 5km/h 级别细化)。
+	 * 合并各项限速,取最严格者。
 	 * <p>
-	 * 基于铁路侧向加速度经验值:限速 v = sqrt(a * R) (a≈0.7 m/s²),换算 km/h 后随半径连续变化,
-	 * 半径越大限速越高,自然呈现约每 5 km/h 一档的细腻梯度。
+	 * 各分项返回 -1 表示该项不构成限制;全部为 -1 时返回 -1(无限制)。
+	 */
+	private static long combineSpeedLimits(long curveSpeed, long verticalSpeed, long gradientSpeed) {
+		long limit = -1L;
+		if (curveSpeed > 0) {
+			limit = curveSpeed;
+		}
+		if (verticalSpeed > 0) {
+			limit = limit < 0 ? verticalSpeed : Math.min(limit, verticalSpeed);
+		}
+		if (gradientSpeed > 0) {
+			limit = limit < 0 ? gradientSpeed : Math.min(limit, gradientSpeed);
+		}
+		return limit;
+	}
+
+	/**
+	 * 平面曲线半径限速(地铁轨道铺设标准分档表)。
+	 * <p>
+	 * 半径(米)→限速(km/h):&lt;60→20,60~100→40,100~150→60,150~220→80,220~350→100,
+	 * 350~600→120,&gt;600→160。
+	 * <p>
+	 * 半径 ≤ 0 表示直线段(无曲率),曲率不构成限速,返回 -1。
 	 */
 	private static long calculateCurveSpeed(double radius) {
 		if (radius <= 0) {
-			return -1;
+			return -1L;
 		}
-		// v(m/s) = sqrt(0.7 * R), v(km/h) = v * 3.6
-		final double vMs = Math.sqrt(0.7 * radius);
-		final long vKmh = Math.round(vMs * 3.6);
-		// 直线段(R 极大)封顶,避免无限制
-		return Math.min(vKmh, 320);
+		for (int i = 0; i < CURVE_RADIUS_TIERS.length; i++) {
+			if (radius < CURVE_RADIUS_TIERS[i]) {
+				return CURVE_SPEED_TIERS[i];
+			}
+		}
+		return CURVE_SPEED_TIERS[CURVE_SPEED_TIERS.length - 1];
 	}
 
 	/**
-	 * 坡度限速(连续公式,按 5km/h 级别细化)。
+	 * 竖曲线半径限速(地铁轨道铺设标准)。
 	 * <p>
-	 * 基于坡度经验式:限速随坡度增大而下降(约 v_kmh ≈ 90 * sqrt(0.003 / slope))。
-	 * 坡度越小限速越高,自然呈现约每 5 km/h 一档的细腻梯度。
+	 * 时速 &lt;80km/h 需 ≥450m,80~120km/h 需 ≥600m,&gt;120km/h 需 ≥800m。
+	 * <p>
+	 * 竖曲线半径未设置(≤0)或 ≥800m 时不做限制,返回 -1;不足 450m 时按比例线性降档,最低 20km/h。
 	 */
-	private static long calculateSlopeSpeed(double slope) {
-		if (slope < 0.0005) {
-			return -1; // 近乎平坡,坡度不限制,由弯道/默认上限决定
+	private static long calculateVerticalSpeed(double verticalRadius) {
+		if (verticalRadius <= 0 || verticalRadius >= VERTICAL_RADIUS_HIGH) {
+			return -1L;
 		}
-		final double vKmh = 90 * Math.sqrt(0.003 / slope);
-		return (long) Math.min(vKmh, 320);
+		if (verticalRadius >= VERTICAL_RADIUS_MID) {
+			return 120L;
+		}
+		if (verticalRadius >= VERTICAL_RADIUS_LOW) {
+			return 80L;
+		}
+		return Math.max(20L, Math.round(80.0D * verticalRadius / VERTICAL_RADIUS_LOW));
+	}
+
+	/**
+	 * 坡度限速(地铁轨道铺设标准)。
+	 * <p>
+	 * 地铁最大坡度 60‰,不超过该值时坡度不限制速度(返回 -1);
+	 * 超过后按超标程度降档:60~90‰→120,90~120‰→100,120~150‰→80,150~200‰→60,&gt;200‰→40。
+	 */
+	private static long calculateGradientSpeed(double slope) {
+		if (slope <= MAX_GRADIENT) {
+			return -1L;
+		}
+		final double permille = slope * 1000.0D;
+		for (int i = 0; i < GRADIENT_EXCEED_TIERS.length; i++) {
+			if (permille < GRADIENT_EXCEED_TIERS[i]) {
+				return GRADIENT_EXCEED_SPEEDS[i];
+			}
+		}
+		return GRADIENT_MIN_SPEED;
 	}
 
 	/**
 	 * 根据两个轨道节点位置估算推荐限速(km/h)。
 	 * <p>
 	 * 这是自动速度连接器、HUD 预览、R 键自动填表共用的统一入口。
-	 * 由于连接前只有两个端点(无法预知中间曲率),限速以<b>坡度</b>为主(两端高差/长度),
-	 * 曲率部分取上限不限制;结果由调用方 clamp 到配置的最高速度。
+	 * 由于连接前只有两个端点(无法预知中间曲率),限速仅按<b>坡度</b>判断
+	 * (地铁最大坡度 60‰ 以内不限速),曲率与竖曲线半径取上限不限制;
+	 * 结果由调用方 clamp 到配置的最高速度。
 	 *
 	 * @param position1 第一节点
 	 * @param position2 第二节点
@@ -391,14 +492,9 @@ public final class RailSpeedHelper {
 			return -1;
 		}
 
-		// 坡度限速(连续公式),曲线部分无法从两端点预知,取上限不限制
+		// 坡度限速(地铁标准),曲线部分无法从两端点预知,取上限不限制
 		final double slope = Math.abs(dy) / length;
-		final long slopeSpeed = calculateSlopeSpeed(slope);
-		if (slopeSpeed < 0) {
-			// 平坡:坡度不限制,返回 -1 表示"无坡度限制,由调用方使用配置上限"
-			return -1;
-		}
-		return Math.min(slopeSpeed, 320);
+		return combineSpeedLimits(-1L, -1L, calculateGradientSpeed(slope));
 	}
 
 	/**

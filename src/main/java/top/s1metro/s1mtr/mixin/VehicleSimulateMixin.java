@@ -1,5 +1,6 @@
 package top.s1metro.s1mtr.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.mtr.core.data.PathData;
@@ -13,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.s1metro.s1mtr.client.RailSpeedHelper;
+import top.s1metro.s1mtr.service.VehicleDelayTracker;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.ConcurrentHashMap;
@@ -63,6 +65,9 @@ public abstract class VehicleSimulateMixin {
 		Vehicle vehicle = (Vehicle) (Object) this;
 		Rail rail = getCurrentRail(vehicle);
 
+		// 列车开始新一轮运行时清空上一轮累计的人为损耗
+		VehicleDelayTracker.checkRun(vehicle, departureIndex, sidingDepartureTime);
+
 		long doorCloseDelay = 0;
 		if (rail != null && RailSpeedHelper.isPlatform(rail)) {
 			doorCloseDelay = RailSpeedHelper.getDoorCloseDelay(rail);
@@ -97,6 +102,10 @@ public abstract class VehicleSimulateMixin {
 		elapsed += s1mtr$currentSimDeltaMs;
 		DOOR_DELAY_ELAPSED_MS.put(vehicleId, elapsed);
 
+		// 记录这段人为延迟：MTR 会把"实际用时超出计划用时"当成晚点并触发追点加速，
+		// 这里把延迟登记下来，在计算晚点时扣除，使延迟不被计入晚点。
+		VehicleDelayTracker.add(vehicle, s1mtr$currentSimDeltaMs);
+
 		if (elapsed >= doorCloseDelay) {
 			DOOR_DELAY_ELAPSED_MS.remove(vehicleId);
 			DOOR_HAS_BEEN_CLOSING.remove(vehicleId);
@@ -111,6 +120,25 @@ public abstract class VehicleSimulateMixin {
 		long vehicleId = System.identityHashCode(vehicle);
 		DOOR_DELAY_ELAPSED_MS.remove(vehicleId);
 		DOOR_HAS_BEEN_CLOSING.remove(vehicleId);
+	}
+
+	/**
+	 * 把模组人为引入的延迟(发车延迟、侧线限速)从 MTR 的晚点判定中剔除。
+	 * <p>
+	 * MTR 的晚点偏差 = 实际用时 - 计划沿途用时,
+	 * {@code getTimeAlongRoute} 返回的就是"计划沿途用时 + 当前停站已用时间"。
+	 * 这里额外加上模组引入的人为延迟,等价于"这段时间从未被拖延",
+	 * 于是列车不会因为运营需要的延迟被判为晚点,也不会触发追点加速。
+	 * <p>
+	 * 该方法同时被 MTR 用于:
+	 * <ul>
+	 *   <li>{@code updateDeviation} 计算晚点偏差;</li>
+	 *   <li>{@code simulate} 上报给时刻表(到站信息),保证看板显示的晚点与实际一致。</li>
+	 * </ul>
+	 */
+	@ModifyReturnValue(method = "getTimeAlongRoute", at = @At("RETURN"))
+	private long s1mtr$excludeArtificialDelay(long original) {
+		return original + VehicleDelayTracker.get(this);
 	}
 
 	private Rail getCurrentRail(Vehicle vehicle) {

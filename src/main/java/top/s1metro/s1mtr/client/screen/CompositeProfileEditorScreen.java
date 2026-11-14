@@ -18,6 +18,7 @@ import top.s1metro.s1mtr.client.S1mtraddonClient;
 import top.s1metro.s1mtr.client.builder.CompositeLayerSchedule;
 import top.s1metro.s1mtr.client.builder.CompositeProfile;
 import top.s1metro.s1mtr.network.PacketS1mtrBuildComposite;
+import top.s1metro.s1mtr.service.S1mtrConfig;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 	private static String s1mtr$selectedBlockState = "minecraft:air";
 	/** 快速建造工具等场景下,编辑器返回时执行的回调(用于把编辑后的剖面写回物品 NBT)。 */
 	private static java.util.function.Consumer<CompositeLayerSchedule> s1mtr$onReturnCallback;
+	/** 是否以 ANTE 复合构建器的样式打开(使用 2D 平面物品图标预览,即 FangSu 风格)。 */
+	private static boolean s1mtr$anteMode = false;
 
 	/** 网格单元像素尺寸:16px(略缩小)。 */
 	private static final int GRID_CELL = 16;
@@ -104,6 +107,21 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 		s1mtr$currentRail = rail;
 		s1mtr$schedule = schedule == null ? new CompositeLayerSchedule() : schedule.copy();
 		s1mtr$onReturnCallback = null;
+		s1mtr$anteMode = false;
+		MinecraftClient.getInstance().setScreen(new CompositeProfileEditorScreen());
+	}
+
+	/**
+	 * 以 ANTE 复合构建器样式打开编辑器(FangSu 风格:2D 平面物品图标预览)。
+	 * <p>
+	 * 与 {@link #open} 使用同一套剖面/分层数据与预设存储,
+	 * 区别只在于界面使用 2D 平面方块预览(原 S1 复合构建器默认使用 3D 立体预览)。
+	 */
+	public static void openAnte(Rail rail, CompositeLayerSchedule schedule) {
+		s1mtr$currentRail = rail;
+		s1mtr$schedule = schedule == null ? new CompositeLayerSchedule() : schedule.copy();
+		s1mtr$onReturnCallback = null;
+		s1mtr$anteMode = true;
 		MinecraftClient.getInstance().setScreen(new CompositeProfileEditorScreen());
 	}
 
@@ -434,6 +452,14 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 				width / 2, 32,
 				-1);
 
+		// ANTE 复合构建器标题(FangSu 风格:白色居中)
+		if (s1mtr$anteMode) {
+			graphicsHolder.drawCenteredText(
+					TextHelper.translatable("item.s1mtraddon.ante_composite_builder"),
+					width / 2, 44,
+					0xFFFFFFFF);
+		}
+
 		super.render(graphicsHolder, mouseX, mouseY, delta);
 	}
 
@@ -441,13 +467,16 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 		final GuiDrawing guiDrawing = new GuiDrawing(graphicsHolder);
 		final DrawContext drawContext = getDrawContext(graphicsHolder);
 
-		// 外框
+		// 外框:FangSu 风格用近黑色边框(0x0c0d0b),原 S1 风格用 0x101010
 		guiDrawing.beginDrawingRectangle();
-		guiDrawing.drawRectangle(gridX - 2, gridY - 2, gridX + GRID_PIXEL + 2, gridY + GRID_PIXEL + 2, 0xFF101010);
+		guiDrawing.drawRectangle(gridX - 2, gridY - 2, gridX + GRID_PIXEL + 2, gridY + GRID_PIXEL + 2,
+				s1mtr$anteMode ? 0xff0c0d0b : 0xFF101010);
+		guiDrawing.finishDrawingRectangle();
 
 		final CompositeProfile profile = currentProfile();
 
 		// 单元格背景
+		guiDrawing.beginDrawingRectangle();
 		for (int row = 0; row < CompositeProfile.GRID_SIZE; row++) {
 			for (int col = 0; col < CompositeProfile.GRID_SIZE; col++) {
 				final int gx = col - CompositeProfile.CENTER;
@@ -456,21 +485,34 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 				final int cellX = gridX + col * GRID_CELL;
 				final int cellY = gridY + row * GRID_CELL;
 
-				final int bgColor;
-				if (cell == null) {
-					bgColor = 0xFF2A2A2A;
-				} else if ("minecraft:air".equals(cell)) {
-					bgColor = 0xFF3D6FB8;
+				if (s1mtr$anteMode) {
+					// FangSu 风格:灰底 + 1px 内嵌深灰,悬停近白
+					final boolean hovered = isInGrid(mouseX, mouseY)
+							&& col == (int) ((mouseX - gridX) / GRID_CELL)
+							&& row == (int) ((mouseY - gridY) / GRID_CELL);
+					guiDrawing.drawRectangle(cellX, cellY, cellX + GRID_CELL, cellY + GRID_CELL,
+							hovered ? 0xfffafff2 : 0xff9b9e96);
+					guiDrawing.drawRectangle(cellX + 1, cellY + 1, cellX + GRID_CELL - 1, cellY + GRID_CELL - 1, 0xff919191);
 				} else {
-					bgColor = 0xFF1A1A1A;
+					final int bgColor;
+					if (cell == null) {
+						bgColor = 0xFF2A2A2A;
+					} else if ("minecraft:air".equals(cell)) {
+						bgColor = 0xFF3D6FB8;
+					} else {
+						bgColor = 0xFF1A1A1A;
+					}
+					guiDrawing.drawRectangle(cellX, cellY, cellX + GRID_CELL, cellY + GRID_CELL, bgColor);
 				}
-				guiDrawing.drawRectangle(cellX, cellY, cellX + GRID_CELL, cellY + GRID_CELL, bgColor);
 			}
 		}
 		guiDrawing.finishDrawingRectangle();
 
 		// 方块图标
 		if (drawContext != null) {
+			// S1 复合构建器默认 3D 立体预览(原风格);ANTE 复合构建器默认 2D 平面物品图标(FangSu 风格)。
+			// 配置 compositePreviewStyle=1 时,两者都强制 2D 平面预览。
+			final boolean use3D = !s1mtr$anteMode && S1mtrConfig.compositePreviewStyle() != 1;
 			for (int row = 0; row < CompositeProfile.GRID_SIZE; row++) {
 				for (int col = 0; col < CompositeProfile.GRID_SIZE; col++) {
 					final int gx = col - CompositeProfile.CENTER;
@@ -489,28 +531,39 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 					}
 					final int cellX = gridX + col * GRID_CELL;
 					final int cellY = gridY + row * GRID_CELL;
-					drawContext.drawItem(new ItemStack(block), cellX, cellY);
+					if (use3D) {
+						renderBlockPreview(drawContext, state, cellX, cellY);
+					} else {
+						drawContext.drawItem(new ItemStack(block), cellX, cellY);
+					}
 				}
 			}
 		}
 
-		// 网格分隔线
+		// 网格分隔线 / 中心参考线
 		guiDrawing.beginDrawingRectangle();
-		for (int i = 0; i <= CompositeProfile.GRID_SIZE; i++) {
-			final int p = gridX + i * GRID_CELL;
-			guiDrawing.drawRectangle(p, gridY, p + 1, gridY + GRID_PIXEL, 0xFF3A3A3A);
-			final int q = gridY + i * GRID_CELL;
-			guiDrawing.drawRectangle(gridX, q, gridX + GRID_PIXEL, q + 1, 0xFF3A3A3A);
+		if (s1mtr$anteMode) {
+			// FangSu 风格:不画细网格线(格子内嵌描边已分隔),仅画中心轨道参考线(红=横向,绿=纵向)
+			final int vLineX = gridX + CompositeProfile.CENTER * GRID_CELL + GRID_CELL / 2;
+			guiDrawing.drawRectangle(vLineX, gridY, vLineX + 1, gridY + GRID_PIXEL, 0x7F00FF00);
+			final int hLineY = gridY + CompositeProfile.CENTER * GRID_CELL;
+			guiDrawing.drawRectangle(gridX, hLineY, gridX + GRID_PIXEL, hLineY + 1, 0x7FFF0000);
+		} else {
+			for (int i = 0; i <= CompositeProfile.GRID_SIZE; i++) {
+				final int p = gridX + i * GRID_CELL;
+				guiDrawing.drawRectangle(p, gridY, p + 1, gridY + GRID_PIXEL, 0xFF3A3A3A);
+				final int q = gridY + i * GRID_CELL;
+				guiDrawing.drawRectangle(gridX, q, gridX + GRID_PIXEL, q + 1, 0xFF3A3A3A);
+			}
+			// 中心十字参考线(原 S1 风格:白色)
+			final int vLineX = gridX + CompositeProfile.CENTER * GRID_CELL + GRID_CELL / 2;
+			guiDrawing.drawRectangle(vLineX, gridY, vLineX + 1, gridY + GRID_PIXEL, 0xFFFFFFFF);
+			final int hLineY = gridY + CompositeProfile.CENTER * GRID_CELL;
+			guiDrawing.drawRectangle(gridX, hLineY, gridX + GRID_PIXEL, hLineY + 1, 0xFFFFFFFF);
 		}
 
-		// 中心十字参考线:竖线在 gx=0 格中央,横线在 gy=0 与 gy=-1 之间
-		final int vLineX = gridX + CompositeProfile.CENTER * GRID_CELL + GRID_CELL / 2;
-		guiDrawing.drawRectangle(vLineX, gridY, vLineX + 1, gridY + GRID_PIXEL, 0xFFFFFFFF);
-		final int hLineY = gridY + CompositeProfile.CENTER * GRID_CELL;
-		guiDrawing.drawRectangle(gridX, hLineY, gridX + GRID_PIXEL, hLineY + 1, 0xFFFFFFFF);
-
-		// 鼠标悬停高亮
-		if (isInGrid(mouseX, mouseY)) {
+		// 鼠标悬停高亮(原 S1 风格叠加一层;ANTE 风格格子底色已随悬停变亮,不再叠加)
+		if (!s1mtr$anteMode && isInGrid(mouseX, mouseY)) {
 			final int col = (int) ((mouseX - gridX) / GRID_CELL);
 			final int row = (int) ((mouseY - gridY) / GRID_CELL);
 			guiDrawing.drawRectangle(
@@ -586,6 +639,36 @@ public class CompositeProfileEditorScreen extends MTRScreenBase {
 			return (DrawContext) S1MTR_DRAW_CONTEXT_FIELD.get(graphicsHolder);
 		} catch (IllegalAccessException e) {
 			return null;
+		}
+	}
+
+	/**
+	 * 以等距视角绘制立体方块(原 S1 复合构建器的 3D 预览风格)。
+	 * <p>
+	 * ANTE 复合构建器与配置 compositePreviewStyle=1 时使用 2D 平面物品图标预览,见
+	 * {@link S1mtrConfig#compositePreviewStyle()}。
+	 */
+	private static void renderBlockPreview(DrawContext drawContext, net.minecraft.block.BlockState state, int x, int y) {
+		try {
+			final net.minecraft.client.util.math.MatrixStack matrices = drawContext.getMatrices();
+			matrices.push();
+			matrices.translate(x + GRID_CELL / 2.0, y + GRID_CELL / 2.0, 100);
+			matrices.scale(GRID_CELL / 2.0f, -(GRID_CELL / 2.0f), GRID_CELL / 2.0f);
+			final net.minecraft.client.render.VertexConsumerProvider.Immediate immediate = drawContext.getVertexConsumers();
+			final net.minecraft.client.render.model.BakedModel model = MinecraftClient.getInstance().getBlockRenderManager().getModel(state);
+			MinecraftClient.getInstance().getItemRenderer().renderItem(
+					new ItemStack(state.getBlock()),
+					net.minecraft.client.render.model.json.ModelTransformationMode.GUI,
+					false,
+					matrices,
+					immediate,
+					15728880,
+					net.minecraft.client.render.OverlayTexture.DEFAULT_UV,
+					model);
+			immediate.draw();
+			matrices.pop();
+		} catch (Exception ignored) {
+			drawContext.drawItem(new ItemStack(state.getBlock()), x, y);
 		}
 	}
 

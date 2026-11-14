@@ -23,6 +23,13 @@ public final class S1mtrConfig {
 	/** 放样时每 tick 最多写入的方块数。性能好的机器可上调,低端机可下调。范围 1-1024,默认 256。 */
 	public int placementPerTick = 256;
 
+	/**
+	 * 复合构建编辑器的方块预览样式。
+	 * <p>
+	 * 0 = 平面物品图标(默认);1 = ANTE 风格的立体方块预览。
+	 */
+	public int compositePreviewStyle = 0;
+
 	private static final S1mtrConfig INSTANCE = new S1mtrConfig();
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
@@ -46,6 +53,7 @@ public final class S1mtrConfig {
 			if (parsed != null) {
 				INSTANCE.autoConnectorMaxSpeed = clampInt(parsed.autoConnectorMaxSpeed, 1, 1000, 80);
 				INSTANCE.placementPerTick = clampInt(parsed.placementPerTick, 1, 1024, 256);
+				INSTANCE.compositePreviewStyle = clampInt(parsed.compositePreviewStyle, 0, 1, 0);
 			}
 		} catch (Exception e) {
 			top.s1metro.s1mtr.S1mtraddon.LOGGER.warn("无法读取 s1mtr 配置,使用默认值: {}", e.getMessage());
@@ -72,6 +80,11 @@ public final class S1mtrConfig {
 	/** 运行时供自动连接器读取的最高限速(对配置做边界保护)。 */
 	public static int autoConnectorMaxSpeed() {
 		return clampInt(INSTANCE.autoConnectorMaxSpeed, 1, 1000, 80);
+	}
+
+	/** 复合构建编辑器的方块预览样式:0 = 平面物品图标,1 = 立体方块(ANTE 风格)。 */
+	public static int compositePreviewStyle() {
+		return clampInt(INSTANCE.compositePreviewStyle, 0, 1, 0);
 	}
 
 	private static int clampInt(int value, int min, int max, int fallback) {

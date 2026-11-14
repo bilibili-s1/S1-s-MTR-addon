@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.ItemStack;
 import top.s1metro.s1mtr.client.screen.AutoConnectorConfigScreen;
+import top.s1metro.s1mtr.client.screen.CompositeProfileEditorScreen;
 import top.s1metro.s1mtr.client.screen.FastTrackConfigScreen;
 import top.s1metro.s1mtr.client.screen.NodeCopierConfigScreen;
 import top.s1metro.s1mtr.client.screen.RailNetworkMapScreen;
@@ -47,6 +48,15 @@ public final class ClientScreenOpener {
 	public static void openNodeCopierConfig(ItemStack stack, boolean offHand) {
 		final MinecraftClient client = MinecraftClient.getInstance();
 		client.setScreen(new NodeCopierConfigScreen(stack, offHand));
+	}
+
+	/** 打开 ANTE 复合构建器编辑器(在被右键的轨道上放样)。 */
+	public static void openAnteCompositeBuilder(net.minecraft.util.math.BlockPos pos) {
+		final org.mtr.core.data.Rail rail = top.s1metro.s1mtr.service.RailDataTransfer.findRailAt(pos);
+		if (rail == null) {
+			return;
+		}
+		CompositeProfileEditorScreen.openAnte(rail, new top.s1metro.s1mtr.client.builder.CompositeLayerSchedule());
 	}
 
 	/**

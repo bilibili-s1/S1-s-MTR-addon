@@ -97,5 +97,10 @@
 	"gui.s1mtr.config.auto_max_speed": "Auto Max Speed (km/h):",
 	"gui.s1mtr.config.placement_per_tick": "Lofting Blocks Per Tick (1-1024):",
 	"gui.s1mtr.config.auto_max_speed.tooltip": "The highest speed limit the auto connector may use. If the suggested speed exceeds this, it is capped to this value (default 80).",
-	"gui.s1mtr.config.placement_per_tick.tooltip": "Max blocks written per server tick during lofting. Raise on fast machines to loft quicker; lower on weak machines to avoid lag. Default 256, range 1-1024."
+	"gui.s1mtr.config.placement_per_tick.tooltip": "Max blocks written per server tick during lofting. Raise on fast machines to loft quicker; lower on weak machines to avoid lag. Default 256, range 1-1024.",
+	"gui.s1mtr.siding_speed_limit": "Siding Speed Limit (km/h):",
+	"gui.s1mtr.siding_speed_limit.hint": "The highest speed a train may run at on this siding. The actual speed is the lower of the rail speed limit and the siding speed limit. Leave empty or enter 0 for no limit.",
+	"item.s1mtraddon.ante_composite_builder": "ANTE Composite Builder",
+	"gui.s1mtr.config.composite_preview_style": "Block Preview Style (0=default, 1=flat icons):",
+	"gui.s1mtr.config.composite_preview_style.tooltip": "How blocks are drawn in the composite builder grid. 0 = default (S1 composite builder uses 3D blocks, ANTE composite builder uses flat item icons); 1 = force flat item icons for both."
 }

@@ -6,6 +6,37 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+// ===== 多版本支持 =====
+// 默认构建 1.20.1;使用 -Ptarget=1.20.4 构建 1.20.4 版本(源码完全一致,仅依赖版本不同)。
+// 例:gradlew build -Ptarget=1.20.4
+def target = (project.findProperty('target') ?: '1.20.1').toString()
+def targets = [
+		'1.20.1': [
+				minecraft  : '1.20.1',
+				yarn       : '1.20.1+build.10',
+				loader     : '0.19.3',
+				loaderReq  : '>=0.17.0',
+				fabricApi  : '0.92.11+1.20.1',
+				networking : '1.3.15+0caff8d077',
+				modmenu    : '9.0.0',
+				mtr        : 'curse.maven:minecraft-transit-railway-266707:7916237'
+		],
+		'1.20.4': [
+				minecraft  : '1.20.4',
+				yarn       : '1.20.4+build.3',
+				loader     : '0.15.11',
+				loaderReq  : '>=0.15.0',
+				fabricApi  : '0.97.3+1.20.4',
+				networking : '3.1.9+6abb6a4b4f',
+				modmenu    : '11.0.3',
+				mtr        : 'maven.modrinth:minecraft-transit-railway:FABRIC-4.0.5+1.20.4'
+		]
+]
+def cfg = targets[target]
+if (cfg == null) {
+	throw new GradleException("Unknown target '${target}'. Available targets: ${targets.keySet().join(', ')}")
+}
+
 repositories {
 	maven {
 		name = "CurseForge"
@@ -15,34 +46,45 @@ repositories {
 		}
 	}
 	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+		content {
+			includeGroup "maven.modrinth"
+		}
+	}
+	maven {
 		name = "ModMenu"
 		url = "https://maven.terraformersmc.com/"
 	}
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	minecraft "com.mojang:minecraft:${cfg.minecraft}"
+	mappings "net.fabricmc:yarn:${cfg.yarn}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${cfg.loader}"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${cfg.fabricApi}"
 	// fabric-api 聚合 jar 的子模块类嵌套在 META-INF/jars 下,编译期不可见;
 	// 这里显式引入 networking 子模块,以便使用 ServerPlayNetworking / ClientPlayNetworking。
-	modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_api_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${cfg.networking}"
 
-	modImplementation "curse.maven:minecraft-transit-railway-266707:${project.mtr_version}"
+	modImplementation cfg.mtr
 
 	// Mod Menu 集成(可选):仅用于提供配置界面,不装也能正常运行;
 	// 配置值也会持久化到 config/s1mtr/config.json,可直接手改。
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	modImplementation "com.terraformersmc:modmenu:${cfg.modmenu}"
 }
 
 processResources {
 	def version = project.version
+	def minecraftVersion = cfg.minecraft
+	def loaderVersion = cfg.loaderReq
 	inputs.property "version", version
+	inputs.property "minecraftVersion", minecraftVersion
+	inputs.property "loaderVersion", loaderVersion
 
 	filesMatching("fabric.mod.json") {
-		expand "version": version
+		expand "version": version, "minecraft_version": minecraftVersion, "fabricloader_version": loaderVersion
 	}
 }
 
@@ -64,6 +106,11 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_$projectName"}
 	}
+}
+
+// 不同目标的产物分开命名,避免 1.20.1 与 1.20.4 的 jar 互相覆盖
+base {
+	archivesName = "${project.name}-mc${target}"
 }
 
 // configure the maven publication

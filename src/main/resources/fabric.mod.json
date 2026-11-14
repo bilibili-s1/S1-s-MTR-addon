@@ -29,8 +29,8 @@
 		"s1mtraddon.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.17.0",
-		"minecraft": "~1.20.1",
+		"fabricloader": "${fabricloader_version}",
+		"minecraft": "~${minecraft_version}",
 		"java": ">=17",
 		"fabric-api": "*",
 		"mtr": ">=4.0.4"
