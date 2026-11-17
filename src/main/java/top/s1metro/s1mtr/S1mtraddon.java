@@ -59,16 +59,18 @@ public class S1mtraddon implements ModInitializer {
 	/** ANTE 复合构建器 (右键轨道节点打开放样编辑器,支持分层与通用预设)。 */
 	public static final Item ANTE_COMPOSITE_BUILDER = new ItemAnteCompositeBuilder(new Item.Settings());
 
+	// ===== 万向节点（与方速 MTR4 运行时互斥）=====
+	// 注意：不能在静态字段里无条件 new Block —— Minecraft 的 Block 构造会创建 intrusive holder，
+	// 若方速存在而不注册这个 Block，fabric-registry-sync 启动校验会因「未注册的 holder」直接崩溃。
+	// 因此改为在 onInitialize() 中按检测结果条件创建 + 注册。
 	/** 万向节点方块：未绑定方向时旋转，可指定任意角度并用于轨道连接（摆脱 22.5° 离散限制）。 */
-	public static final MultiDirectionNodeBlock MULTI_DIRECTION_NODE_BLOCK = new MultiDirectionNodeBlock();
+	public static MultiDirectionNodeBlock MULTI_DIRECTION_NODE_BLOCK;
 
 	/** 万向节点方块实体类型。 */
-	public static final BlockEntityType<MultiDirectionNodeBlockEntity> MULTI_DIRECTION_NODE_BLOCK_ENTITY =
-			BlockEntityType.Builder.create(MultiDirectionNodeBlockEntity::new, MULTI_DIRECTION_NODE_BLOCK).build(null);
+	public static BlockEntityType<MultiDirectionNodeBlockEntity> MULTI_DIRECTION_NODE_BLOCK_ENTITY;
 
 	/** 万向节点物品（放置用）。 */
-	public static final BlockItem MULTI_DIRECTION_NODE_ITEM =
-			new BlockItem(MULTI_DIRECTION_NODE_BLOCK, new Item.Settings());
+	public static BlockItem MULTI_DIRECTION_NODE_ITEM;
 
 	/** S1MTR mod 图标物品 (仅用于创造物品组标签页 icon, 不在物品列表中显示)。 */
 	public static final Item S1MTR_ICON = new Item(new Item.Settings());
@@ -121,6 +123,11 @@ public class S1mtraddon implements ModInitializer {
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("ante_composite_builder"),
 				ANTE_COMPOSITE_BUILDER);
 		if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
+			// 仅在无方速时才创建并注册（Block 必须在Registry冻结前创建并注册）
+			MULTI_DIRECTION_NODE_BLOCK = new MultiDirectionNodeBlock();
+			MULTI_DIRECTION_NODE_BLOCK_ENTITY =
+					BlockEntityType.Builder.create(MultiDirectionNodeBlockEntity::new, MULTI_DIRECTION_NODE_BLOCK).build(null);
+			MULTI_DIRECTION_NODE_ITEM = new BlockItem(MULTI_DIRECTION_NODE_BLOCK, new Item.Settings());
 			net.minecraft.registry.Registry.register(Registries.BLOCK, id("multi_direction_node"),
 					MULTI_DIRECTION_NODE_BLOCK);
 			net.minecraft.registry.Registry.register(Registries.BLOCK_ENTITY_TYPE, id("multi_direction_node"),
