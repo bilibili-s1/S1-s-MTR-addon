@@ -103,5 +103,10 @@
 	"gui.s1mtr.siding_speed_limit.hint": "列车在该侧线上行驶时的最高速度，实际速度取轨道限速与侧线限速的较小值。留空或填 0 表示不限制。",
 	"item.s1mtraddon.ante_composite_builder": "ANTE 复合构建器",
 	"gui.s1mtr.config.composite_preview_style": "方块预览样式 (0=默认, 1=统一平面图标)：",
-	"gui.s1mtr.config.composite_preview_style.tooltip": "复合构建编辑器方块网格的显示方式。0 = 默认(原 S1 复合构建器为立体方块,ANTE 复合构建器为平面物品图标);1 = 两者都强制使用平面物品图标。"
+	"gui.s1mtr.config.composite_preview_style.tooltip": "复合构建编辑器方块网格的显示方式。0 = 默认(原 S1 复合构建器为立体方块,ANTE 复合构建器为平面物品图标);1 = 两者都强制使用平面物品图标。",
+	"block.s1mtraddon.multi_direction_node": "万向节点",
+	"gui.s1mtr.multi_direction_node.title": "万向节点设置",
+	"gui.s1mtr.multi_direction_node.direction": "方向角(度)：",
+	"gui.s1mtr.multi_direction_node.rotate_bind": "旋转绑定(固定方向)",
+	"gui.s1mtr.multi_direction_node.hint": "未绑定时标记持续旋转；用轨道连接器连接两个未绑定节点可生成任意角度轨道。"
 }

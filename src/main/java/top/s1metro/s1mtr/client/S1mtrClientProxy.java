@@ -68,6 +68,15 @@ public final class S1mtrClientProxy {
 		}
 	}
 
+	/** 打开万向节点配置界面（需要坐标参数）。 */
+	public static void openMultiDirectionNodeConfig(net.minecraft.util.math.BlockPos pos) {
+		try {
+			final Class<?> opener = Class.forName(OPENER_CLASS);
+			opener.getMethod("openMultiDirectionNodeConfig", net.minecraft.util.math.BlockPos.class).invoke(null, pos);
+		} catch (Throwable ignored) {
+		}
+	}
+
 	/** 客户端复制轨道节点连接数据（收集 + 发服务端 + 本地切换贴图）。 */
 	public static void copyNodeConnections(ItemStack stack, BlockPos pos, BlockState state, boolean offHand) {
 		try {

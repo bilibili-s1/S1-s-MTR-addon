@@ -2,6 +2,8 @@ package top.s1metro.s1mtr;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -10,6 +12,8 @@ import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import top.s1metro.s1mtr.block.MultiDirectionNodeBlock;
+import top.s1metro.s1mtr.block.MultiDirectionNodeBlockEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import top.s1metro.s1mtr.item.ItemAnteCompositeBuilder;
@@ -24,6 +28,7 @@ import top.s1metro.s1mtr.network.PacketS1mtrSaveAutoConnectorConfig;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveFastTrackConfig;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopierMode;
+import top.s1metro.s1mtr.network.PacketS1mtrSetNodeDirection;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleport;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleportToStation;
 import top.s1metro.s1mtr.service.S1mtrConfig;
@@ -54,6 +59,17 @@ public class S1mtraddon implements ModInitializer {
 	/** ANTE 复合构建器 (右键轨道节点打开放样编辑器,支持分层与通用预设)。 */
 	public static final Item ANTE_COMPOSITE_BUILDER = new ItemAnteCompositeBuilder(new Item.Settings());
 
+	/** 万向节点方块：未绑定方向时旋转，可指定任意角度并用于轨道连接（摆脱 22.5° 离散限制）。 */
+	public static final MultiDirectionNodeBlock MULTI_DIRECTION_NODE_BLOCK = new MultiDirectionNodeBlock();
+
+	/** 万向节点方块实体类型。 */
+	public static final BlockEntityType<MultiDirectionNodeBlockEntity> MULTI_DIRECTION_NODE_BLOCK_ENTITY =
+			BlockEntityType.Builder.create(MultiDirectionNodeBlockEntity::new, MULTI_DIRECTION_NODE_BLOCK).build(null);
+
+	/** 万向节点物品（放置用）。 */
+	public static final BlockItem MULTI_DIRECTION_NODE_ITEM =
+			new BlockItem(MULTI_DIRECTION_NODE_BLOCK, new Item.Settings());
+
 	/** S1MTR mod 图标物品 (仅用于创造物品组标签页 icon, 不在物品列表中显示)。 */
 	public static final Item S1MTR_ICON = new Item(new Item.Settings());
 
@@ -68,6 +84,10 @@ public class S1mtraddon implements ModInitializer {
 				entries.add(FAST_TRACK_BUILDER);
 				entries.add(NODE_COPIER);
 				entries.add(ANTE_COMPOSITE_BUILDER);
+				// 装了方速时由方速提供万向节点（功能更完整），不重复添加本模组的
+				if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
+					entries.add(MULTI_DIRECTION_NODE_ITEM);
+				}
 			})
 			.build();
 
@@ -82,6 +102,7 @@ public class S1mtraddon implements ModInitializer {
 		REGISTRY.registerPacket(PacketS1mtrSaveAutoConnectorConfig.class, PacketS1mtrSaveAutoConnectorConfig::new);
 		REGISTRY.registerPacket(PacketS1mtrSaveNodeCopy.class, PacketS1mtrSaveNodeCopy::new);
 		REGISTRY.registerPacket(PacketS1mtrSaveNodeCopierMode.class, PacketS1mtrSaveNodeCopierMode::new);
+		REGISTRY.registerPacket(PacketS1mtrSetNodeDirection.class, PacketS1mtrSetNodeDirection::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleport.class, PacketS1mtrTeleport::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleportToStation.class, PacketS1mtrTeleportToStation::new);
 		REGISTRY.setupPackets(new org.mtr.mapping.holder.Identifier(MOD_ID, "packet"));
@@ -99,6 +120,16 @@ public class S1mtraddon implements ModInitializer {
 				NODE_COPIER);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("ante_composite_builder"),
 				ANTE_COMPOSITE_BUILDER);
+		if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
+			net.minecraft.registry.Registry.register(Registries.BLOCK, id("multi_direction_node"),
+					MULTI_DIRECTION_NODE_BLOCK);
+			net.minecraft.registry.Registry.register(Registries.BLOCK_ENTITY_TYPE, id("multi_direction_node"),
+					MULTI_DIRECTION_NODE_BLOCK_ENTITY);
+			net.minecraft.registry.Registry.register(Registries.ITEM, id("multi_direction_node"),
+					MULTI_DIRECTION_NODE_ITEM);
+		} else {
+			LOGGER.info("[S1MTR] FangSu detected: using FangSu's multi-direction node, S1MTR's disabled.");
+		}
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("s1mtr_icon"),
 				S1MTR_ICON);
 

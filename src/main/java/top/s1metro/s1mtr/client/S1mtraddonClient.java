@@ -24,6 +24,13 @@ public class S1mtraddonClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		REGISTRY_CLIENT.setupPackets(new Identifier(S1mtraddon.MOD_ID, "packet"));
 
+		// 万向节点的旋转标记渲染（装了方速时方块不注册，此处也跳过）
+		if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
+			net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry.register(
+					S1mtraddon.MULTI_DIRECTION_NODE_BLOCK_ENTITY,
+					top.s1metro.s1mtr.client.render.MultiDirectionNodeRenderer::new);
+		}
+
 		// 自动速度连接器的预览线 + 快捷栏上方预期速度提示
 		HudSpeedPreview.register();
 

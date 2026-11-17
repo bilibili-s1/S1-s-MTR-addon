@@ -102,5 +102,10 @@
 	"gui.s1mtr.siding_speed_limit.hint": "The highest speed a train may run at on this siding. The actual speed is the lower of the rail speed limit and the siding speed limit. Leave empty or enter 0 for no limit.",
 	"item.s1mtraddon.ante_composite_builder": "ANTE Composite Builder",
 	"gui.s1mtr.config.composite_preview_style": "Block Preview Style (0=default, 1=flat icons):",
-	"gui.s1mtr.config.composite_preview_style.tooltip": "How blocks are drawn in the composite builder grid. 0 = default (S1 composite builder uses 3D blocks, ANTE composite builder uses flat item icons); 1 = force flat item icons for both."
+	"gui.s1mtr.config.composite_preview_style.tooltip": "How blocks are drawn in the composite builder grid. 0 = default (S1 composite builder uses 3D blocks, ANTE composite builder uses flat item icons); 1 = force flat item icons for both.",
+	"block.s1mtraddon.multi_direction_node": "Multi-Direction Node",
+	"gui.s1mtr.multi_direction_node.title": "Multi-Direction Node",
+	"gui.s1mtr.multi_direction_node.direction": "Direction (deg):",
+	"gui.s1mtr.multi_direction_node.rotate_bind": "Bind rotation (fix direction)",
+	"gui.s1mtr.multi_direction_node.hint": "Unbound nodes keep rotating; connect two unbound nodes with a rail connector for an arbitrary-angle track."
 }

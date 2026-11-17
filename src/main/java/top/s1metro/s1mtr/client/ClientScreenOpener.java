@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import top.s1metro.s1mtr.client.screen.AutoConnectorConfigScreen;
 import top.s1metro.s1mtr.client.screen.CompositeProfileEditorScreen;
 import top.s1metro.s1mtr.client.screen.FastTrackConfigScreen;
+import top.s1metro.s1mtr.client.screen.MultiDirectionNodeConfigScreen;
 import top.s1metro.s1mtr.client.screen.NodeCopierConfigScreen;
 import top.s1metro.s1mtr.client.screen.RailNetworkMapScreen;
 import top.s1metro.s1mtr.client.screen.StationListScreen;
@@ -48,6 +49,11 @@ public final class ClientScreenOpener {
 	public static void openNodeCopierConfig(ItemStack stack, boolean offHand) {
 		final MinecraftClient client = MinecraftClient.getInstance();
 		client.setScreen(new NodeCopierConfigScreen(stack, offHand));
+	}
+
+	/** 打开万向节点配置界面（被刷子右键的方块坐标）。 */
+	public static void openMultiDirectionNodeConfig(net.minecraft.util.math.BlockPos pos) {
+		MinecraftClient.getInstance().setScreen(new MultiDirectionNodeConfigScreen(pos));
 	}
 
 	/** 打开 ANTE 复合构建器编辑器(在被右键的轨道上放样)。 */

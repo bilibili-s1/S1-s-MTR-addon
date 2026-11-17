@@ -11,7 +11,7 @@ import top.s1metro.s1mtr.client.RailSpeedHelper;
 
 import java.lang.reflect.Field;
 
-@Mixin(PathData.class)
+@Mixin(value = PathData.class, remap = false)
 public abstract class PathDataMixin {
 
 	@Inject(
