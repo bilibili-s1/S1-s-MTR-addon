@@ -56,8 +56,8 @@ public class S1mtraddon implements ModInitializer {
 	/** 轨道节点复制粘贴工具 (右键节点复制连接+属性, 右键空地放置新节点并自动重连)。 */
 	public static final Item NODE_COPIER = new ItemNodeCopier(new Item.Settings());
 
-	/** ANTE 复合构建器 (右键轨道节点打开放样编辑器,支持分层与通用预设)。 */
-	public static final Item ANTE_COMPOSITE_BUILDER = new ItemAnteCompositeBuilder(new Item.Settings());
+	/** ANTE 复合构建器 (右键轨道节点打开放样编辑器,支持分层与通用预设)。装方速时禁用(方速有自带混合构建器)。 */
+	public static Item ANTE_COMPOSITE_BUILDER;
 
 	// ===== 万向节点（与方速 MTR4 运行时互斥）=====
 	// 注意：不能在静态字段里无条件 new Block —— Minecraft 的 Block 构造会创建 intrusive holder，
@@ -85,7 +85,9 @@ public class S1mtraddon implements ModInitializer {
 				entries.add(RAIL_CONNECTOR_AUTO);
 				entries.add(FAST_TRACK_BUILDER);
 				entries.add(NODE_COPIER);
-				entries.add(ANTE_COMPOSITE_BUILDER);
+				if (ANTE_COMPOSITE_BUILDER != null) {
+					entries.add(ANTE_COMPOSITE_BUILDER);
+				}
 				// 装了方速时由方速提供万向节点（功能更完整），不重复添加本模组的
 				if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
 					entries.add(MULTI_DIRECTION_NODE_ITEM);
@@ -120,8 +122,11 @@ public class S1mtraddon implements ModInitializer {
 				RAIL_CONNECTOR_AUTO);
 		net.minecraft.registry.Registry.register(Registries.ITEM, id("node_copier"),
 				NODE_COPIER);
-		net.minecraft.registry.Registry.register(Registries.ITEM, id("ante_composite_builder"),
-				ANTE_COMPOSITE_BUILDER);
+		if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
+			ANTE_COMPOSITE_BUILDER = new ItemAnteCompositeBuilder(new Item.Settings());
+			net.minecraft.registry.Registry.register(Registries.ITEM, id("ante_composite_builder"),
+					ANTE_COMPOSITE_BUILDER);
+		}
 		if (!top.s1metro.s1mtr.mixin.S1mtrMixinPlugin.isFangsuLoaded()) {
 			// 仅在无方速时才创建并注册（Block 必须在Registry冻结前创建并注册）
 			MULTI_DIRECTION_NODE_BLOCK = new MultiDirectionNodeBlock();

@@ -83,19 +83,27 @@ public class RailAdvancedSettingsScreen extends MTRScreenBase {
 		addChild(new ClickableWidget(textFieldSpeed));
 
 		if (rail != null) {
-			long currentSpeed = RailSpeedHelper.getSpeedLimit2(rail);
-			if (currentSpeed <= 0) {
-				currentSpeed = RailSpeedHelper.getSpeedLimit1(rail);
-			}
-			if (currentSpeed > 0) {
-				textFieldSpeed.setText2(String.valueOf(currentSpeed));
-				pendingSpeed = currentSpeed;
-			}
-
 			final boolean isSiding = ((RailSchemaAccessor) (Object) rail).s1mtr$isSiding();
-			final boolean canTurnBack = ((RailSchemaAccessor) (Object) rail).s1mtr$canTurnBack();
-			if (isSiding || canTurnBack) {
-				textFieldSpeed.setEditable(false);
+			if (isSiding) {
+				// 侧线：速度框直接编辑「侧线限速」，可改（原版仅禁用于侧线自身速度，这里写的是 styles 里的侧线限速）
+				long sidingLimit = top.s1metro.s1mtr.service.SidingSpeedLimit.get(rail);
+				if (sidingLimit > 0) {
+					textFieldSpeed.setText2(String.valueOf(sidingLimit));
+					pendingSpeed = sidingLimit;
+				}
+			} else {
+				long currentSpeed = RailSpeedHelper.getSpeedLimit2(rail);
+				if (currentSpeed <= 0) {
+					currentSpeed = RailSpeedHelper.getSpeedLimit1(rail);
+				}
+				if (currentSpeed > 0) {
+					textFieldSpeed.setText2(String.valueOf(currentSpeed));
+					pendingSpeed = currentSpeed;
+				}
+				final boolean canTurnBack = ((RailSchemaAccessor) (Object) rail).s1mtr$canTurnBack();
+				if (canTurnBack) {
+					textFieldSpeed.setEditable(false);
+				}
 			}
 		}
 
@@ -233,6 +241,17 @@ public class RailAdvancedSettingsScreen extends MTRScreenBase {
 	private void saveAndClose() {
 		final Rail rail = getRail();
 		if (rail != null) {
+			final boolean isSiding = ((RailSchemaAccessor) (Object) rail).s1mtr$isSiding();
+			if (isSiding) {
+				// 侧线：把输入值写成侧线限速（不改轨道自身速度）
+				final Rail updatedRail = top.s1metro.s1mtr.service.SidingSpeedLimit.withLimit(rail, pendingSpeed);
+				if (updatedRail != null) {
+					InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(
+							new UpdateDataRequest(MinecraftClientData.getInstance()).addRail(updatedRail)));
+				}
+				MinecraftClient.getInstance().setScreen(null);
+				return;
+			}
 			final Rail updatedRail = RailSpeedHelper.copyWithCustomParams(
 					rail, getShape(), getRadius(),
 					RailSpeedHelper.getStyles(rail),

@@ -24,10 +24,25 @@ public final class CompositeLayerSchedule {
 	public static final class Entry {
 		public CompositeProfile profile;
 		public int length;
+		/** 起点：从轨道起点偏移多少格开始放样（方速 HybridSliceTask.start）。 */
+		public double start;
+		/** 间隔：每组之间的空隙格数，0 = 无缝连续（方速 HybridSliceTask.interval）。 */
+		public double interval;
+		/** 厚度：每组连续切片的重复次数（方速 HybridSliceTask.thickness）。 */
+		public int thickness;
+		/** 厚度延伸方向：true = 沿轨道 +t（向里），false = -t（向外）。 */
+		public boolean thickDir;
+		/** 替换模式：true = 先清除剖面覆盖范围内原有方块再放置（方速 replace 语义）。 */
+		public boolean replacement;
 
 		public Entry(CompositeProfile profile, int length) {
 			this.profile = profile;
 			this.length = length;
+			this.start = 0;
+			this.interval = 0;
+			this.thickness = 1;
+			this.thickDir = true;
+			this.replacement = false;
 		}
 	}
 
@@ -145,7 +160,15 @@ public final class CompositeLayerSchedule {
 				sb.append(';');
 			}
 			final Entry e = entries.get(i);
-			sb.append(e.length).append(':').append(e.profile.serialize());
+			// 新格式：length~start~interval~thickness~thickDir~replacement:profileData
+			// profile.serialize() 不含 ~ 和 :（blockstate 字符串也不含这两个字符），安全分隔
+			sb.append(e.length).append('~')
+					.append(e.start).append('~')
+					.append(e.interval).append('~')
+					.append(e.thickness).append('~')
+					.append(e.thickDir ? '1' : '0').append('~')
+					.append(e.replacement ? '1' : '0')
+					.append(':').append(e.profile.serialize());
 		}
 		return sb.toString();
 	}
@@ -173,9 +196,35 @@ public final class CompositeLayerSchedule {
 					continue;
 				}
 				try {
-					final int length = Integer.parseInt(part.substring(0, colon));
+					final String header = part.substring(0, colon);
 					final String profileData = part.substring(colon + 1);
-					schedule.entries.add(new Entry(CompositeProfile.deserialize(profileData), length));
+					final Entry entry = new Entry(CompositeProfile.deserialize(profileData), 1);
+					if (header.indexOf('~') >= 0) {
+						// 新格式：length~start~interval~thickness~thickDir~replacement
+						final String[] hp = header.split("~", -1);
+						if (hp.length > 0) {
+							entry.length = Integer.parseInt(hp[0]);
+						}
+						if (hp.length > 1 && !hp[1].isEmpty()) {
+							entry.start = Double.parseDouble(hp[1]);
+						}
+						if (hp.length > 2 && !hp[2].isEmpty()) {
+							entry.interval = Double.parseDouble(hp[2]);
+						}
+						if (hp.length > 3 && !hp[3].isEmpty()) {
+							entry.thickness = Math.max(1, Integer.parseInt(hp[3]));
+						}
+						if (hp.length > 4) {
+							entry.thickDir = !"0".equals(hp[4]);
+						}
+						if (hp.length > 5) {
+							entry.replacement = "1".equals(hp[5]);
+						}
+					} else {
+						// 旧格式：<length>，其余字段保持默认（与旧预设互通）
+						entry.length = Integer.parseInt(header);
+					}
+					schedule.entries.add(entry);
 				} catch (NumberFormatException ignored) {
 				}
 			}

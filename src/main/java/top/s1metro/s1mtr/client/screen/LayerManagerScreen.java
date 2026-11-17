@@ -183,6 +183,19 @@ public class LayerManagerScreen extends MTRScreenBase {
 				}
 			});
 			addChild(new ClickableWidget(copyBtn));
+
+			// 层参数：起点/间隔/厚度/方向/替换模式（方速混合构建器编辑方式）
+			final ButtonWidgetExtension paramsBtn = new ButtonWidgetExtension(
+					editCopyBaseX + 2 * (BTN_W + BTN_GAP), y, BTN_W, 20,
+					TextHelper.literal("\u2699"), button -> {
+				commitLengths();
+				final CompositeLayerSchedule saved = schedule.copy();
+				LayerParamsScreen.open(saved, index, result -> {
+					s1mtr$schedule = result.copy();
+					MinecraftClient.getInstance().setScreen(new LayerManagerScreen());
+				});
+			});
+			addChild(new ClickableWidget(paramsBtn));
 		}
 	}
 

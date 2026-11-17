@@ -44,6 +44,8 @@ public abstract class SavedRailScreenBaseMixin {
 	private MutableText s1mtr$doorCloseDelayLabel;
 	private TextFieldWidgetExtension s1mtr$textFieldSidingSpeedLimit;
 	private MutableText s1mtr$sidingSpeedLimitLabel;
+	/** 侧线限速框上一次是否聚焦，用于「焦点离开时保存一次」避免边输入边重建轨道。 */
+	private boolean s1mtr$sidingFieldWasFocused;
 
 	@Inject(method = "init2", at = @At("TAIL"))
 	private void s1mtr$initDelayFields(CallbackInfo ci) {
@@ -112,8 +114,8 @@ public abstract class SavedRailScreenBaseMixin {
 				"[^\\d]",
 				"");
 
-		// 站台已经有开关门延迟输入框,侧线限速另起一行避免重叠
-		int y = RailSpeedHelper.isPlatform(rail) ? screenHeight - 52 : screenHeight - 100;
+		// 固定放在屏幕最下方，避免与 MTR 本体的速度/停站设置控件重叠
+		int y = screenHeight - 24;
 		IDrawing.setPositionAndWidth(s1mtr$textFieldSidingSpeedLimit, x, y, fieldWidth);
 
 		self.addChild(new ClickableWidget(s1mtr$textFieldSidingSpeedLimit));
@@ -122,8 +124,11 @@ public abstract class SavedRailScreenBaseMixin {
 		if (limit > 0) {
 			s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(limit));
 		}
+		s1mtr$sidingFieldWasFocused = false;
 
-		s1mtr$textFieldSidingSpeedLimit.setChangedListener2(text -> s1mtr$saveSidingSpeedLimit());
+		// 不在输入过程中保存：边输入边重建轨道会导致文本被服务端回同步覆盖、无法输入
+		s1mtr$textFieldSidingSpeedLimit.setChangedListener2(text -> {
+		});
 	}
 
 	@Inject(method = "tick2", at = @At("TAIL"))
@@ -136,6 +141,12 @@ public abstract class SavedRailScreenBaseMixin {
 		}
 		if (s1mtr$textFieldSidingSpeedLimit != null) {
 			s1mtr$textFieldSidingSpeedLimit.tick2();
+			// 焦点离开时保存一次（而不是每次按键都发包重建轨道）
+			final boolean focused = s1mtr$textFieldSidingSpeedLimit.isFocused2();
+			if (s1mtr$sidingFieldWasFocused && !focused) {
+				s1mtr$saveSidingSpeedLimit();
+			}
+			s1mtr$sidingFieldWasFocused = focused;
 		}
 	}
 
