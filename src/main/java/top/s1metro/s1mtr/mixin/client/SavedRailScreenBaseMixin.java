@@ -5,7 +5,6 @@ import org.mtr.core.data.Position;
 import org.mtr.core.data.Rail;
 import org.mtr.core.data.SavedRailBase;
 import org.mtr.core.operation.UpdateDataRequest;
-import org.mtr.libraries.it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.mtr.mapping.holder.ClickableWidget;
 import org.mtr.mapping.holder.MutableText;
 import org.mtr.mapping.mapper.GraphicsHolder;
@@ -23,7 +22,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import top.s1metro.s1mtr.client.RailSpeedHelper;
-import top.s1metro.s1mtr.service.SidingSpeedLimit;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -50,9 +48,6 @@ public abstract class SavedRailScreenBaseMixin {
 	@Inject(method = "init2", at = @At("TAIL"))
 	private void s1mtr$initDelayFields(CallbackInfo ci) {
 		Rail rail = s1mtr$getRailFromSavedRailBase();
-		if (rail == null) {
-			return;
-		}
 
 		SavedRailScreenBase<?, ?> self = (SavedRailScreenBase<?, ?>) (Object) this;
 		int screenWidth = self.width;
@@ -61,12 +56,15 @@ public abstract class SavedRailScreenBaseMixin {
 		int x = 20 + textWidth + 2;
 		int fieldWidth = screenWidth - textWidth - 40 - 4;
 
-		if (RailSpeedHelper.isPlatform(rail)) {
+		// 开关门延迟依赖 rail（仅站台用）；远离车厂找不到 rail 时跳过即可，不能影响侧线限速框
+		if (rail != null && RailSpeedHelper.isPlatform(rail)) {
 			s1mtr$initDoorDelayFields(self, rail, x, screenHeight, fieldWidth);
 		}
 
-		if (s1mtr$isSidingRail(rail)) {
-			s1mtr$initSidingSpeedLimitField(self, rail, x, screenHeight, fieldWidth);
+		// 侧线限速只依赖 savedRailBase(Siding 对象)与按 ID 的本地存储，
+		// 不依赖 rail 查找——这样人在远离车厂的地方通过仪表板打开侧线也能编辑
+		if (savedRailBase instanceof org.mtr.core.data.Siding) {
+			s1mtr$initSidingSpeedLimitField(self, x, screenHeight, fieldWidth);
 		}
 	}
 
@@ -105,7 +103,7 @@ public abstract class SavedRailScreenBaseMixin {
 		s1mtr$textFieldDoorCloseDelay.setChangedListener2(text -> s1mtr$saveDelayValues());
 	}
 
-	private void s1mtr$initSidingSpeedLimitField(SavedRailScreenBase<?, ?> self, Rail rail, int x, int screenHeight, int fieldWidth) {
+	private void s1mtr$initSidingSpeedLimitField(SavedRailScreenBase<?, ?> self, int x, int screenHeight, int fieldWidth) {
 		s1mtr$sidingSpeedLimitLabel = TextHelper.translatable("gui.s1mtr.siding_speed_limit");
 
 		s1mtr$textFieldSidingSpeedLimit = new TextFieldWidgetExtension(
@@ -286,15 +284,6 @@ public abstract class SavedRailScreenBaseMixin {
 			request.addRail(newRail);
 			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
 		} catch (Exception ignored) {
-		}
-	}
-
-	/** 轨道是否为侧线轨道。 */
-	private boolean s1mtr$isSidingRail(Rail rail) {
-		try {
-			return ((top.s1metro.s1mtr.mixin.RailSchemaAccessor) (Object) rail).s1mtr$isSiding();
-		} catch (Exception ignored) {
-			return false;
 		}
 	}
 
