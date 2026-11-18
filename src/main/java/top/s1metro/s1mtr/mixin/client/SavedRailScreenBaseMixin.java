@@ -275,15 +275,9 @@ public abstract class SavedRailScreenBaseMixin {
 		}
 		// 独立 UI 存储（可编辑，与 MTR 手动限速滑块解耦）
 		top.s1metro.s1mtr.service.SidingSpeedStore.set(siding.getId(), kmh);
-		// 执行层同步（列车真正遵守的字段）
-		final double speedKmh = kmh > 0 ? kmh : 1000;
-		siding.setMaxManualSpeed(org.mtr.core.tool.Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
-		try {
-			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
-			request.addSiding(siding);
-			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
-		} catch (Exception ignored) {
-		}
+		// 同步到服务端权威存储（不碰 maxManualSpeed，避免跟着手动驾驶限速变）
+		top.s1metro.s1mtr.client.S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
+				new top.s1metro.s1mtr.network.PacketS1mtrSetSidingAutoSpeed(siding.getId(), kmh));
 	}
 
 	private void s1mtr$sendRailUpdate(Rail newRail) {

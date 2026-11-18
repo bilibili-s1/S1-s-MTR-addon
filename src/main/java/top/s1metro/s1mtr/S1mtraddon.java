@@ -29,6 +29,7 @@ import top.s1metro.s1mtr.network.PacketS1mtrSaveFastTrackConfig;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopy;
 import top.s1metro.s1mtr.network.PacketS1mtrSaveNodeCopierMode;
 import top.s1metro.s1mtr.network.PacketS1mtrSetNodeDirection;
+import top.s1metro.s1mtr.network.PacketS1mtrSetSidingAutoSpeed;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleport;
 import top.s1metro.s1mtr.network.PacketS1mtrTeleportToStation;
 import top.s1metro.s1mtr.service.S1mtrConfig;
@@ -107,6 +108,7 @@ public class S1mtraddon implements ModInitializer {
 		REGISTRY.registerPacket(PacketS1mtrSaveNodeCopy.class, PacketS1mtrSaveNodeCopy::new);
 		REGISTRY.registerPacket(PacketS1mtrSaveNodeCopierMode.class, PacketS1mtrSaveNodeCopierMode::new);
 		REGISTRY.registerPacket(PacketS1mtrSetNodeDirection.class, PacketS1mtrSetNodeDirection::new);
+		REGISTRY.registerPacket(PacketS1mtrSetSidingAutoSpeed.class, PacketS1mtrSetSidingAutoSpeed::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleport.class, PacketS1mtrTeleport::new);
 		REGISTRY.registerPacket(PacketS1mtrTeleportToStation.class, PacketS1mtrTeleportToStation::new);
 		REGISTRY.setupPackets(new org.mtr.mapping.holder.Identifier(MOD_ID, "packet"));

@@ -85,15 +85,9 @@ public final class TrainSpeedLimit {
 		}
 		// 独立 UI 存储（可编辑，不与手动限速同步）
 		SidingSpeedStore.set(siding.getId(), kmh);
-		// 执行层同步
-		final double speedKmh = kmh > 0 ? Math.min(kmh, NO_LIMIT_KMH) : NO_LIMIT_KMH;
-		siding.setMaxManualSpeed(Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
-		try {
-			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
-			request.addSiding(siding);
-			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
-		} catch (Exception ignored) {
-		}
+		// 同步到服务端权威存储（不碰 maxManualSpeed）
+		top.s1metro.s1mtr.client.S1mtraddonClient.REGISTRY_CLIENT.sendPacketToServer(
+				new top.s1metro.s1mtr.network.PacketS1mtrSetSidingAutoSpeed(siding.getId(), kmh));
 	}
 
 	private static Field findField(Class<?> startClass, String fieldName) {
