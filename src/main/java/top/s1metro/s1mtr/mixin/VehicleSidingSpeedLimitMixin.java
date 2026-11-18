@@ -5,7 +5,6 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.mtr.core.data.PathData;
 import org.mtr.core.data.Siding;
 import org.mtr.core.data.Vehicle;
-import org.mtr.core.data.VehicleExtraData;
 import org.mtr.core.tool.Utilities;
 import org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.mtr.libraries.it.unimi.dsi.fastutil.objects.ObjectList;
@@ -36,9 +35,6 @@ public abstract class VehicleSidingSpeedLimitMixin {
 
 	@Shadow
 	private double deviationSpeedAdjustment;
-
-	@Shadow(remap = false)
-	public VehicleExtraData vehicleExtraData;
 
 	private static long s1mtr$simDeltaMs = 0L;
 
@@ -78,13 +74,8 @@ public abstract class VehicleSidingSpeedLimitMixin {
 		}
 		double limited = original;
 
-		// 来源1：列车最高限速（Siding.maxManualSpeed，MTR 原生只在手动读，这里让自动也生效）
-		final double maxManual = vehicleExtraData.getMaxManualSpeed();
-		if (Double.isFinite(maxManual) && maxManual > 0 && maxManual < limited) {
-			limited = maxManual;
-		}
-
-		// 来源2：styles 侧线限速（可选，兼容旧数据）
+		// 唯一限速来源：rail styles 里的 s1mtr:sidingSpeedLimit（独立于 Siding.maxManualSpeed）。
+		// maxManualSpeed 是 MTR 手动驾驶限速，用户明确要求不读取它。
 		if (rail != null) {
 			final long styleLimit = SidingSpeedLimit.get(rail);
 			if (styleLimit > 0) {

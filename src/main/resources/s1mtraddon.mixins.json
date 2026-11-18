@@ -15,8 +15,7 @@
 		"ItemRailModifierAccessorMixin",
 		"ItemNodeModifierBaseMixin",
 		"BlockNodeMixin",
-		"AnglePathDataMixin",
-		"SidingTrainSpeedMixin"
+		"AnglePathDataMixin"
 	],
 	"client": [
 		"client.RailModifierScreenMixin",
