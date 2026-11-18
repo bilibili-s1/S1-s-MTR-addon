@@ -68,18 +68,13 @@ public final class TrainSpeedLimit {
 		return false;
 	}
 
-	/** 读取侧线列车限速（km/h）；无限制返回 0。 */
+	/** 读取侧线列车限速（km/h），来自本模组独立存储；无限制返回 0。 */
 	public static double getKmh(Rail rail) {
 		final Siding siding = findSiding(rail);
 		if (siding == null) {
 			return 0;
 		}
-		final double mps = siding.getMaxManualSpeed();
-		if (mps <= 0) {
-			return 0;
-		}
-		final double kmh = mps * 3600;
-		return kmh >= NO_LIMIT_KMH ? 0 : kmh;
+		return SidingSpeedStore.get(siding.getId());
 	}
 
 	/** 设置侧线列车限速并同步到服务端。 */
@@ -88,6 +83,9 @@ public final class TrainSpeedLimit {
 		if (siding == null) {
 			return;
 		}
+		// 独立 UI 存储（可编辑，不与手动限速同步）
+		SidingSpeedStore.set(siding.getId(), kmh);
+		// 执行层同步
 		final double speedKmh = kmh > 0 ? Math.min(kmh, NO_LIMIT_KMH) : NO_LIMIT_KMH;
 		siding.setMaxManualSpeed(Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
 		try {

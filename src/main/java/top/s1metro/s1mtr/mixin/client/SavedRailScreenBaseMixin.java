@@ -120,8 +120,11 @@ public abstract class SavedRailScreenBaseMixin {
 
 		self.addChild(new ClickableWidget(s1mtr$textFieldSidingSpeedLimit));
 
-		// 初始值为独立的 styles 侧线限速（km/h），0 = 不限速
-		s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(SidingSpeedLimit.get(rail)));
+		// 初始值读本模组独立存储（而不是 MTR 的 maxManualSpeed），避免与手动限速滑块同步/只读
+		if (savedRailBase instanceof org.mtr.core.data.Siding siding) {
+			final double kmh = top.s1metro.s1mtr.service.SidingSpeedStore.get(siding.getId());
+			s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf((long) kmh));
+		}
 		s1mtr$sidingFieldWasFocused = false;
 
 		// 不在输入过程中保存：边输入边重建轨道会导致文本被服务端回同步覆盖、无法输入
@@ -249,14 +252,16 @@ public abstract class SavedRailScreenBaseMixin {
 	}
 
 	/**
-	 * 侧线「列车最高限速」：写入 rail styles（{@link SidingSpeedLimit}），这是独立于 MTR 手动驾驶限速的存储。
-	 * <p>
-	 * 运行时由 {@code VehicleSidingSpeedLimitMixin} 取 min(轨道限速, 本限速) 生效。
+	 * 侧线「列车最高限速」：
+	 * <ol>
+	 *   <li>写入本模组的独立存储 {@link top.s1metro.s1mtr.service.SidingSpeedStore}（UI 显示源，不与 MTR 手动限速同步）；</li>
+	 *   <li>同步到 {@code Siding.maxManualSpeed} 作为执行层——实测这是列车限速真正生效的字段，
+	 *       由 {@code VehicleSidingSpeedLimitMixin} 让自动驾驶也遵守，取 min(轨道限速, 本限速)。</li>
+	 * </ol>
 	 * 用 dashboard 数据实例发包，保证车厂范围外也能同步。
 	 */
 	private void s1mtr$saveSidingSpeedLimit() {
-		final Rail rail = s1mtr$getRailFromSavedRailBase();
-		if (rail == null) {
+		if (!(savedRailBase instanceof org.mtr.core.data.Siding siding)) {
 			return;
 		}
 		double kmh;
@@ -265,17 +270,19 @@ public abstract class SavedRailScreenBaseMixin {
 		} catch (NumberFormatException ignored) {
 			return;
 		}
-		if (kmh < 0 || kmh > SidingSpeedLimit.MAX_LIMIT) {
+		if (kmh < 0 || kmh > 1000) {
 			return;
 		}
-		final Rail updated = SidingSpeedLimit.withLimit(rail, Math.round(kmh));
-		if (updated != null) {
-			try {
-				final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
-				request.addRail(updated);
-				InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
-			} catch (Exception ignored) {
-			}
+		// 独立 UI 存储（可编辑，与 MTR 手动限速滑块解耦）
+		top.s1metro.s1mtr.service.SidingSpeedStore.set(siding.getId(), kmh);
+		// 执行层同步（列车真正遵守的字段）
+		final double speedKmh = kmh > 0 ? kmh : 1000;
+		siding.setMaxManualSpeed(org.mtr.core.tool.Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
+		try {
+			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
+			request.addSiding(siding);
+			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
+		} catch (Exception ignored) {
 		}
 	}
 
