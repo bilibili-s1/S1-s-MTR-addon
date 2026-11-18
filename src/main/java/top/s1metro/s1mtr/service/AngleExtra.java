@@ -1,4 +1,4 @@
-package top.s1metro.s1mtr.mixin;
+package top.s1metro.s1mtr.service;
 
 import org.mtr.core.tool.Angle;
 
@@ -8,10 +8,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * 任意精度角度入口。
  * <p>
  * MTR 的 {@link Angle} 是 16 个常量 / 22.5° 的枚举，万向节点需要任意角度。
- * {@link AngleMixin} 通过 {@code @Invoker("<init>")} 创建 {@code ordinal = -1} 的「幻影实例」绕过该限制，
+ * {@code AngleMixin} 通过 {@code @Invoker("<init>")} 创建 {@code ordinal = -1} 的「幻影实例」绕过该限制，
  * 本接口提供静态入口与实例缓存（同一 float32 角度复用同一实例，保证 MTR core 里 {@code ==} 引用比较成立）。
- *
- * <p>移植自 FangSu For MTR 4（MIT），按 s1mtr 的 Yarn 映射与包名重写。
+ * <p>
+ * 注意：本接口必须放在非 mixin 包。Mixin 规定 mixin 包下的类不能被普通代码直接引用，
+ * 否则会抛 {@code IllegalClassLoadError}，禁用方速后加载万向节点类时就会崩。
  */
 public interface AngleExtra {
 

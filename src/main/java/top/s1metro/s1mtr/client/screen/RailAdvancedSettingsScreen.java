@@ -85,11 +85,11 @@ public class RailAdvancedSettingsScreen extends MTRScreenBase {
 		if (rail != null) {
 			final boolean isSiding = ((RailSchemaAccessor) (Object) rail).s1mtr$isSiding();
 			if (isSiding) {
-				// 侧线：速度框直接编辑「列车限速」（Siding.maxManualSpeed），可改
-				double sidingLimit = top.s1metro.s1mtr.service.TrainSpeedLimit.getKmh(rail);
+				// 侧线：速度框直接编辑「自动驾驶限速」（rail styles），可改
+				long sidingLimit = top.s1metro.s1mtr.service.SidingSpeedLimit.get(rail);
 				if (sidingLimit > 0) {
-					textFieldSpeed.setText2(String.valueOf((long) sidingLimit));
-					pendingSpeed = (long) sidingLimit;
+					textFieldSpeed.setText2(String.valueOf(sidingLimit));
+					pendingSpeed = sidingLimit;
 				}
 			} else {
 				long currentSpeed = RailSpeedHelper.getSpeedLimit2(rail);
@@ -243,8 +243,12 @@ public class RailAdvancedSettingsScreen extends MTRScreenBase {
 		if (rail != null) {
 			final boolean isSiding = ((RailSchemaAccessor) (Object) rail).s1mtr$isSiding();
 			if (isSiding) {
-				// 侧线：把输入值写成列车限速（Siding.maxManualSpeed），不改轨道自身速度
-				top.s1metro.s1mtr.service.TrainSpeedLimit.setKmh(rail, pendingSpeed);
+				// 侧线：把输入值写成自动驾驶限速（rail styles），不改轨道自身速度
+				final Rail updatedRail = top.s1metro.s1mtr.service.SidingSpeedLimit.withLimit(rail, pendingSpeed);
+				if (updatedRail != null) {
+					InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(
+							new UpdateDataRequest(MinecraftClientData.getInstance()).addRail(updatedRail)));
+				}
 				MinecraftClient.getInstance().setScreen(null);
 				return;
 			}

@@ -120,13 +120,9 @@ public abstract class SavedRailScreenBaseMixin {
 
 		self.addChild(new ClickableWidget(s1mtr$textFieldSidingSpeedLimit));
 
-		// 初始值为侧线的列车限速（km/h），0/无限显示为 0
-		if (savedRailBase instanceof org.mtr.core.data.Siding siding) {
-			final double mps = siding.getMaxManualSpeed();
-			final long kmh = mps > 0 ? Math.round(mps * 3600.0) : 0;
-			s1mtr$textFieldSidingSpeedLimit.setText2(
-					kmh >= 1000 ? "0" : String.valueOf(kmh));
-		}
+		// 初始值为侧线自动驾驶限速（km/h），0 = 不限速
+		final long limit = SidingSpeedLimit.get(rail);
+		s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(limit));
 		s1mtr$sidingFieldWasFocused = false;
 
 		// 不在输入过程中保存：边输入边重建轨道会导致文本被服务端回同步覆盖、无法输入
@@ -247,13 +243,14 @@ public abstract class SavedRailScreenBaseMixin {
 	}
 
 	/**
-	 * 侧线「列车限速」：写入 {@link org.mtr.core.data.Siding#setMaxManualSpeed(double)}。
+	 * 侧线「自动驾驶限速」：写入 rail styles（{@link SidingSpeedLimit}）。
 	 * <p>
-	 * 这是 magic-mtr 的方案：MTR 自身在运行期与时刻表生成期都会取 min(轨道限速, 该列车限速)，
-	 * 所以只需设置这个值即可实现「取列车限速与轨道限速的最小值」。写 rail styles 那套无效。
+	 * 不写 {@code Siding.maxManualSpeed}——那是 MTR 的手动驾驶限速，自动驾驶模式不读它。
+	 * 运行时由 {@code VehicleSidingSpeedLimitMixin} 取 min(轨道限速, 本限速) 生效。
 	 */
 	private void s1mtr$saveSidingSpeedLimit() {
-		if (!(savedRailBase instanceof org.mtr.core.data.Siding siding)) {
+		final Rail rail = s1mtr$getRailFromSavedRailBase();
+		if (rail == null) {
 			return;
 		}
 		double kmh;
@@ -262,17 +259,12 @@ public abstract class SavedRailScreenBaseMixin {
 		} catch (NumberFormatException ignored) {
 			return;
 		}
-		if (kmh < 0 || kmh > 1000) {
+		if (kmh < 0 || kmh > SidingSpeedLimit.MAX_LIMIT) {
 			return;
 		}
-		// 0 = 不限速（MTR 内部用一个大正数表示）
-		final double speedKmh = kmh > 0 ? kmh : 1000;
-		siding.setMaxManualSpeed(org.mtr.core.tool.Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
-		try {
-			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getInstance());
-			request.addSiding(siding);
-			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
-		} catch (Exception ignored) {
+		final Rail updated = SidingSpeedLimit.withLimit(rail, Math.round(kmh));
+		if (updated != null) {
+			s1mtr$sendRailUpdate(updated);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package top.s1metro.s1mtr.mixin;
 
+import top.s1metro.s1mtr.service.AngleExtra;
 import org.mtr.core.tool.Angle;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;

@@ -72,26 +72,6 @@ public final class CompositeBuilder {
 		if (length <= SAMPLE_STEP) {
 			return;
 		}
-		// 替换模式：先清除剖面覆盖范围内的原有方块（方速 replace 语义）
-		boolean hasReplacement = false;
-		for (int i = 0; i < schedule.size(); i++) {
-			if (schedule.get(i).replacement) {
-				hasReplacement = true;
-				break;
-			}
-		}
-		if (hasReplacement) {
-			final int clearBatchId = PlacementQueue.beginBatch("清除");
-			// 传 null world 跳过 canPlace 过滤（否则已有方块的位置会被过滤掉，无法清除）
-			collect(null, rail, schedule, (pos, state) -> {
-				if (state != null && !(world.getBlockState(pos).getBlock() instanceof BlockNode)
-						&& world.getBlockEntity(pos) == null) {
-					PlacementQueue.enqueue(clearBatchId, world, pos, net.minecraft.block.Blocks.AIR.getDefaultState());
-				}
-			});
-			PlacementQueue.endBatch(clearBatchId);
-		}
-
 		// 开启一个进度批次,使分帧放置过程能向玩家显示进度条
 		final int batchId = PlacementQueue.beginBatch("放样");
 
@@ -219,12 +199,7 @@ public final class CompositeBuilder {
 				if (layerIndex < 0 || layerIndex >= schedule.size()) {
 					continue;
 				}
-				final CompositeLayerSchedule.Entry entry = schedule.get(layerIndex);
-				// 方速编辑方式：起点偏移 / 间隔循环 / 厚度组 / 延伸方向
-				if (!sBlockInProfile(entry, sBlock, length)) {
-					continue;
-				}
-				final CompositeProfile profile = entry.profile;
+				final CompositeProfile profile = schedule.get(layerIndex).profile;
 
 				for (int y = minY; y <= maxY; y++) {
 					// 以轨道所在方块(floor(center.y()))为基准,gy=0 即轨道所在方块,gy=+1 为其上一格。
@@ -249,30 +224,6 @@ public final class CompositeBuilder {
 				}
 			}
 		}
-	}
-
-	/**
-	 * 方速式「起点 / 厚度 / 间隔」判定：sBlock 是否落在当前剖面应放置的切片内。
-	 * <p>
-	 * start 之前不放置；之后按「一组 thickness 格 + interval 空格」循环。
-	 * thickDir=false 时以终点为基准反向计算（向 -t 延伸）。
-	 */
-	private static boolean sBlockInProfile(CompositeLayerSchedule.Entry entry, double sBlock, double length) {
-		final double start = entry.start;
-		final int thickness = Math.max(1, entry.thickness);
-		final double interval = Math.max(0, entry.interval);
-		final double cycle = thickness + interval;
-		if (cycle <= 0) {
-			return true;
-		}
-		// thickDir=false：把 sBlock 沿轨道长度镜像，使厚度组向 -t（轨道起点方向）延伸
-		final double effective = entry.thickDir ? sBlock : (length - sBlock);
-		if (effective < start - 0.5) {
-			return false;
-		}
-		final double rel = effective - start;
-		final double mod = ((rel % cycle) + cycle) % cycle;
-		return mod < thickness - 0.5;
 	}
 
 	/**

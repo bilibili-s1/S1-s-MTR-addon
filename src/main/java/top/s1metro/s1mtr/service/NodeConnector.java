@@ -11,7 +11,6 @@ import org.mtr.mod.block.BlockNode;
 import org.mtr.mod.data.RailType;
 import org.mtr.mod.packet.PacketUpdateData;
 import top.s1metro.s1mtr.block.MultiDirectionNodeBlockEntity;
-import top.s1metro.s1mtr.mixin.AngleExtra;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
