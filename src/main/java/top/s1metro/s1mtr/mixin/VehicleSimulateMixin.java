@@ -1,6 +1,5 @@
 package top.s1metro.s1mtr.mixin;
 
-import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.mtr.core.data.PathData;
@@ -109,7 +108,9 @@ public abstract class VehicleSimulateMixin {
 		if (elapsed >= doorCloseDelay) {
 			DOOR_DELAY_ELAPSED_MS.remove(vehicleId);
 			DOOR_HAS_BEEN_CLOSING.remove(vehicleId);
-			originalOp.call(instance, departureIndex, sidingDepartureTime);
+			// 把累计的关门延迟加进 sidingDepartureTime 参数，使 MTR 最终写入的发车基准
+			// 等于「真实发车时刻」，时刻表/倒数器不会认为列车提前。
+			originalOp.call(instance, departureIndex, sidingDepartureTime + elapsed);
 		}
 		// 否则继续等待，不调用 startUp
 	}
@@ -123,22 +124,31 @@ public abstract class VehicleSimulateMixin {
 	}
 
 	/**
-	 * 把模组人为引入的延迟(发车延迟、侧线限速)从 MTR 的晚点判定中剔除。
+	 * 把模组人为引入的延迟(发车延迟、侧线限速)从 MTR 的「追点判定」中剔除。
 	 * <p>
-	 * MTR 的晚点偏差 = 实际用时 - 计划沿途用时,
-	 * {@code getTimeAlongRoute} 返回的就是"计划沿途用时 + 当前停站已用时间"。
-	 * 这里额外加上模组引入的人为延迟,等价于"这段时间从未被拖延",
-	 * 于是列车不会因为运营需要的延迟被判为晚点,也不会触发追点加速。
+	 * 关键点：<b>绝不能改 {@code getTimeAlongRoute}</b>。它除了给 {@code updateDeviation}
+	 * 算晚点用，还在 {@code simulate} 里被写入 {@code departureIndex -> timeAlongRoute} 映射，
+	 * 那是时刻表/JCM 发车倒数器的数据源。之前给它加 delay 会让倒数器以为列车「提前」到达，
+	 * 于是提前开始倒数、倒数到 0 又与真实停站脱节。
 	 * <p>
-	 * 该方法同时被 MTR 用于:
-	 * <ul>
-	 *   <li>{@code updateDeviation} 计算晚点偏差;</li>
-	 *   <li>{@code simulate} 上报给时刻表(到站信息),保证看板显示的晚点与实际一致。</li>
-	 * </ul>
+	 * 正确做法：只在 {@code updateDeviation} 算出 {@code deviation} 之后，把人为延迟从
+	 * {@code deviation} 字段里扣掉——列车仍按真实时间运行和上报，只是不因运营需要的延迟被判晚点、
+	 * 不触发追点加速。
 	 */
-	@ModifyReturnValue(method = "getTimeAlongRoute", at = @At("RETURN"))
-	private long s1mtr$excludeArtificialDelay(long original) {
-		return original + VehicleDelayTracker.get(this);
+	@Inject(method = "updateDeviation", at = @At("TAIL"))
+	private void s1mtr$excludeArtificialDelayFromDeviation(CallbackInfo ci) {
+		final long artificial = VehicleDelayTracker.get(this);
+		if (artificial <= 0) {
+			return;
+		}
+		try {
+			final Field field = findField(Vehicle.class, "deviation");
+			if (field != null) {
+				field.setAccessible(true);
+				field.setLong(this, field.getLong(this) - artificial);
+			}
+		} catch (Exception ignored) {
+		}
 	}
 
 	private Rail getCurrentRail(Vehicle vehicle) {

@@ -109,9 +109,9 @@ public abstract class SavedRailScreenBaseMixin {
 		s1mtr$sidingSpeedLimitLabel = TextHelper.translatable("gui.s1mtr.siding_speed_limit");
 
 		s1mtr$textFieldSidingSpeedLimit = new TextFieldWidgetExtension(
-				0, 0, 0, 20, 3,
+				0, 0, 0, 20, 6,
 				org.mtr.mapping.tool.TextCase.DEFAULT,
-				"[^\\d]",
+				"[^0-9.]",
 				"");
 
 		// 固定放在屏幕最下方，避免与 MTR 本体的速度/停站设置控件重叠
@@ -120,9 +120,12 @@ public abstract class SavedRailScreenBaseMixin {
 
 		self.addChild(new ClickableWidget(s1mtr$textFieldSidingSpeedLimit));
 
-		long limit = SidingSpeedLimit.get(rail);
-		if (limit > 0) {
-			s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(limit));
+		// 初始值为侧线的列车限速（km/h），0/无限显示为 0
+		if (savedRailBase instanceof org.mtr.core.data.Siding siding) {
+			final double mps = siding.getMaxManualSpeed();
+			final long kmh = mps > 0 ? Math.round(mps * 3600.0) : 0;
+			s1mtr$textFieldSidingSpeedLimit.setText2(
+					kmh >= 1000 ? "0" : String.valueOf(kmh));
 		}
 		s1mtr$sidingFieldWasFocused = false;
 
@@ -243,19 +246,34 @@ public abstract class SavedRailScreenBaseMixin {
 		s1mtr$sendRailUpdate(newRail);
 	}
 
+	/**
+	 * 侧线「列车限速」：写入 {@link org.mtr.core.data.Siding#setMaxManualSpeed(double)}。
+	 * <p>
+	 * 这是 magic-mtr 的方案：MTR 自身在运行期与时刻表生成期都会取 min(轨道限速, 该列车限速)，
+	 * 所以只需设置这个值即可实现「取列车限速与轨道限速的最小值」。写 rail styles 那套无效。
+	 */
 	private void s1mtr$saveSidingSpeedLimit() {
-		Rail rail = s1mtr$getRailFromSavedRailBase();
-		if (rail == null || !s1mtr$isSidingRail(rail)) {
+		if (!(savedRailBase instanceof org.mtr.core.data.Siding siding)) {
 			return;
 		}
-
-		long limit = s1mtr$parseDelay(s1mtr$textFieldSidingSpeedLimit);
-		Rail newRail = SidingSpeedLimit.withLimit(rail, limit);
-		if (newRail == null) {
+		double kmh;
+		try {
+			kmh = Double.parseDouble(s1mtr$textFieldSidingSpeedLimit.getText2().trim());
+		} catch (NumberFormatException ignored) {
 			return;
 		}
-
-		s1mtr$sendRailUpdate(newRail);
+		if (kmh < 0 || kmh > 1000) {
+			return;
+		}
+		// 0 = 不限速（MTR 内部用一个大正数表示）
+		final double speedKmh = kmh > 0 ? kmh : 1000;
+		siding.setMaxManualSpeed(org.mtr.core.tool.Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
+		try {
+			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getInstance());
+			request.addSiding(siding);
+			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
+		} catch (Exception ignored) {
+		}
 	}
 
 	private void s1mtr$sendRailUpdate(Rail newRail) {
