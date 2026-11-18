@@ -120,9 +120,12 @@ public abstract class SavedRailScreenBaseMixin {
 
 		self.addChild(new ClickableWidget(s1mtr$textFieldSidingSpeedLimit));
 
-		// 初始值为侧线自动驾驶限速（km/h），0 = 不限速
-		final long limit = SidingSpeedLimit.get(rail);
-		s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(limit));
+		// 初始值为列车最高限速（km/h），0 = 不限速
+		if (savedRailBase instanceof org.mtr.core.data.Siding siding) {
+			final double mps = siding.getMaxManualSpeed();
+			final long kmh = mps > 0 ? Math.round(mps * 3600.0) : 0;
+			s1mtr$textFieldSidingSpeedLimit.setText2(String.valueOf(kmh >= 1000 ? 0 : kmh));
+		}
 		s1mtr$sidingFieldWasFocused = false;
 
 		// 不在输入过程中保存：边输入边重建轨道会导致文本被服务端回同步覆盖、无法输入
@@ -243,14 +246,14 @@ public abstract class SavedRailScreenBaseMixin {
 	}
 
 	/**
-	 * 侧线「自动驾驶限速」：写入 rail styles（{@link SidingSpeedLimit}）。
+	 * 侧线「列车最高限速」：写入 {@link org.mtr.core.data.Siding#setMaxManualSpeed(double)}。
 	 * <p>
-	 * 不写 {@code Siding.maxManualSpeed}——那是 MTR 的手动驾驶限速，自动驾驶模式不读它。
-	 * 运行时由 {@code VehicleSidingSpeedLimitMixin} 取 min(轨道限速, 本限速) 生效。
+	 * MTR 原版只在手动驾驶读这个值；{@code VehicleSidingSpeedLimitMixin} 让自动驾驶也遵守，
+	 * 于是它成为该侧线所有列车的最高限速（min(轨道限速, 本限速)）。
+	 * 用 dashboard 数据实例，保证车厂范围外也能编辑并同步。
 	 */
 	private void s1mtr$saveSidingSpeedLimit() {
-		final Rail rail = s1mtr$getRailFromSavedRailBase();
-		if (rail == null) {
+		if (!(savedRailBase instanceof org.mtr.core.data.Siding siding)) {
 			return;
 		}
 		double kmh;
@@ -259,12 +262,16 @@ public abstract class SavedRailScreenBaseMixin {
 		} catch (NumberFormatException ignored) {
 			return;
 		}
-		if (kmh < 0 || kmh > SidingSpeedLimit.MAX_LIMIT) {
+		if (kmh < 0 || kmh > 1000) {
 			return;
 		}
-		final Rail updated = SidingSpeedLimit.withLimit(rail, Math.round(kmh));
-		if (updated != null) {
-			s1mtr$sendRailUpdate(updated);
+		final double speedKmh = kmh > 0 ? kmh : 1000;
+		siding.setMaxManualSpeed(org.mtr.core.tool.Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
+		try {
+			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
+			request.addSiding(siding);
+			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
+		} catch (Exception ignored) {
 		}
 	}
 

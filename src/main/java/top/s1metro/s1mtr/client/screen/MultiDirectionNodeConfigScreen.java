@@ -23,7 +23,7 @@ import top.s1metro.s1mtr.network.PacketS1mtrSetNodeDirection;
 public class MultiDirectionNodeConfigScreen extends MTRScreenBase {
 
 	private static final int PANEL_W = 280;
-	private static final int PANEL_H = 132;
+	private static final int PANEL_H = 176;
 
 	private final BlockPos pos;
 	private TextFieldWidgetExtension directionField;
@@ -68,6 +68,29 @@ public class MultiDirectionNodeConfigScreen extends MTRScreenBase {
 					MinecraftClient.getInstance().setScreen(new MultiDirectionNodeConfigScreen(pos));
 				});
 		addChild(new ClickableWidget(bindButton));
+
+		// 最下方：S1MTR 高级设置入口（刷万向节点时与刷原版节点一致），以及复合构建入口
+		final org.mtr.core.data.Rail rail = top.s1metro.s1mtr.service.RailDataTransfer.findRailAt(pos);
+		final boolean hasRail = rail != null;
+		addChild(new ClickableWidget(new ButtonWidgetExtension(
+				panelX + 20, panelY + 90, PANEL_W - 40, 20,
+				TextHelper.literal(hasRail ? "S1MTR 高级设置 (速度/放样)" : "S1MTR 高级设置 (未连接轨道)"),
+				btn -> {
+					if (rail != null) {
+						top.s1metro.s1mtr.client.screen.RailAdvancedSettingsScreen.open(
+								rail, top.s1metro.s1mtr.client.RailSpeedHelper.getRadius(rail),
+								top.s1metro.s1mtr.client.RailSpeedHelper.getShape(rail));
+					}
+				})));
+		addChild(new ClickableWidget(new ButtonWidgetExtension(
+				panelX + 20, panelY + 116, PANEL_W - 40, 20,
+				TextHelper.literal(hasRail ? "复合构建放样 (ANTE)" : "复合构建放样 (未连接轨道)"),
+				btn -> {
+					if (rail != null) {
+						CompositeProfileEditorScreen.openAnte(rail,
+								new top.s1metro.s1mtr.client.builder.CompositeLayerSchedule());
+					}
+				})));
 
 		final ButtonWidgetExtension doneButton = new ButtonWidgetExtension(
 				panelX + 20, panelY + PANEL_H - 28, PANEL_W - 40, 20,

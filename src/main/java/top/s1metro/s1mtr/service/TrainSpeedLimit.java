@@ -91,7 +91,7 @@ public final class TrainSpeedLimit {
 		final double speedKmh = kmh > 0 ? Math.min(kmh, NO_LIMIT_KMH) : NO_LIMIT_KMH;
 		siding.setMaxManualSpeed(Utilities.kilometersPerHourToMetersPerMillisecond(speedKmh));
 		try {
-			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getInstance());
+			final UpdateDataRequest request = new UpdateDataRequest(MinecraftClientData.getDashboardInstance());
 			request.addSiding(siding);
 			InitClient.REGISTRY_CLIENT.sendPacketToServer(new PacketUpdateData(request));
 		} catch (Exception ignored) {

@@ -234,6 +234,11 @@ public class ItemRailConnectorAuto extends ItemNodeModifierBase {
 	// ===== 配置 NBT 读写 =====
 
 	/** 已选轨道样式集合(可多选)。 */
+	/** 自动建设器固定用 STONE 轨道类型（与 createAutoRail 一致）。供万向节点连接 mixin 使用。 */
+	public static RailType getRailType(net.minecraft.item.Item item) {
+		return RailType.STONE;
+	}
+
 	public static Set<String> getStyles(ItemStack stack) {
 		final Set<String> set = new LinkedHashSet<>();
 		final String raw = stack.getOrCreateTag().getString(KEY_STYLES);

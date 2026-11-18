@@ -53,7 +53,7 @@ public abstract class ItemNodeModifierBaseMixin {
 	private void s1mtr$clickCondition(ItemUsageContext context, CallbackInfoReturnable<Boolean> cir) {
 		final World world = context.getWorld().data;
 		if (world != null && isMultiDirectionNode(world, context.getBlockPos().data)
-				&& context.getStack().data.getItem() instanceof ItemRailModifier) {
+				&& isSupportedConnector(context.getStack().data.getItem())) {
 			cir.setReturnValue(true);
 		}
 	}
@@ -88,7 +88,7 @@ public abstract class ItemNodeModifierBaseMixin {
 			return; // 原版逻辑
 		}
 		final Item heldItem = context.getStack().data.getItem();
-		if (!(heldItem instanceof ItemRailModifier)) {
+		if (!isSupportedConnector(heldItem)) {
 			return;
 		}
 
@@ -138,9 +138,16 @@ public abstract class ItemNodeModifierBaseMixin {
 			}
 		}
 
-		final ItemRailModifierAccessorMixin accessor = (ItemRailModifierAccessorMixin) (Object) heldItem;
-		final RailType railType = accessor.getRailType();
-		final boolean oneWay = accessor.isOneWay();
+		final RailType railType;
+		final boolean oneWay;
+		if (heldItem instanceof ItemRailModifierAccessorMixin accessor) {
+			railType = accessor.getRailType();
+			oneWay = accessor.isOneWay();
+		} else {
+			// 自动速度轨道建设器（ItemRailConnectorAuto）：不是 ItemRailModifier，用其自身配置的轨道类型
+			railType = top.s1metro.s1mtr.item.ItemRailConnectorAuto.getRailType(heldItem);
+			oneWay = false;
+		}
 
 		for (final double[] candidate : candidates) {
 			if (NodeConnector.createAndSendRail(serverWorld, posStart, candidate[0], endPos, candidate[1],
@@ -157,6 +164,11 @@ public abstract class ItemNodeModifierBaseMixin {
 			}
 		}
 		serverPlayer.sendMessage(Text.literal("\u00A7c[S1MTR] \u65b9\u5411\u65e0\u6548\uff0c\u65e0\u6cd5\u8fde\u63a5 / Invalid orientation"), false);
+	}
+
+	/** 支持轨道连接器（增删）与自动速度轨道建设器。 */
+	private static boolean isSupportedConnector(Item item) {
+		return item instanceof ItemRailModifier || item instanceof top.s1metro.s1mtr.item.ItemRailConnectorAuto;
 	}
 
 	private static boolean isMultiDirectionNode(World world, BlockPos pos) {
